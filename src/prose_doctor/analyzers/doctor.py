@@ -42,6 +42,9 @@ class ChapterHealth:
     perplexity: dict | None = None
     foregrounding: dict | None = None
     emotion: dict | None = None
+    psychic_distance: dict | None = None
+    info_contour: dict | None = None
+    sensory: dict | None = None
 
     @property
     def total_issues(self) -> int:
@@ -63,6 +66,9 @@ class ChapterHealth:
             "perplexity": self.perplexity,
             "foregrounding": self.foregrounding,
             "emotion": self.emotion,
+            "psychic_distance": self.psychic_distance,
+            "info_contour": self.info_contour,
+            "sensory": self.sensory,
         }
 
 

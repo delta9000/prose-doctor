@@ -109,6 +109,46 @@ def cmd_scan(args: argparse.Namespace) -> None:
                     "dynamic_range": emo.get("stats", {}).get("dynamic_range", 0),
                 }
 
+                # Psychic distance
+                from prose_doctor.ml.psychic_distance import analyze_chapter as pd_analyze
+
+                pd = pd_analyze(text, f.name, mm)
+                report.psychic_distance = {
+                    "mean_distance": pd.mean_distance,
+                    "std_distance": pd.std_distance,
+                    "label": pd.label,
+                    "zoom_jumps": len(pd.zoom_jumps),
+                    "paragraph_means": [round(m, 3) for m in pd.paragraph_means],
+                }
+
+                # Information contour
+                from prose_doctor.ml.info_contour import analyze_chapter as ic_analyze
+
+                ic = ic_analyze(text, f.name, mm)
+                report.info_contour = {
+                    "mean_surprisal": ic.mean_surprisal,
+                    "cv_surprisal": ic.cv_surprisal,
+                    "label": ic.label,
+                    "dominant_period": ic.dominant_period,
+                    "dominant_period_words": ic.dominant_period_words,
+                    "rhythmicity": ic.rhythmicity,
+                    "flatlines": len(ic.flatlines),
+                    "spikes": len(ic.spikes),
+                }
+
+                # Sensory profiler
+                from prose_doctor.ml.sensory import profile_chapter
+
+                sp = profile_chapter(text, f.name, mm)
+                report.sensory = {
+                    "dominant": sp.dominant_modality,
+                    "weakest": sp.weakest_modality,
+                    "balance": round(sp.balance_ratio, 3),
+                    "scores": sp.scores,
+                    "deserts": len(sp.deserts),
+                    "prescription": sp.prescription,
+                }
+
             except ImportError as e:
                 print(f"ML features unavailable: {e}", file=sys.stderr)
                 args.deep = False

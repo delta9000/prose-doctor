@@ -41,6 +41,38 @@ def format_chapter_report(health: ChapterHealth) -> str:
         arc = e.get("arc", "?")
         lines.append(f"\n  EMOTION ARC: {arc} std={e.get('std', 0)}{flat_tag}")
 
+    if health.psychic_distance:
+        pd = health.psychic_distance
+        lines.append(
+            f"\n  PSYCHIC DISTANCE: mean={pd['mean_distance']} ({pd['label']}) | "
+            f"std={pd['std_distance']} | {pd['zoom_jumps']} zoom jumps"
+        )
+
+    if health.info_contour:
+        ic = health.info_contour
+        lines.append(
+            f"\n  INFO CONTOUR: {ic['label']} | "
+            f"cycle=~{ic['dominant_period']}sent (~{ic['dominant_period_words']}w) | "
+            f"rhythmicity={ic['rhythmicity']} | "
+            f"{ic['flatlines']} flatlines, {ic['spikes']} spikes"
+        )
+
+    if health.sensory:
+        s = health.sensory
+        scores = s["scores"]
+        max_s = max(scores.values()) or 1
+        lines.append(
+            f"\n  SENSORY: dominant={s['dominant']} | "
+            f"weakest={s['weakest']} | balance={s['balance']}"
+        )
+        for mod, val in scores.items():
+            bar_w = 20
+            filled = int(val / max_s * bar_w)
+            bar = "\u2588" * filled + "\u2591" * (bar_w - filled)
+            lines.append(f"    {mod:<15} [{bar}] {val:.3f}")
+        if s.get("prescription"):
+            lines.append(f"    Rx: {s['prescription']}")
+
     # Vocabulary
     if health.vocabulary_crutches:
         lines.append("\n  VOCABULARY CRUTCHES:")
