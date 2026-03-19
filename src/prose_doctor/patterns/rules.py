@@ -394,6 +394,33 @@ def build_rule_patterns(character_names: list[str] | None = None) -> list[RulePa
         severity="density",
     ))
 
+    # Common AI-generated character names — data-driven from 8-model corpus.
+    # Names that multiple LLMs independently choose for the same archetypes.
+    # Density pattern: one is a coincidence, clusters are a fingerprint.
+    _slop_names = [
+        # Tier 1: 5+ models chose independently
+        "Elara", "Kael", "Mara", "Elias", "Aris", "Thorne",
+        # Tier 2: 3-4 models, distinctively AI fantasy/sci-fi
+        "Voss", "Silas", "Liora", "Kaelen", "Joren",
+        # Tier 3: common AI fantasy namespace
+        "Seraphina", "Lyra", "Callista", "Selene", "Vesper",
+        "Caelum", "Zephyr", "Cassius", "Isolde", "Leander",
+        "Elowen", "Ashara", "Brynn", "Cael", "Halcyon",
+        "Aelara", "Riven", "Corvus", "Darian", "Finnian",
+    ]
+    # Exclude any that are actual character names in the user's project
+    if character_names:
+        _slop_names = [n for n in _slop_names if n not in character_names]
+
+    if _slop_names:
+        patterns.append(RulePattern(
+            name="slop_name",
+            regex=re.compile(
+                r'\b(?:' + '|'.join(_slop_names) + r')\b'),
+            category="forbidden",
+            severity="density",
+        ))
+
     return patterns
 
 
