@@ -9,8 +9,8 @@ Two tiers:
 ## Install
 
 ```bash
-pip install prose-doctor        # core only
-pip install prose-doctor[ml]    # everything
+pip install git+https://github.com/delta9000/prose-doctor.git          # core only
+pip install "prose-doctor[ml] @ git+https://github.com/delta9000/prose-doctor.git"  # everything
 ```
 
 ## Quick start
