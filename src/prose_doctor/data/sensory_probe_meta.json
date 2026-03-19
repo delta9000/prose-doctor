@@ -1,0 +1,16 @@
+{
+  "modalities": [
+    "Visual",
+    "Auditory",
+    "Haptic",
+    "Olfactory",
+    "Gustatory",
+    "Interoceptive"
+  ],
+  "embedding_model": "all-mpnet-base-v2",
+  "embedding_dim": 768,
+  "hidden_dim": 96,
+  "training": "distilled from Qwen3-Embedding-4B (2560d) teacher probe, data-free",
+  "teacher": "Qwen3-Embedding-4B direction vectors + GPT-2 cloze pseudo-labels",
+  "source": "no external dataset"
+}

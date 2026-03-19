@@ -212,6 +212,152 @@ def cmd_twins(args: argparse.Namespace) -> None:
         print()
 
 
+def cmd_distance(args: argparse.Namespace) -> None:
+    """Run psychic distance analysis."""
+    try:
+        from prose_doctor.ml import require_ml
+
+        require_ml()
+    except ImportError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
+
+    from prose_doctor.ml.models import ModelManager
+    from prose_doctor.ml.psychic_distance import analyze_chapter
+
+    files = _discover_files(args.files)
+    if not files:
+        print("No files found.", file=sys.stderr)
+        sys.exit(1)
+
+    mm = ModelManager()
+    for f in files:
+        text = f.read_text()
+        result = analyze_chapter(text, f.name, mm)
+
+        print(f"\n{'─' * 60}")
+        print(f" {result.filename}")
+        print(f" {len(result.sentence_scores)} sentences | "
+              f"mean distance: {result.mean_distance:.3f} ({result.label}) | "
+              f"std: {result.std_distance:.3f}")
+        print(f"{'─' * 60}")
+
+        if result.zoom_jumps:
+            print(f"\n  Zoom jumps ({len(result.zoom_jumps)}):")
+            for j in result.zoom_jumps:
+                direction = "→ closer" if j.delta > 0 else "→ farther"
+                print(f"    [{j.paragraph_idx}:{j.sentence_idx}] "
+                      f"{j.distance_before:.2f} → {j.distance_after:.2f} "
+                      f"(Δ{j.delta:+.2f} {direction})")
+                print(f"      {j.text}")
+        else:
+            print("\n  No zoom jumps detected.")
+
+        # Paragraph-level curve (compact)
+        if result.paragraph_means:
+            print(f"\n  Distance curve (per paragraph):")
+            bar_width = 40
+            for pi, pm in enumerate(result.paragraph_means):
+                filled = int(pm * bar_width)
+                bar = "█" * filled + "░" * (bar_width - filled)
+                print(f"    {pi:>3} [{bar}] {pm:.2f}")
+
+
+def cmd_contour(args: argparse.Namespace) -> None:
+    """Run information contour analysis."""
+    try:
+        from prose_doctor.ml import require_ml
+
+        require_ml()
+    except ImportError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
+
+    from prose_doctor.ml.info_contour import analyze_chapter
+    from prose_doctor.ml.models import ModelManager
+
+    files = _discover_files(args.files)
+    if not files:
+        print("No files found.", file=sys.stderr)
+        sys.exit(1)
+
+    mm = ModelManager()
+    for f in files:
+        text = f.read_text()
+        result = analyze_chapter(text, f.name, mm)
+
+        print(f"\n{'─' * 60}")
+        print(f" {result.filename}")
+        print(f" {result.sentence_count} sentences | "
+              f"mean surprisal: {result.mean_surprisal:.3f} | "
+              f"CV: {result.cv_surprisal:.3f} | {result.label}")
+        print(f" Dominant cycle: ~{result.dominant_period} sentences "
+              f"(~{result.dominant_period_words} words) | "
+              f"rhythmicity: {result.rhythmicity:.3f} | "
+              f"spectral entropy: {result.spectral_entropy:.3f}")
+        print(f"{'─' * 60}")
+
+        if result.flatlines:
+            print(f"\n  Information flatlines ({len(result.flatlines)}):")
+            for fl in result.flatlines:
+                print(f"    sentences {fl['start']}-{fl['end']} "
+                      f"({fl['length']} sent, mean={fl['mean_surprisal']:.3f})")
+
+        if result.spikes:
+            print(f"\n  Surprisal spikes ({len(result.spikes)}):")
+            for sp in result.spikes[:5]:
+                print(f"    [{sp['index']}] surprisal={sp['surprisal']:.3f} "
+                      f"(z={sp['z_score']:.1f})")
+                print(f"      {sp['text']}")
+
+
+def cmd_sensory(args: argparse.Namespace) -> None:
+    """Run sensory modality profiler."""
+    try:
+        from prose_doctor.ml import require_ml
+
+        require_ml()
+    except ImportError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
+
+    from prose_doctor.ml.models import ModelManager
+    from prose_doctor.ml.sensory import profile_chapter, MODALITIES
+
+    files = _discover_files(args.files)
+    if not files:
+        print("No files found.", file=sys.stderr)
+        sys.exit(1)
+
+    mm = ModelManager()
+    for f in files:
+        text = f.read_text()
+        result = profile_chapter(text, f.name, mm)
+
+        print(f"\n{'─' * 60}")
+        print(f" {result.filename} ({result.word_count} words)")
+        print(f" Dominant: {result.dominant_modality} | "
+              f"Weakest: {result.weakest_modality} | "
+              f"Balance: {result.balance_ratio:.2f}")
+        print(f"{'─' * 60}")
+
+        # Bar chart
+        max_score = max(result.scores.values()) or 1
+        for mod, score in result.scores.items():
+            bar_width = 30
+            filled = int(score / max_score * bar_width)
+            bar = "█" * filled + "░" * (bar_width - filled)
+            print(f"  {mod:<15} [{bar}] {score:.3f}")
+
+        if result.deserts:
+            print(f"\n  Sensory deserts ({len(result.deserts)}):")
+            for d in result.deserts:
+                print(f"    paragraphs {d['start']}-{d['end']} ({d['length']} paragraphs)")
+
+        if result.prescription:
+            print(f"\n  Rx: {result.prescription}")
+
+
 def cmd_classify(args: argparse.Namespace) -> None:
     """Run ML classifier on files."""
     try:
@@ -309,6 +455,18 @@ def main() -> None:
         "--top", "-n", type=int, default=20, help="Top N per chapter"
     )
 
+    # distance (ML)
+    dist_p = subparsers.add_parser("distance", help="Psychic distance analysis [ML]")
+    dist_p.add_argument("files", nargs="+", help="Files or directories")
+
+    # contour (ML)
+    contour_p = subparsers.add_parser("contour", help="Information contour analysis [ML]")
+    contour_p.add_argument("files", nargs="+", help="Files or directories")
+
+    # sensory (ML)
+    sens_p = subparsers.add_parser("sensory", help="Sensory modality profiler [ML]")
+    sens_p.add_argument("files", nargs="+", help="Files or directories")
+
     args = parser.parse_args()
 
     if args.command is None:
@@ -321,5 +479,8 @@ def main() -> None:
         "index": cmd_index,
         "twins": cmd_twins,
         "classify": cmd_classify,
+        "distance": cmd_distance,
+        "contour": cmd_contour,
+        "sensory": cmd_sensory,
     }
     handlers[args.command](args)
