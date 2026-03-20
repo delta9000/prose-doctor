@@ -175,6 +175,36 @@ def cmd_scan(args: argparse.Namespace) -> None:
                     "prescription": sp.prescription,
                 }
 
+                # Dialogue voice separation
+                from prose_doctor.ml.dialogue import analyze_dialogue
+
+                dl = analyze_dialogue(text, f.name, mm)
+                report.dialogue = {
+                    "dialogue_ratio": dl.dialogue_ratio,
+                    "speakers": dl.speakers,
+                    "speaker_separation": dl.speaker_separation,
+                    "speaker_similarities": dl.speaker_similarities,
+                    "longest_dialogue_run": dl.longest_dialogue_run,
+                    "longest_narration_run": dl.longest_narration_run,
+                    "all_same_voice": dl.all_same_voice,
+                    "talking_heads": dl.talking_heads,
+                    "prescription": dl.prescription,
+                }
+
+                # Scene pacing
+                from prose_doctor.ml.pacing import analyze_pacing
+
+                pc = analyze_pacing(text, f.name)
+                report.pacing = {
+                    "mode_ratios": pc.mode_ratios,
+                    "longest_runs": pc.longest_runs,
+                    "dominant_mode": pc.dominant_mode,
+                    "talking_heads": len(pc.talking_heads),
+                    "action_deserts": len(pc.action_deserts),
+                    "interiority_gaps": len(pc.interiority_gaps),
+                    "prescription": pc.prescription,
+                }
+
             except ImportError as e:
                 print(f"ML features unavailable: {e}", file=sys.stderr)
                 args.deep = False
@@ -494,6 +524,29 @@ def cmd_critique(args: argparse.Namespace) -> None:
             "scores": sp.scores,
             "deserts": len(sp.deserts),
             "prescription": sp.prescription,
+        }
+
+        # Dialogue voice separation
+        from prose_doctor.ml.dialogue import analyze_dialogue
+        dl = analyze_dialogue(text, f.name, mm)
+        report.dialogue = {
+            "dialogue_ratio": dl.dialogue_ratio,
+            "speakers": dl.speakers,
+            "speaker_separation": dl.speaker_separation,
+            "all_same_voice": dl.all_same_voice,
+            "talking_heads": dl.talking_heads,
+            "prescription": dl.prescription,
+        }
+
+        # Scene pacing
+        from prose_doctor.ml.pacing import analyze_pacing
+        pc = analyze_pacing(text, f.name)
+        report.pacing = {
+            "mode_ratios": pc.mode_ratios,
+            "talking_heads": len(pc.talking_heads),
+            "action_deserts": len(pc.action_deserts),
+            "interiority_gaps": len(pc.interiority_gaps),
+            "prescription": pc.prescription,
         }
 
         # Run twins across all files for self-referential feedback

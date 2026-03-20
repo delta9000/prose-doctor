@@ -45,6 +45,8 @@ class ChapterHealth:
     psychic_distance: dict | None = None
     info_contour: dict | None = None
     sensory: dict | None = None
+    dialogue: dict | None = None
+    pacing: dict | None = None
 
     @property
     def total_issues(self) -> int:
@@ -69,6 +71,8 @@ class ChapterHealth:
             "psychic_distance": self.psychic_distance,
             "info_contour": self.info_contour,
             "sensory": self.sensory,
+            "dialogue": self.dialogue,
+            "pacing": self.pacing,
         }
 
 

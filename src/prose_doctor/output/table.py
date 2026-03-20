@@ -73,6 +73,37 @@ def format_chapter_report(health: ChapterHealth) -> str:
         if s.get("prescription"):
             lines.append(f"    Rx: {s['prescription']}")
 
+    if health.dialogue:
+        d = health.dialogue
+        speakers = ", ".join(f"{k}({v})" for k, v in d.get("speakers", {}).items())
+        lines.append(
+            f"\n  DIALOGUE: ratio={d['dialogue_ratio']:.0%} | "
+            f"separation={d['speaker_separation']:.3f} | "
+            f"speakers: {speakers or 'none attributed'}"
+        )
+        if d.get("all_same_voice"):
+            lines.append("    WARNING: all characters sound identical")
+        if d.get("talking_heads"):
+            lines.append(f"    WARNING: {len(d['talking_heads'])} talking-head stretches")
+        if d.get("prescription"):
+            lines.append(f"    Rx: {d['prescription']}")
+
+    if health.pacing:
+        p = health.pacing
+        ratios = " ".join(f"{k}={v:.0%}" for k, v in p.get("mode_ratios", {}).items())
+        lines.append(f"\n  PACING: {ratios}")
+        issues = []
+        if p.get("talking_heads"):
+            issues.append(f"{p['talking_heads']} talking-head stretches")
+        if p.get("action_deserts"):
+            issues.append(f"{p['action_deserts']} action deserts")
+        if p.get("interiority_gaps"):
+            issues.append(f"{p['interiority_gaps']} interiority gaps")
+        if issues:
+            lines.append(f"    Issues: {', '.join(issues)}")
+        if p.get("prescription"):
+            lines.append(f"    Rx: {p['prescription']}")
+
     # Vocabulary
     if health.vocabulary_crutches:
         lines.append("\n  VOCABULARY CRUTCHES:")

@@ -194,6 +194,50 @@ def build_critique(
             prescription=sensory["prescription"],
         ))
 
+    # Dialogue voice separation
+    dialogue = report.get("dialogue") or {}
+    if dialogue.get("all_same_voice"):
+        sections.append(CritiqueSection(
+            dimension="Dialogue voice",
+            severity="major",
+            value=dialogue.get("speaker_separation", 0),
+            baseline=0.15,
+            direction="higher",
+            prescription=dialogue.get("prescription", (
+                "All characters sound identical in dialogue. Give each speaker "
+                "a distinctive verbal tic, sentence length preference, or "
+                "vocabulary register."
+            )),
+        ))
+    if dialogue.get("talking_heads"):
+        n = len(dialogue["talking_heads"]) if isinstance(dialogue["talking_heads"], list) else dialogue["talking_heads"]
+        if n > 0:
+            sections.append(CritiqueSection(
+                dimension="Talking heads",
+                severity="minor",
+                value=float(n),
+                baseline=0,
+                direction="lower",
+                prescription=(
+                    f"{n} stretch{'es' if n > 1 else ''} of unbroken dialogue. "
+                    f"Insert action, setting, or interior thought every 3-4 "
+                    f"lines to ground the conversation in physical space."
+                ),
+            ))
+
+    # Scene pacing
+    pacing = report.get("pacing") or {}
+    pacing_rx = pacing.get("prescription", "")
+    if pacing_rx:
+        sections.append(CritiqueSection(
+            dimension="Scene pacing",
+            severity="minor",
+            value=0,
+            baseline=0,
+            direction="higher",
+            prescription=pacing_rx,
+        ))
+
     # Twin-based self-referential feedback
     if twins:
         for tw in twins[:3]:
