@@ -55,22 +55,48 @@ def cmd_scan(args: argparse.Namespace) -> None:
 
                 mm = ModelManager()
 
-                # Classifier (uses HF Hub default or config override)
+                # Classifier with density budgets — only report classes
+                # that exceed a per-1000-word threshold. Individual hits
+                # are candidates; accumulation makes them findings.
                 try:
+                    from collections import Counter
                     from prose_doctor.ml.slop_scorer import SlopScorer
 
                     scorer = SlopScorer(model_manager=mm, config=config)
                     stats = scorer.chapter_stats(text)
-                    report.pattern_hits.extend(
-                        {
-                            "pattern": f"ml:{s['class_name']}",
-                            "line": 0,
-                            "match": s["text"][:80],
-                            "severity": "ml",
-                        }
-                        for s in stats.get("scored", [])
-                        if s["slop_prob"] > 0.5
-                    )
+                    word_count = report.word_count or 1
+
+                    # Count hits per class
+                    class_hits: dict[str, list[dict]] = {}
+                    for s in stats.get("scored", []):
+                        if s["slop_prob"] > 0.5 and s.get("class_name", "clean") != "clean":
+                            class_hits.setdefault(s["class_name"], []).append(s)
+
+                    # Density budgets: hits per 1000 words before reporting
+                    ML_DENSITY_BUDGETS = {
+                        "thesis": 2,
+                        "emotion": 2,
+                        "dead_figure": 2,
+                        "standalone": 3,
+                        "narrator_gloss": 2,
+                        "forbidden": 1,  # strict — any forbidden word cluster matters
+                        "padding": 4,    # lenient — some padding is normal
+                    }
+
+                    for cls_name, hits in class_hits.items():
+                        budget = ML_DENSITY_BUDGETS.get(cls_name, 2)
+                        density = len(hits) / word_count * 1000
+                        if density > budget:
+                            # Over budget — report all hits
+                            report.pattern_hits.extend(
+                                {
+                                    "pattern": f"ml:{cls_name}",
+                                    "line": 0,
+                                    "match": s["text"][:80],
+                                    "severity": "ml",
+                                }
+                                for s in hits
+                            )
                 except Exception as e:
                     print(
                         f"  Classifier skipped: {e}",

@@ -413,10 +413,13 @@ def build_rule_patterns(character_names: list[str] | None = None) -> list[RulePa
         _slop_names = [n for n in _slop_names if n not in character_names]
 
     if _slop_names:
+        # Require 2+ different slop names in the same paragraph (cluster signal).
+        # A single "Elara" is fine — "Elara" + "Kael" in the same paragraph is the tell.
+        name_pat = r'\b(?:' + '|'.join(_slop_names) + r')\b'
         patterns.append(RulePattern(
             name="slop_name",
             regex=re.compile(
-                r'\b(?:' + '|'.join(_slop_names) + r')\b'),
+                name_pat + r'[\s\S]+?' + name_pat),
             category="forbidden",
             severity="density",
         ))
