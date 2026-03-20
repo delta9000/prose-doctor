@@ -424,6 +424,103 @@ def cmd_sensory(args: argparse.Namespace) -> None:
             print(f"\n  Rx: {result.prescription}")
 
 
+def cmd_critique(args: argparse.Namespace) -> None:
+    """Generate a structured revision prompt."""
+    try:
+        from prose_doctor.ml import require_ml
+
+        require_ml()
+    except ImportError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
+
+    from prose_doctor.critique import build_critique, format_critique_prompt
+    from prose_doctor.ml.models import ModelManager
+
+    files = _discover_files(args.files)
+    if not files:
+        print("No files found.", file=sys.stderr)
+        sys.exit(1)
+
+    config = ProjectConfig.load(files[0].parent)
+    mm = ModelManager()
+
+    for f in files:
+        text = f.read_text()
+        report = diagnose(text, filename=f.name, config=config)
+
+        # Run ML analyzers (same as scan --deep)
+        from prose_doctor.ml.psychic_distance import analyze_chapter as pd_analyze
+        pd = pd_analyze(text, f.name, mm)
+        report.psychic_distance = {
+            "mean_distance": pd.mean_distance,
+            "std_distance": pd.std_distance,
+            "label": pd.label,
+            "zoom_jumps": len(pd.zoom_jumps),
+            "paragraph_means": [round(m, 3) for m in pd.paragraph_means],
+        }
+
+        from prose_doctor.ml.info_contour import analyze_chapter as ic_analyze
+        ic = ic_analyze(text, f.name, mm)
+        report.info_contour = {
+            "mean_surprisal": ic.mean_surprisal,
+            "cv_surprisal": ic.cv_surprisal,
+            "label": ic.label,
+            "dominant_period": ic.dominant_period,
+            "dominant_period_words": ic.dominant_period_words,
+            "rhythmicity": ic.rhythmicity,
+            "flatlines": len(ic.flatlines),
+            "spikes": len(ic.spikes),
+        }
+
+        from prose_doctor.ml.foregrounding import score_chapter
+        fg = score_chapter(text, f.name, mm)
+        report.foregrounding = {
+            "index": round(fg.index, 2),
+            "alliteration_per_1k": round(fg.alliteration, 1),
+            "inversion_pct": round(fg.inversion_pct, 1),
+            "sentence_length_cv": round(fg.sl_cv, 2),
+            "fragment_pct": round(fg.fragment_pct, 1),
+            "weakest_axis": fg.weakest_axis,
+            "prescription": fg.prescription,
+        }
+
+        from prose_doctor.ml.sensory import profile_chapter
+        sp = profile_chapter(text, f.name, mm)
+        report.sensory = {
+            "dominant": sp.dominant_modality,
+            "weakest": sp.weakest_modality,
+            "balance": round(sp.balance_ratio, 3),
+            "scores": sp.scores,
+            "deserts": len(sp.deserts),
+            "prescription": sp.prescription,
+        }
+
+        # Run twins across all files for self-referential feedback
+        twins_data = None
+        if len(files) > 1:
+            from prose_doctor.ml.twins import find_twins
+            twins = find_twins(files, mm, max_results=5)
+            twins_data = [
+                {
+                    "flat_idx": tw.flat_idx,
+                    "flat_text": tw.flat_text,
+                    "flat_texture": tw.flat_texture,
+                    "twin_idx": tw.twin_idx,
+                    "twin_text": tw.twin_text,
+                    "twin_texture": tw.twin_texture,
+                }
+                for tw in twins
+                if tw.flat_file == f.name
+            ]
+
+        # Build and format critique
+        sections = build_critique(report.to_dict(), twins=twins_data)
+        prompt = format_critique_prompt(f.name, sections, word_count=report.word_count)
+        print(prompt)
+        print()
+
+
 def cmd_classify(args: argparse.Namespace) -> None:
     """Run ML classifier on files."""
     try:
@@ -533,6 +630,10 @@ def main() -> None:
     sens_p = subparsers.add_parser("sensory", help="Sensory modality profiler [ML]")
     sens_p.add_argument("files", nargs="+", help="Files or directories")
 
+    # critique (ML)
+    crit_p = subparsers.add_parser("critique", help="Generate revision prompt [ML]")
+    crit_p.add_argument("files", nargs="+", help="Files or directories")
+
     args = parser.parse_args()
 
     if args.command is None:
@@ -548,5 +649,6 @@ def main() -> None:
         "distance": cmd_distance,
         "contour": cmd_contour,
         "sensory": cmd_sensory,
+        "critique": cmd_critique,
     }
     handlers[args.command](args)
