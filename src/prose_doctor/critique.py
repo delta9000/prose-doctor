@@ -173,6 +173,8 @@ def build_critique(
             ))
 
     # Ending register shift — does the ending change psychic distance?
+    # Two signals: (1) mean shift from middle, (2) variance in ending
+    # (a deep-then-pullback ending has high variance even if mean is flat)
     para_means = pd.get("paragraph_means", [])
     if len(para_means) >= 10:
         import numpy as _np
@@ -181,21 +183,25 @@ def build_critique(
         ending = para_means[int(n * 0.85):]
         if middle and ending:
             mid_mean = float(_np.mean(middle))
+            mid_std = float(_np.std(middle))
             end_mean = float(_np.mean(ending))
-            shift = abs(end_mean - mid_mean)
-            # Human baseline: mean |shift| ≈ 0.03. If less than 0.015, the
-            # ending doesn't change register at all.
-            if shift < 0.015:
+            end_std = float(_np.std(ending))
+            end_range = float(max(ending) - min(ending))
+            mean_shift = abs(end_mean - mid_mean)
+            # Ending is dynamic if it shifts mean OR has more variance than middle
+            ending_is_dynamic = mean_shift > 0.015 or end_range > mid_std * 2
+            if not ending_is_dynamic:
                 direction = "in (deep interiority)" if end_mean <= mid_mean else "out (wide shot)"
                 sections.append(CritiqueSection(
                     dimension="Ending register",
                     severity="minor",
-                    value=round(shift, 4),
+                    value=round(mean_shift, 4),
                     baseline=0.03,
                     direction="higher",
                     prescription=(
                         f"Your ending doesn't shift register — it stays at the same "
-                        f"narrative distance as the middle of the chapter (shift: {shift:.3f}). "
+                        f"narrative distance as the middle of the chapter "
+                        f"(shift: {mean_shift:.3f}, range: {end_range:.3f}). "
                         f"Human prose endings typically pull back to a wide shot or push "
                         f"deep into interiority. Pick one: either zoom {direction} for "
                         f"the final 3-5 paragraphs, or pull all the way back to landscape "

@@ -163,6 +163,42 @@ def score_sentence(sent, _unused=None) -> float:
         interiority += 0.3  # question in narration
     if "*" in text or "_" in text:
         interiority += 0.2  # italic markers (internal thought)
+
+    # Thought content: extended reasoning/evaluation in third person.
+    # "she thought about how X" or "she understood that Y" followed by
+    # substantial clause content signals deep third, not just a perception tag.
+    # Detect: cognition verb + subordinate clause (that/how/whether/if/about)
+    thought_connectors = frozenset({
+        "that", "how", "whether", "if", "about", "why", "what",
+    })
+    evaluation_words = frozenset({
+        "meant", "meant", "mean", "means", "should", "shouldn't",
+        "could", "couldn't", "would", "wouldn't", "might",
+        "must", "enough", "wrong", "right", "true", "possible",
+        "impossible", "certain", "uncertain", "sure", "unsure",
+        "perhaps", "maybe", "probably", "never", "always",
+        "every", "nothing", "everything", "anyone", "nobody",
+    })
+    # Check for cognition verb followed by thought connector
+    for i, w in enumerate(words):
+        if w in COGNITION_VERBS and i < len(words) - 2:
+            # Look ahead for a thought connector within 3 words
+            lookahead = words[i+1:i+4]
+            if any(la in thought_connectors for la in lookahead):
+                # Extended thought — boost based on sentence length
+                # (longer = more reasoning = deeper interiority)
+                clause_length = len(words) - i
+                if clause_length > 10:
+                    interiority += 0.4  # substantial extended thought
+                elif clause_length > 5:
+                    interiority += 0.2
+                break
+
+    # Evaluation language density — words that express judgment/assessment
+    eval_count = sum(1 for w in words if w in evaluation_words)
+    if eval_count >= 2:
+        interiority += 0.2  # multiple evaluative terms = character judging
+
     interiority = min(interiority, 1.0)
 
     # Weighted combination
