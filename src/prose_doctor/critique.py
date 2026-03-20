@@ -172,6 +172,37 @@ def build_critique(
                 prescription="",
             ))
 
+    # Ending register shift — does the ending change psychic distance?
+    para_means = pd.get("paragraph_means", [])
+    if len(para_means) >= 10:
+        import numpy as _np
+        n = len(para_means)
+        middle = para_means[int(n * 0.2):int(n * 0.8)]
+        ending = para_means[int(n * 0.85):]
+        if middle and ending:
+            mid_mean = float(_np.mean(middle))
+            end_mean = float(_np.mean(ending))
+            shift = abs(end_mean - mid_mean)
+            # Human baseline: mean |shift| ≈ 0.03. If less than 0.015, the
+            # ending doesn't change register at all.
+            if shift < 0.015:
+                direction = "in (deep interiority)" if end_mean <= mid_mean else "out (wide shot)"
+                sections.append(CritiqueSection(
+                    dimension="Ending register",
+                    severity="minor",
+                    value=round(shift, 4),
+                    baseline=0.03,
+                    direction="higher",
+                    prescription=(
+                        f"Your ending doesn't shift register — it stays at the same "
+                        f"narrative distance as the middle of the chapter (shift: {shift:.3f}). "
+                        f"Human prose endings typically pull back to a wide shot or push "
+                        f"deep into interiority. Pick one: either zoom {direction} for "
+                        f"the final 3-5 paragraphs, or pull all the way back to landscape "
+                        f"and silence."
+                    ),
+                ))
+
     # Foregrounding weakest axis prescription
     if fg.get("weakest_axis") and fg.get("prescription"):
         sections.append(CritiqueSection(
