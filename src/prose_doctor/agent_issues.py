@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from prose_doctor.critique_config import CritiqueConfig
 from prose_doctor.lenses.fragment_classifier import _has_concrete_detail, _is_vague_fragment
 from prose_doctor.providers import ProviderPool
 from prose_doctor.text import split_paragraphs
@@ -25,7 +26,7 @@ class Issue:
     preserve: bool       # True = this is likely intentional craft, don't touch
 
 
-def find_fragment_issues(text: str, report: dict) -> list[Issue]:
+def find_fragment_issues(text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find specific fragment sentences and classify as crutch vs intentional.
 
     Fragments are sentences with < 5 tokens. Default is CRUTCH — a fragment
@@ -124,7 +125,7 @@ def find_fragment_issues(text: str, report: dict) -> list[Issue]:
     return issues
 
 
-def find_psychic_distance_issues(text: str, report: dict) -> list[Issue]:
+def find_psychic_distance_issues(text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find sentences where psychic distance is too external, with causes.
 
     Instead of just pointing at paragraphs, identifies specific sentences
@@ -141,13 +142,14 @@ def find_psychic_distance_issues(text: str, report: dict) -> list[Issue]:
     pd = report.get("psychic_distance") or {}
     para_means = pd.get("paragraph_means", [])
 
-    baseline = 0.336
+    cfg = config or CritiqueConfig()
+    baseline = cfg.baselines["pd_mean"][0]
     issues = []
 
     for pi, mean in enumerate(para_means):
         if pi >= len(paragraphs):
             break
-        if mean >= baseline - 0.05:
+        if mean >= baseline - cfg.pd_baseline_margin:
             continue  # close enough to baseline
 
         para = paragraphs[pi]
@@ -182,7 +184,7 @@ def find_psychic_distance_issues(text: str, report: dict) -> list[Issue]:
                 causes.append("no proximal deictics (this/here/now)")
 
             # Only flag if there are actual causes (not just slightly below baseline)
-            if len(causes) >= 2:
+            if len(causes) >= cfg.pd_cause_threshold:
                 ctx_before = ""
                 ctx_after = ""
                 issues.append(Issue(
@@ -199,11 +201,12 @@ def find_psychic_distance_issues(text: str, report: dict) -> list[Issue]:
     return issues[:15]
 
 
-def find_inversion_issues(text: str, report: dict) -> list[Issue]:
+def find_inversion_issues(text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find specific SVO sentences that could be inverted, with context."""
     pool = ProviderPool()
     nlp = pool.spacy
 
+    cfg = config or CritiqueConfig()
     paragraphs = split_paragraphs(text)
     issues = []
 
@@ -241,7 +244,7 @@ def find_inversion_issues(text: str, report: dict) -> list[Issue]:
         inv_count = total - len(svo_sents)
         inv_pct = inv_count / total * 100 if total > 0 else 100
 
-        if inv_pct < 15 and len(svo_sents) >= 3:
+        if inv_pct < cfg.inversion_pct_gate and len(svo_sents) >= 3:
             # Pick the best candidates for inversion (longer sentences)
             candidates = sorted(svo_sents, key=lambda x: -len(x[1]))
             for si, sent in candidates[:3]:
@@ -264,7 +267,7 @@ def find_inversion_issues(text: str, report: dict) -> list[Issue]:
     return issues[:15]
 
 
-def find_flatline_issues(text: str, report: dict) -> list[Issue]:
+def find_flatline_issues(text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find information flatlines with proper sentence-to-paragraph mapping."""
     pool = ProviderPool()
     nlp = pool.spacy
@@ -317,7 +320,7 @@ def find_flatline_issues(text: str, report: dict) -> list[Issue]:
     return issues
 
 
-def find_spike_issues(text: str, report: dict) -> list[Issue]:
+def find_spike_issues(text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find paragraphs that are too predictable and need surprisal spikes.
 
     When a chapter has too few spikes, this identifies the flattest passages
@@ -330,9 +333,11 @@ def find_spike_issues(text: str, report: dict) -> list[Issue]:
     ic = report.get("info_contour") or {}
     surprisals = ic.get("sentence_surprisals", []) if hasattr(ic, 'get') else []
 
+    cfg = config or CritiqueConfig()
+
     # If we don't have per-sentence data, fall back to flatlines
     if not surprisals:
-        return find_flatline_issues(text, report)
+        return find_flatline_issues(text, report, config=config)
 
     # Build sentence→paragraph map
     sent_to_para: list[int] = []
@@ -354,7 +359,7 @@ def find_spike_issues(text: str, report: dict) -> list[Issue]:
     mean_s = float(np.mean(arr))
 
     # Sentences below mean are candidates for surprise injection
-    indexed = [(i, s) for i, s in enumerate(surprisals) if s < mean_s - 0.1]
+    indexed = [(i, s) for i, s in enumerate(surprisals) if s < mean_s - cfg.spike_surprisal_margin]
     indexed.sort(key=lambda x: x[1])  # most predictable first
 
     issues = []
@@ -381,7 +386,7 @@ def find_spike_issues(text: str, report: dict) -> list[Issue]:
     return issues[:10]
 
 
-def find_generic_issues(text: str, report: dict) -> list[Issue]:
+def find_generic_issues(text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find structurally generic paragraphs with actionable decomposition.
 
     Uses narrative attention feature decomposition to identify paragraphs
@@ -571,7 +576,7 @@ def find_generic_issues(text: str, report: dict) -> list[Issue]:
     return issues
 
 
-def find_discourse_issues(text: str, report: dict) -> list[Issue]:
+def find_discourse_issues(text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find paragraphs with monotonous discourse relations.
 
     Targets two patterns empirically shown to separate AI from human prose:
@@ -589,8 +594,10 @@ def find_discourse_issues(text: str, report: dict) -> list[Issue]:
     entropy = dr.get("relation_entropy", 1.0)
     implicit = dr.get("implicit_ratio", 0.0)
 
+    cfg = config or CritiqueConfig()
+
     # Only flag if chapter-level metrics are in AI territory.
-    if entropy > 0.55 and implicit < 0.92:
+    if entropy > cfg.discourse_entropy_gate and implicit < cfg.discourse_implicit_gate:
         return []
 
     from prose_doctor.lenses.discourse_relations import _classify_sentence
@@ -625,7 +632,7 @@ def find_discourse_issues(text: str, report: dict) -> list[Issue]:
             consecutive_implicit = 0
 
         # Flag: 3+ consecutive all-implicit paragraphs
-        if consecutive_implicit >= 3:
+        if consecutive_implicit >= cfg.consecutive_implicit_trigger:
             first_sent = sents[0].text.strip()[:150] if sents else ""
             ctx_before = paragraphs[pi - 1][:100] if pi > 0 else ""
             ctx_after = paragraphs[pi + 1][:100] if pi < len(paragraphs) - 1 else ""
@@ -643,7 +650,7 @@ def find_discourse_issues(text: str, report: dict) -> list[Issue]:
             ))
 
         # Flag: additive-only paragraph (all "and" connectives)
-        elif all_additive_or_implicit and n_additive >= 2:
+        elif all_additive_or_implicit and n_additive >= cfg.additive_count_trigger:
             first_sent = sents[0].text.strip()[:150] if sents else ""
             ctx_before = paragraphs[pi - 1][:100] if pi > 0 else ""
             ctx_after = paragraphs[pi + 1][:100] if pi < len(paragraphs) - 1 else ""
@@ -663,7 +670,7 @@ def find_discourse_issues(text: str, report: dict) -> list[Issue]:
     return issues[:15]
 
 
-def find_concreteness_issues(text: str, report: dict) -> list[Issue]:
+def find_concreteness_issues(text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find passages that are excessively concrete or use vague nouns.
 
     Two complementary signals:
@@ -681,12 +688,13 @@ def find_concreteness_issues(text: str, report: dict) -> list[Issue]:
     abstract_ratio = cn.get("abstractness_ratio", 0.5)
     vague_density = cn.get("vague_noun_density", 0)
 
+    cfg = config or CritiqueConfig()
     issues = []
 
     from prose_doctor.lenses.concreteness import VAGUE_NOUNS
 
     # Issue type 1: Vague nouns
-    if vague_density > 0.5:
+    if vague_density > cfg.vague_density_gate:
         for pi, para in enumerate(paragraphs):
             doc = nlp(para)
             for sent in doc.sents:
@@ -709,7 +717,7 @@ def find_concreteness_issues(text: str, report: dict) -> list[Issue]:
                         break  # one per sentence
 
     # Issue type 2: No abstraction — flag longest concrete-only stretches
-    if abstract_ratio < 0.15:
+    if abstract_ratio < cfg.abstract_ratio_gate:
         from prose_doctor.lenses.concreteness import _load_norms
         norms = _load_norms()
 
@@ -725,12 +733,12 @@ def find_concreteness_issues(text: str, report: dict) -> list[Issue]:
                     scores.append(norms[word])
 
             para_mean = sum(scores) / len(scores) if scores else 3.0
-            if para_mean > 3.2:
+            if para_mean > cfg.concrete_para_mean_threshold:
                 concrete_run += 1
             else:
                 concrete_run = 0
 
-            if concrete_run >= 4:
+            if concrete_run >= cfg.concrete_run_trigger:
                 sent_text = paragraphs[pi][:150]
                 ctx_before = paragraphs[pi - 1][:100] if pi > 0 else ""
                 ctx_after = paragraphs[pi + 1][:100] if pi < len(paragraphs) - 1 else ""
@@ -750,7 +758,7 @@ def find_concreteness_issues(text: str, report: dict) -> list[Issue]:
     return issues[:15]
 
 
-def find_shift_issues(text: str, report: dict) -> list[Issue]:
+def find_shift_issues(text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find long static stretches that lack time, space, or character shifts.
 
     Human prose averages ~1.5-2 shifts per paragraph. AI prose averages ~1.
@@ -763,8 +771,10 @@ def find_shift_issues(text: str, report: dict) -> list[Issue]:
     n_paras = max(len(paragraphs), 1)
     shift_rate = total / n_paras
 
+    cfg = config or CritiqueConfig()
+
     # Only flag if shift rate is below human baseline
-    if shift_rate > 1.2:
+    if shift_rate > cfg.shift_rate_gate:
         return []
 
     pool = ProviderPool()
@@ -793,7 +803,7 @@ def find_shift_issues(text: str, report: dict) -> list[Issue]:
         else:
             no_shift_run += 1
 
-        if no_shift_run >= 5:
+        if no_shift_run >= cfg.no_shift_run_trigger:
             issues.append(Issue(
                 paragraph_idx=pi,
                 sentence_text=paragraphs[pi][:150],
@@ -828,12 +838,12 @@ METRIC_FINDERS = {
 }
 
 
-def find_issues(metric: str, text: str, report: dict) -> list[Issue]:
+def find_issues(metric: str, text: str, report: dict, config: CritiqueConfig | None = None) -> list[Issue]:
     """Find specific problematic passages for a metric."""
     finder = METRIC_FINDERS.get(metric)
     if finder is None:
         return []
-    return finder(text, report)
+    return finder(text, report, config=config)
 
 
 def format_issues(issues: list[Issue]) -> str:
