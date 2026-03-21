@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.11"
 license = "MIT"
 dependencies = [
+    "httpx>=0.28.1",
     "pyyaml>=6.0.3",
 ]
 

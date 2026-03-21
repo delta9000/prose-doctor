@@ -2477,6 +2477,7 @@ name = "prose-doctor"
 version = "0.2.0"
 source = { editable = "." }
 dependencies = [
+    { name = "httpx" },
     { name = "pyyaml" },
 ]
 
@@ -2509,6 +2510,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "en-core-web-sm", marker = "extra == 'ml'", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "networkx", marker = "extra == 'ml'", specifier = ">=3.0" },
     { name = "numpy", marker = "extra == 'ml'", specifier = ">=1.26" },
     { name = "prose-doctor", extras = ["ml"], marker = "extra == 'agent'" },
