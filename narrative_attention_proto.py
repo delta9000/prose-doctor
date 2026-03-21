@@ -126,18 +126,57 @@ def build_paragraph_features(text: str, filename: str) -> dict:
         else:
             para_valence.append(ea._score_intensity(para))
 
-    # --- NEW: Pacing mode (one-hot: action, interiority, setting) ---
-    # dialogue already captured; encode the other 3 as ratios
-    para_action = []
-    para_interiority = []
-    para_setting = []
-    for para in paragraphs:
-        mode = _classify_paragraph(para)
-        para_action.append(1.0 if mode == "action" else 0.0)
-        para_interiority.append(1.0 if mode == "interiority" else 0.0)
-        para_setting.append(1.0 if mode == "setting" else 0.0)
+    # --- Boyd et al. (2020): Staging / Plot Progression / Cognitive Tension ---
+    # Three continuous features from function word ratios, validated across 40K narratives.
+    # These capture the NARRATIVE ROLE of a paragraph independent of surface structure.
+    _STAGING_WORDS = frozenset({
+        # Prepositions (scene-setting, spatial/temporal grounding)
+        "in", "on", "at", "to", "from", "by", "with", "into", "through",
+        "across", "between", "among", "above", "below", "beneath", "behind",
+        "beside", "near", "toward", "towards", "along", "around", "against",
+        "over", "under", "within", "without", "upon", "during", "before",
+        "after", "until", "beyond", "past", "outside", "inside",
+        # Articles (establishing reference)
+        "the", "a", "an",
+    })
+    _PROGRESSION_WORDS = frozenset({
+        # Auxiliary verbs (interactional, plot-moving)
+        "would", "could", "should", "might", "must", "shall", "will",
+        "can", "may", "do", "does", "did", "has", "have", "had",
+        "was", "were", "been", "being", "am", "is", "are",
+        # Adverbs (manner, time — action modifiers)
+        "then", "now", "just", "still", "already", "again", "soon",
+        "quickly", "slowly", "suddenly", "finally", "immediately",
+        "carefully", "quietly", "hard", "fast", "forward", "back",
+    })
+    _TENSION_WORDS = frozenset({
+        # Cognitive process words (reasoning, evaluation, internal conflict)
+        "think", "thought", "know", "knew", "believe", "believed",
+        "understand", "understood", "realize", "realized", "wonder",
+        "wondered", "consider", "considered", "suppose", "supposed",
+        "imagine", "imagined", "remember", "remembered", "forget", "forgot",
+        "decide", "decided", "hope", "hoped", "fear", "feared",
+        "wish", "wished", "doubt", "doubted", "suspect", "suspected",
+        "mean", "meant", "cause", "because", "reason", "why",
+        "whether", "if", "unless", "although", "though", "however",
+        "but", "yet", "maybe", "perhaps", "probably", "possibly",
+        "should", "shouldn't", "couldn't", "wouldn't",
+        "right", "wrong", "true", "false", "certain", "uncertain",
+        "sure", "unsure", "possible", "impossible",
+    })
 
-    # --- NEW: Verb energy (dynamic vs stative verbs) ---
+    para_staging = []
+    para_progression = []
+    para_tension = []
+    for para in paragraphs:
+        words = para.lower().split()
+        wc = len(words) or 1
+        word_set = set(words)
+        para_staging.append(len(word_set & _STAGING_WORDS) / wc)
+        para_progression.append(len(word_set & _PROGRESSION_WORDS) / wc)
+        para_tension.append(len(word_set & _TENSION_WORDS) / wc)
+
+    # --- Verb energy (dynamic vs stative verbs) ---
     _DYNAMIC_VERBS = frozenset({
         "ran", "run", "walked", "grabbed", "pulled", "pushed", "threw",
         "hit", "jumped", "climbed", "fell", "opened", "closed", "turned",
@@ -183,6 +222,47 @@ def build_paragraph_features(text: str, filename: str) -> dict:
             if count > 0:
                 sent_idx2 += count
 
+    # --- Wilmot-Keller (2020): Uncertainty reduction at paragraph boundaries ---
+    # Lightweight approximation: compute next-token entropy at the last token of
+    # each paragraph, then measure how much it changes across boundaries.
+    # High reduction = this paragraph resolves uncertainty (tension point).
+    # Low reduction = filler that doesn't change what comes next.
+    print("  Computing uncertainty reduction at paragraph boundaries...", file=sys.stderr, flush=True)
+    import torch
+    model_gpt2, tokenizer_gpt2 = mm.gpt2
+    device = mm.device
+
+    def _next_token_entropy(text_context: str, max_tokens: int = 256) -> float:
+        """Compute entropy of next-token distribution given context."""
+        inputs = tokenizer_gpt2(
+            text_context, return_tensors="pt",
+            truncation=True, max_length=max_tokens,
+        )
+        if device == "cuda":
+            inputs = {k: v.cuda() for k, v in inputs.items()}
+        with torch.no_grad():
+            outputs = model_gpt2(**inputs)
+            logits = outputs.logits[0, -1, :]  # last token logits
+            probs = torch.softmax(logits, dim=-1)
+            # Top-k entropy (full vocab entropy is dominated by noise)
+            top_probs, _ = probs.topk(100)
+            top_probs = top_probs / top_probs.sum()  # renormalize
+            entropy = -float((top_probs * top_probs.log()).sum())
+        return entropy
+
+    para_uncertainty_reduction = []
+    prev_entropy = None
+    for pi, para in enumerate(paragraphs):
+        # Context: last ~200 tokens of preceding text
+        preceding = " ".join(paragraphs[max(0, pi-2):pi+1])
+        curr_entropy = _next_token_entropy(preceding)
+        if prev_entropy is not None:
+            # Reduction = how much entropy decreased (positive = resolved uncertainty)
+            para_uncertainty_reduction.append(prev_entropy - curr_entropy)
+        else:
+            para_uncertainty_reduction.append(0.0)
+        prev_entropy = curr_entropy
+
     # --- Semantic embedding (sentence-transformer, low-dim projection) ---
     st = mm.sentence_transformer
     para_embeddings = st.encode(paragraphs, show_progress_bar=False)
@@ -207,34 +287,63 @@ def build_paragraph_features(text: str, filename: str) -> dict:
         else:
             para_counter += 1
 
-    # --- Normalize surprisal_var by paragraph length to remove length artifact ---
-    para_surprisal_var_norm = []
-    for sv, wc in zip(para_surprisal_var, para_word_count):
-        # Normalize: surprisal variance per sentence (not per paragraph)
-        para_surprisal_var_norm.append(sv)  # already per-sentence std, no length bias
+    # --- Tsipidi et al. (2024): Position-residualized surprisal ---
+    # Surprisal is partially predictable from position in the discourse hierarchy.
+    # The residual (observed - predicted) captures genuine surprise independent of
+    # structural expectations. Regress surprisal on positional features, keep residual.
+
+    # First compute positional features for regression
+    # (scene breaks already detected above)
+    pos_for_regression = np.zeros((n, 3))
+    for i in range(n):
+        pos_for_regression[i, 0] = i / max(n - 1, 1)  # position in chapter
+        scene_idx = sum(1 for b in scene_breaks if b <= i)
+        scene_start = max([b for b in scene_breaks if b <= i], default=0)
+        scene_end = min([b for b in scene_breaks if b > i], default=n)
+        scene_len = scene_end - scene_start
+        pos_for_regression[i, 1] = (i - scene_start) / max(scene_len - 1, 1)  # position in scene
+        pos_for_regression[i, 2] = scene_idx  # nesting/scene index
+
+    raw_surprisals = np.array(para_surprisals[:n])
+    # Linear regression: surprisal ~ position features
+    from numpy.linalg import lstsq
+    X_reg = np.column_stack([pos_for_regression, np.ones(n)])
+    coeffs, _, _, _ = lstsq(X_reg, raw_surprisals, rcond=None)
+    predicted_surprisal = X_reg @ coeffs
+    surprisal_residual = raw_surprisals - predicted_surprisal
+
+    r_squared = 1 - np.var(surprisal_residual) / max(np.var(raw_surprisals), 1e-10)
+    print(f"  Tsipidi residualization: R²={r_squared:.3f} "
+          f"(position explains {r_squared:.0%} of surprisal variance)", file=sys.stderr)
 
     # --- Assemble structural features ---
-    # Kept: orthogonal or low-correlation features
-    # Dropped: setting (r=-0.70 with dialogue), interiority (zero variance),
-    #          log_word_count (r=0.73 with sl_cv, length artifact)
+    # Research-backed feature set:
+    # - Boyd (2020): staging, progression, tension (narrative role)
+    # - Tsipidi (2024): position-residualized surprisal (genuine surprise)
+    # - Wilmot-Keller (2020): uncertainty reduction (narrative consequence)
+    # - Original: psychic distance, fragments, inversion, sl_cv, dialogue, valence, verb energy
     structural = np.column_stack([
-        np.array(pd_means[:n]),              # psychic distance — orthogonal (max|r|=0.22)
-        np.array(para_surprisals[:n]),       # information density
-        np.array(para_fragment),             # fragment ratio
-        np.array(para_inversion),            # inversion ratio
-        np.array(para_sl_cv),                # sentence length variation
-        np.array(para_dialogue_ratio),       # dialogue density
-        # Orthogonal additions
-        np.array(para_valence),              # emotion valence — most orthogonal (max|r|=0.19)
-        np.array(para_action),               # pacing: action mode
-        np.array(para_verb_energy),          # dynamic vs stative verbs
-        np.array(para_surprisal_var_norm),   # surprisal variation within paragraph
+        np.array(pd_means[:n]),                  # psychic distance
+        np.array(surprisal_residual),            # Tsipidi: position-residualized surprisal
+        np.array(para_fragment),                 # fragment ratio
+        np.array(para_inversion),                # inversion ratio
+        np.array(para_sl_cv),                    # sentence length variation
+        np.array(para_dialogue_ratio),           # dialogue density
+        np.array(para_valence),                  # emotion valence
+        np.array(para_verb_energy),              # dynamic vs stative verbs
+        # Boyd (2020)
+        np.array(para_staging),                  # staging (prepositions + articles)
+        np.array(para_progression),              # plot progression (auxiliaries + adverbs)
+        np.array(para_tension),                  # cognitive tension (reasoning words)
+        # Wilmot-Keller (2020)
+        np.array(para_uncertainty_reduction),    # uncertainty reduction at boundaries
     ])
 
     structural_names = [
-        "pd_mean", "surprisal", "fragment_ratio", "inversion_ratio",
-        "sl_cv", "dialogue_ratio",
-        "emotion_valence", "pacing_action", "verb_energy", "surprisal_var",
+        "pd_mean", "surprisal_residual", "fragment_ratio", "inversion_ratio",
+        "sl_cv", "dialogue_ratio", "emotion_valence", "verb_energy",
+        "boyd_staging", "boyd_progression", "boyd_tension",
+        "uncertainty_reduction",
     ]
 
     # --- Positional encoding ---
@@ -295,6 +404,7 @@ def build_paragraph_features(text: str, filename: str) -> dict:
         "raw": {
             "pd_means": pd_means[:n],
             "surprisals": para_surprisals,
+            "surprisal_residual": surprisal_residual.tolist(),
             "fragment_ratios": para_fragment,
             "inversion_ratios": para_inversion,
             "sl_cvs": para_sl_cv,
@@ -302,11 +412,10 @@ def build_paragraph_features(text: str, filename: str) -> dict:
             "word_counts": para_word_count,
             "valence": para_valence,
             "verb_energy": para_verb_energy,
-            "surprisal_var": para_surprisal_var,
-            "pacing_modes": [
-                "action" if a else ("interiority" if i else ("setting" if s else "dialogue"))
-                for a, i, s in zip(para_action, para_interiority, para_setting)
-            ],
+            "staging": para_staging,
+            "progression": para_progression,
+            "tension": para_tension,
+            "uncertainty_reduction": para_uncertainty_reduction,
         },
     }
 
@@ -424,6 +533,10 @@ def analyze_attention(
         scene_dial = [raw["dialogue_ratios"][i] for i in scene_paras if i < len(raw["dialogue_ratios"])]
         scene_val = [raw["valence"][i] for i in scene_paras if i < len(raw["valence"])]
         scene_energy = [raw["verb_energy"][i] for i in scene_paras if i < len(raw["verb_energy"])]
+        scene_staging = [raw["staging"][i] for i in scene_paras if i < len(raw["staging"])]
+        scene_progression = [raw["progression"][i] for i in scene_paras if i < len(raw["progression"])]
+        scene_tension_vals = [raw["tension"][i] for i in scene_paras if i < len(raw["tension"])]
+        scene_unc = [raw["uncertainty_reduction"][i] for i in scene_paras if i < len(raw["uncertainty_reduction"])]
 
         # Scene coherence: mean within-scene attention
         scene_attn = []
@@ -432,11 +545,11 @@ def analyze_attention(
                 if i != j:
                     scene_attn.append(attn[i, j])
 
-        # Pacing mode distribution within scene
-        scene_modes = [raw["pacing_modes"][i] for i in scene_paras if i < len(raw["pacing_modes"])]
-        from collections import Counter
-        mode_dist = Counter(scene_modes)
-        dominant = mode_dist.most_common(1)[0][0] if mode_dist else "?"
+        # Boyd dominant mode
+        s = float(np.mean(scene_staging)) if scene_staging else 0
+        p = float(np.mean(scene_progression)) if scene_progression else 0
+        t = float(np.mean(scene_tension_vals)) if scene_tension_vals else 0
+        boyd_mode = max({"staging": s, "progression": p, "tension": t}, key=lambda k: {"staging": s, "progression": p, "tension": t}[k])
 
         arc.append({
             "scene": si,
@@ -449,7 +562,11 @@ def analyze_attention(
             "dialogue_ratio": round(float(np.mean(scene_dial)), 3) if scene_dial else 0,
             "valence_mean": round(float(np.mean(scene_val)), 3) if scene_val else 0,
             "verb_energy": round(float(np.mean(scene_energy)), 3) if scene_energy else 0,
-            "dominant_mode": dominant,
+            "boyd_staging": round(s, 3),
+            "boyd_progression": round(p, 3),
+            "boyd_tension": round(t, 3),
+            "boyd_mode": boyd_mode,
+            "uncertainty_reduction": round(float(np.mean(scene_unc)), 4) if scene_unc else 0,
             "coherence": round(float(np.mean(scene_attn)), 3) if scene_attn else 0,
         })
 
@@ -543,13 +660,17 @@ def main():
                 f"    Scene {scene['scene']} [{scene['paragraphs']}] "
                 f"({scene['length']} paras) | "
                 f"pd={scene['pd_mean']}{pd_arrow} "
-                f"surp={scene['surprisal_mean']} "
-                f"frag={scene['fragment_density']:.0%} "
-                f"dial={scene['dialogue_ratio']:.0%} "
                 f"val={scene.get('valence_mean', 0):.2f} "
                 f"energy={scene.get('verb_energy', 0):.2f} "
-                f"mode={scene.get('dominant_mode', '?')} "
+                f"unc={scene.get('uncertainty_reduction', 0):+.3f} "
                 f"coher={scene['coherence']}"
+            )
+            print(
+                f"           Boyd: "
+                f"staging={scene.get('boyd_staging', 0):.3f} "
+                f"progress={scene.get('boyd_progression', 0):.3f} "
+                f"tension={scene.get('boyd_tension', 0):.3f} "
+                f"[{scene.get('boyd_mode', '?')}]"
             )
 
         print("\n--- WITH SEMANTIC + POSITIONAL ---")
