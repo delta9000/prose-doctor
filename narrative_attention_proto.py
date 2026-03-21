@@ -420,6 +420,102 @@ def build_paragraph_features(text: str, filename: str) -> dict:
     }
 
 
+def decompose_generics(
+    structural: np.ndarray,
+    feature_names: list[str],
+    paragraphs: list[str],
+    top_n: int = 10,
+) -> list[dict]:
+    """For each generic paragraph, explain WHY it's generic.
+
+    A paragraph is generic when its features are close to the chapter mean
+    across all dimensions. This function identifies which specific features
+    are most "average" — those are what the revision agent should change.
+
+    Returns a list of dicts, each with:
+        paragraph_idx, text, generic_score (lower = more generic),
+        most_average_features (the features closest to chapter mean),
+        most_distinctive_features (what's already unique — preserve these)
+    """
+    n, d = structural.shape
+
+    # Normalize to [0,1] per feature
+    mins = structural.min(axis=0, keepdims=True)
+    maxs = structural.max(axis=0, keepdims=True)
+    ranges = maxs - mins
+    ranges[ranges == 0] = 1.0
+    normed = (structural - mins) / ranges
+
+    # Chapter mean per feature
+    chapter_mean = normed.mean(axis=0)
+
+    # Per-paragraph: distance from mean on each feature
+    deviations = np.abs(normed - chapter_mean)  # (n, d)
+
+    # Generic score: mean deviation across all features (low = generic)
+    generic_scores = deviations.mean(axis=1)
+
+    # Rank paragraphs by genericness
+    ranking = np.argsort(generic_scores)
+
+    results = []
+    for idx in ranking[:top_n]:
+        devs = deviations[idx]
+        # Sort features by deviation (ascending = most average first)
+        feat_order = np.argsort(devs)
+
+        most_average = []
+        for fi in feat_order[:4]:
+            most_average.append({
+                "feature": feature_names[fi],
+                "value": round(float(normed[idx, fi]), 3),
+                "chapter_mean": round(float(chapter_mean[fi]), 3),
+                "deviation": round(float(devs[fi]), 4),
+            })
+
+        most_distinctive = []
+        for fi in feat_order[-3:]:
+            most_distinctive.append({
+                "feature": feature_names[fi],
+                "value": round(float(normed[idx, fi]), 3),
+                "chapter_mean": round(float(chapter_mean[fi]), 3),
+                "deviation": round(float(devs[fi]), 4),
+            })
+
+        results.append({
+            "paragraph_idx": int(idx),
+            "text": paragraphs[idx][:150],
+            "generic_score": round(float(generic_scores[idx]), 4),
+            "most_average_features": most_average,
+            "most_distinctive_features": most_distinctive,
+        })
+
+    return results
+
+
+def format_generic_decomposition(results: list[dict]) -> str:
+    """Format generic decomposition for the revision agent."""
+    lines = [f"## Generic Paragraphs — Feature Decomposition ({len(results)} most generic)\n"]
+    lines.append("These paragraphs are structurally indistinguishable from the chapter average.")
+    lines.append("Fix the MOST AVERAGE features. Preserve the DISTINCTIVE ones.\n")
+
+    for r in results:
+        lines.append(f"**[paragraph {r['paragraph_idx']}]** generic_score={r['generic_score']}")
+        lines.append(f"  > {r['text']}")
+
+        lines.append(f"  CHANGE THESE (most average):")
+        for f in r["most_average_features"]:
+            lines.append(f"    - {f['feature']}: {f['value']:.3f} (chapter mean: {f['chapter_mean']:.3f}, dev: {f['deviation']:.4f})")
+
+        lines.append(f"  KEEP THESE (already distinctive):")
+        for f in r["most_distinctive_features"]:
+            lines.append(f"    + {f['feature']}: {f['value']:.3f} (chapter mean: {f['chapter_mean']:.3f}, dev: {f['deviation']:.4f})")
+
+        lines.append("")
+
+    return "\n".join(lines)
+
+
 def compute_attention(features: np.ndarray) -> np.ndarray:
     """Compute cosine similarity attention matrix."""
     # Normalize rows to unit vectors
