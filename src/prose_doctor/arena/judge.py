@@ -8,23 +8,62 @@ from typing import Optional
 
 import httpx
 
-_MAX_CHARS = 3000
+_MAX_CHARS = 8000
+
+_SYSTEM_MESSAGE = """\
+You are a senior literary editor specializing in fiction prose craft. You are \
+comparing two revised versions of the same AI-generated chapter. Both versions \
+were revised by the same LLM under different editorial guidance. Your job is to \
+determine which editorial guidance produced a better revision.
+
+The differences may be subtle. Read closely. Compare sentence by sentence if needed."""
 
 _PROMPT_TEMPLATE = """\
-Read the original, then both revisions. Which revision is better prose?
+Below is an AI-generated fiction chapter (the original), followed by two \
+revised versions. Both revisions aimed to improve the prose craft. Your task: \
+determine which revision is the stronger piece of fiction writing.
 
-Original:
+Pay attention to these craft dimensions, in priority order:
+1. SENTENCE STRUCTURE — Does the revision vary sentence openings, lengths, \
+and rhythms? Are there inversions, fragments used for impact, and varied \
+clause structures? Or is it monotonous subject-verb-object?
+2. INTERIORITY — Does the revision give access to the character's inner \
+life? Thoughts, sensations, doubts, memories? Or does it stay on the surface?
+3. DISCOURSE FLOW — Are sentences connected with varied logical relations \
+(causal, contrastive, temporal)? Or is everything joined by "and" or left \
+implicit?
+4. CONCRETENESS BALANCE — Does the revision mix concrete sensory detail \
+with moments of abstraction, reflection, or interpretation? Or is it \
+relentlessly one mode?
+5. SCENE DYNAMISM — Are there shifts in time, space, or focus? Or does the \
+scene feel static?
+
+Do NOT penalize revisions for being similar to the original — focus on which \
+revision, as a standalone piece, reads better.
+
+If the differences are genuinely negligible (fewer than 3 changed sentences \
+total), call it a tie. Otherwise, pick a winner.
+
+---
+
+ORIGINAL:
 {original}
 
-Version X:
+---
+
+VERSION X:
 {version_x}
 
-Version Y:
+---
+
+VERSION Y:
 {version_y}
 
-Respond in JSON: {{"winner": "X" | "Y" | "tie", "reason": "..."}}"""
+---
 
-_SYSTEM_MESSAGE = "You are a literary editor comparing two revisions of a passage of prose. Evaluate which revision improves the writing quality, style, and clarity."
+Compare the two revisions on the dimensions above. Then respond with ONLY \
+this JSON (no other text):
+{{"winner": "X" or "Y" or "tie", "reason": "2-3 sentences explaining your choice, citing specific passages"}}"""
 
 
 def build_judge_prompt(

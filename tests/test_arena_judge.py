@@ -11,8 +11,8 @@ from prose_doctor.arena.judge import build_judge_prompt, parse_judge_response
 def test_build_judge_prompt_randomizes_position():
     rng = random.Random(42)
     prompt, mapping = build_judge_prompt("orig", "rev_a", "rev_b", rng)
-    assert "Version X:" in prompt
-    assert "Version Y:" in prompt
+    assert "VERSION X:" in prompt
+    assert "VERSION Y:" in prompt
     assert mapping["X"] in ("a", "b")
     assert mapping["Y"] in ("a", "b")
     assert mapping["X"] != mapping["Y"]
@@ -23,12 +23,12 @@ def test_build_judge_prompt_contains_original():
     assert "the original text" in prompt
 
 
-def test_build_judge_prompt_truncates_to_3000_chars():
-    long_text = "x" * 5000
+def test_build_judge_prompt_truncates_long_text():
+    long_text = "x" * 10000
     prompt, _ = build_judge_prompt(long_text, long_text, long_text)
-    # Each section should be at most 3000 chars; check original slice appears
-    assert "x" * 3000 in prompt
-    assert "x" * 3001 not in prompt
+    # Each section should be at most 8000 chars; check original slice appears
+    assert "x" * 8000 in prompt
+    assert "x" * 8001 not in prompt
 
 
 def test_build_judge_prompt_both_assignments_reachable():
