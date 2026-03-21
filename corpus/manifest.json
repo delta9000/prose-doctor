@@ -1,0 +1,1643 @@
+{
+  "models": [
+    "qwen/qwen3-30b-a3b",
+    "mistralai/mistral-small-creative",
+    "meta-llama/llama-4-scout",
+    "deepseek/deepseek-v3.2",
+    "google/gemini-2.5-flash-lite-preview-09-2025",
+    "nousresearch/hermes-4-70b",
+    "stepfun/step-3.5-flash",
+    "qwen/qwen3.5-flash-02-23"
+  ],
+  "prompts": [
+    "Write the opening chapter (2000 words) of a literary novel about a cartographer mapping the last unmapped territory on Earth. Third person limited, present tense. The character discovers something that challenges their understanding of the landscape. Include sensory detail, internal monologue, and at least two other characters with dialogue.",
+    "Write a chapter (2000 words) from a literary novel about a woman returning to her childhood home after her mother's death. She discovers letters that reframe her understanding of her parents' marriage. Third person limited, past tense. Focus on the physical space of the house and how memory attaches to objects.",
+    "Write a chapter (2000 words) about a translator working on a dead language who realizes the text describes events that haven't happened yet. Literary fiction, third person limited. Include scenes of close reading, a conversation with a skeptical colleague, and the moment of realization.",
+    "Write a chapter (2000 words) of hard science fiction about an engineer on a generation ship who discovers the navigation system has been subtly altered. First person, past tense. Include technical detail about the ship's systems, a tense conversation with the ship's AI, and the character's growing paranoia.",
+    "Write a chapter (2000 words) about first contact told from the perspective of a linguist trying to decode an alien signal. Third person limited, present tense. The aliens communicate through mathematical structures that map to emotions. Include the process of decoding and a breakthrough moment.",
+    "Write a chapter (2000 words) set in a near-future city where a climate refugee navigates a new social hierarchy. Third person close, past tense. Focus on the physical environment, bureaucratic encounters, and a moment of unexpected kindness from a stranger.",
+    "Write a chapter (2000 words) of low fantasy about a healer in a medieval city during a plague. She uses real herbal medicine but is accused of witchcraft. Third person limited, past tense. Include a patient interaction, a confrontation with a priest, and a private moment of doubt.",
+    "Write a chapter (2000 words) about a retired soldier who tends a garden on the edge of a forest where the trees move. Literary fantasy, third person close, past tense. The forest is encroaching. Include gardening detail, a visit from a neighbor, and the character's relationship with violence.",
+    "Write a chapter (2000 words) of secondary world fantasy about a scribe who discovers that the historical records she copies have been systematically altered. Third person limited. Include the moment of discovery, her attempt to verify it, and the political danger of knowing.",
+    "Write a chapter (2000 words) of a psychological thriller about a forensic accountant who finds evidence that her firm is laundering money. First person, present tense. Include the discovery scene, a normal-seeming meeting that takes on new meaning, and the decision of whether to act.",
+    "Write a chapter (2000 words) about a night shift nurse who notices a pattern in patient deaths that nobody else has caught. Third person limited, past tense. Include a detailed medical scene, a conversation with a dismissive supervisor, and the nurse's growing certainty.",
+    "Write a chapter (2000 words) about two estranged siblings meeting at their father's funeral. Third person omniscient, past tense. Alternate between their perspectives. Include the physical details of the funeral, unspoken tension, and a single moment of genuine connection.",
+    "Write a chapter (2000 words) about an aging chess grandmaster playing his last tournament. Third person limited, present tense. Interweave the current game with memories of his peak. Include the physicality of the chess pieces, his opponent's mannerisms, and the crowd.",
+    "Write a chapter (2000 words) of literary horror about a marine biologist studying a deep-sea trench who begins receiving structured signals from below. Third person limited, past tense. The horror is slow and atmospheric, not violent. Include scientific process, isolation, and growing unease.",
+    "Write a chapter (2000 words) of southern gothic about a woman who inherits a house with a locked room. Third person close, past tense. The house has a history the town won't discuss. Include interactions with suspicious neighbors, the physical decay of the house, and what she hears through the locked door.",
+    "Write a chapter (2000 words) about two rival academics who are forced to collaborate on a research project. Third person alternating, past tense. Include intellectual sparring that masks attraction, a late-night breakthrough in the lab, and the moment one of them drops their guard.",
+    "Write a chapter (2000 words) about a war correspondent returning home to a partner who has built a life without them. Third person limited from the correspondent's POV, present tense. Focus on the gap between the world they left and the one they returned to.",
+    "Write a chapter (2000 words) set in 1920s Istanbul about a calligrapher whose art form is being replaced by the Latin alphabet reform. Third person limited, past tense. Include the physical act of calligraphy, a political argument with a reformist friend, and the character's private grief.",
+    "Write a chapter (2000 words) about a female astronomer in 17th century Italy who must publish her discoveries under a male colleague's name. Third person close, past tense. Include an observation session, the collaboration/exploitation dynamic, and a discovery that changes everything.",
+    "Write a chapter (2000 words) set twenty years after a solar EMP about a community that has rebuilt around a working hydroelectric dam. Third person limited, past tense. A stranger arrives claiming to represent a larger settlement. Include the community's daily rhythms, the political debate about contact, and sensory detail of the rebuilt world.",
+    "Write a chapter (2000 words) of magical realism about a baker whose bread reveals the eater's buried memories. Third person limited, present tense. A customer comes in who the baker recognizes but shouldn't. Include the baking process, the shop's atmosphere, and the moment the bread does its work.",
+    "Write a chapter (2000 words) about a teenager in a small fishing town who discovers their grandfather's secret life as a smuggler. Third person limited, past tense. Include the physical world of the harbor, a conversation with a local who knew the grandfather, and the teen's shifting understanding of family loyalty.",
+    "Write a chapter (2000 words) of dystopian fiction about a memory editor \u2014 someone whose job is to remove traumatic memories from citizens. Third person limited, present tense. A client's memory reveals something about the regime that the editor was not supposed to see. Include the technical process, the ethical weight, and the decision point.",
+    "Write a chapter (2000 words) about a combat medic during a ceasefire, treating wounded from both sides. Third person limited, past tense. Include triage decisions, a conversation with an enemy soldier, and the medic's internal calculus about who to save.",
+    "Write a chapter (2000 words) of modern noir about a private investigator hired to find a missing person who, it turns out, doesn't want to be found. First person, past tense. Include legwork (interviewing witnesses, checking records), a dead end that becomes a lead, and the PI's personal code clashing with the case."
+  ],
+  "results": [
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 0,
+      "input_tokens": 107,
+      "output_tokens": 2690,
+      "cost": 0.00076176,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 1,
+      "input_tokens": 107,
+      "output_tokens": 2441,
+      "cost": 0.00069204,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 2,
+      "input_tokens": 99,
+      "output_tokens": 2761,
+      "cost": 0.000781,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 3,
+      "input_tokens": 104,
+      "output_tokens": 2910,
+      "cost": 0.00152672,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 4,
+      "input_tokens": 98,
+      "output_tokens": 3075,
+      "cost": 0.00161174,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 5,
+      "input_tokens": 97,
+      "output_tokens": 3108,
+      "cost": 0.000878,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 6,
+      "input_tokens": 104,
+      "output_tokens": 3070,
+      "cost": 0.00086792,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 7,
+      "input_tokens": 107,
+      "output_tokens": 3371,
+      "cost": 0.00186903,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 8,
+      "input_tokens": 96,
+      "output_tokens": 4000,
+      "cost": 0.00180864,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 9,
+      "input_tokens": 101,
+      "output_tokens": 2953,
+      "cost": 0.00083492,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 10,
+      "input_tokens": 99,
+      "output_tokens": 2773,
+      "cost": 0.00167865,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 11,
+      "input_tokens": 99,
+      "output_tokens": 3089,
+      "cost": 0.00171281,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 12,
+      "input_tokens": 101,
+      "output_tokens": 4532,
+      "cost": 0.00204849,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 13,
+      "input_tokens": 102,
+      "output_tokens": 3442,
+      "cost": 0.00097192,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 14,
+      "input_tokens": 108,
+      "output_tokens": 2332,
+      "cost": 0.00105912,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 15,
+      "input_tokens": 100,
+      "output_tokens": 2612,
+      "cost": 0.00073936,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 16,
+      "input_tokens": 97,
+      "output_tokens": 2292,
+      "cost": 0.00120445,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 17,
+      "input_tokens": 110,
+      "output_tokens": 2625,
+      "cost": 0.0007438,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 18,
+      "input_tokens": 102,
+      "output_tokens": 4000,
+      "cost": 0.00180918,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 19,
+      "input_tokens": 111,
+      "output_tokens": 2568,
+      "cost": 0.00142794,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 20,
+      "input_tokens": 106,
+      "output_tokens": 2551,
+      "cost": 0.00072276,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 21,
+      "input_tokens": 107,
+      "output_tokens": 4000,
+      "cost": 0.00180963,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 22,
+      "input_tokens": 112,
+      "output_tokens": 2802,
+      "cost": 0.00079352,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 23,
+      "input_tokens": 96,
+      "output_tokens": 4000,
+      "cost": 0.00180864,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3-30b-a3b",
+      "prompt_idx": 24,
+      "input_tokens": 117,
+      "output_tokens": 2805,
+      "cost": 0.00079476,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 0,
+      "input_tokens": 98,
+      "output_tokens": 2956,
+      "cost": 0.0008966,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 1,
+      "input_tokens": 99,
+      "output_tokens": 2278,
+      "cost": 0.0006933,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 2,
+      "input_tokens": 90,
+      "output_tokens": 2436,
+      "cost": 0.0007398,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 3,
+      "input_tokens": 98,
+      "output_tokens": 3672,
+      "cost": 0.0011114,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 4,
+      "input_tokens": 90,
+      "output_tokens": 1577,
+      "cost": 0.0004821,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 5,
+      "input_tokens": 89,
+      "output_tokens": 3118,
+      "cost": 0.0009443,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 6,
+      "input_tokens": 96,
+      "output_tokens": 2204,
+      "cost": 0.0006708,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 7,
+      "input_tokens": 99,
+      "output_tokens": 1772,
+      "cost": 0.0005415,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 8,
+      "input_tokens": 88,
+      "output_tokens": 2953,
+      "cost": 0.0008947,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 9,
+      "input_tokens": 95,
+      "output_tokens": 2430,
+      "cost": 0.0007385,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 10,
+      "input_tokens": 90,
+      "output_tokens": 2369,
+      "cost": 0.0007197,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 11,
+      "input_tokens": 91,
+      "output_tokens": 3478,
+      "cost": 0.0010525,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 12,
+      "input_tokens": 93,
+      "output_tokens": 2673,
+      "cost": 0.0008112,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 13,
+      "input_tokens": 94,
+      "output_tokens": 2630,
+      "cost": 0.0007984,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 14,
+      "input_tokens": 100,
+      "output_tokens": 2688,
+      "cost": 0.0008164,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 15,
+      "input_tokens": 91,
+      "output_tokens": 2159,
+      "cost": 0.0006568,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 16,
+      "input_tokens": 90,
+      "output_tokens": 2664,
+      "cost": 0.0008082,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 17,
+      "input_tokens": 101,
+      "output_tokens": 1819,
+      "cost": 0.0005558,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 18,
+      "input_tokens": 93,
+      "output_tokens": 2556,
+      "cost": 0.0007761,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 19,
+      "input_tokens": 103,
+      "output_tokens": 2956,
+      "cost": 0.0008971,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 20,
+      "input_tokens": 100,
+      "output_tokens": 2321,
+      "cost": 0.0007063,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 21,
+      "input_tokens": 100,
+      "output_tokens": 2069,
+      "cost": 0.0006307,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 22,
+      "input_tokens": 104,
+      "output_tokens": 2989,
+      "cost": 0.0009071,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 23,
+      "input_tokens": 89,
+      "output_tokens": 2423,
+      "cost": 0.0007358,
+      "error": null
+    },
+    {
+      "model": "mistralai/mistral-small-creative",
+      "prompt_idx": 24,
+      "input_tokens": 108,
+      "output_tokens": 2989,
+      "cost": 0.0009075,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 0,
+      "input_tokens": 106,
+      "output_tokens": 885,
+      "cost": 0.00054123,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 1,
+      "input_tokens": 105,
+      "output_tokens": 1177,
+      "cost": 0.00041173,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 2,
+      "input_tokens": 98,
+      "output_tokens": 1286,
+      "cost": 0.0009247,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 3,
+      "input_tokens": 106,
+      "output_tokens": 1138,
+      "cost": 0.00034988,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 4,
+      "input_tokens": 99,
+      "output_tokens": 1153,
+      "cost": 0.00083185,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 5,
+      "input_tokens": 98,
+      "output_tokens": 1181,
+      "cost": 0.00036214,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 6,
+      "input_tokens": 104,
+      "output_tokens": 1415,
+      "cost": 0.00049254,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 7,
+      "input_tokens": 106,
+      "output_tokens": 1573,
+      "cost": 0.00054648,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 8,
+      "input_tokens": 96,
+      "output_tokens": 1015,
+      "cost": 0.00031218,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 9,
+      "input_tokens": 101,
+      "output_tokens": 1230,
+      "cost": 0.00042931,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 10,
+      "input_tokens": 98,
+      "output_tokens": 1053,
+      "cost": 0.00032374,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 11,
+      "input_tokens": 97,
+      "output_tokens": 1327,
+      "cost": 0.00040586,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 12,
+      "input_tokens": 101,
+      "output_tokens": 1144,
+      "cost": 0.00035128,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 13,
+      "input_tokens": 102,
+      "output_tokens": 959,
+      "cost": 0.00029586,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 14,
+      "input_tokens": 108,
+      "output_tokens": 1384,
+      "cost": 0.000836,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 15,
+      "input_tokens": 99,
+      "output_tokens": 1064,
+      "cost": 0.00032712,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 16,
+      "input_tokens": 97,
+      "output_tokens": 1270,
+      "cost": 0.00044247,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 17,
+      "input_tokens": 107,
+      "output_tokens": 1068,
+      "cost": 0.00037489,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 18,
+      "input_tokens": 100,
+      "output_tokens": 1148,
+      "cost": 0.00040132,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 19,
+      "input_tokens": 110,
+      "output_tokens": 1152,
+      "cost": 0.0003544,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 20,
+      "input_tokens": 104,
+      "output_tokens": 1202,
+      "cost": 0.00042012,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 21,
+      "input_tokens": 108,
+      "output_tokens": 1231,
+      "cost": 0.00037794,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 22,
+      "input_tokens": 110,
+      "output_tokens": 1067,
+      "cost": 0.00037488,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 23,
+      "input_tokens": 97,
+      "output_tokens": 1016,
+      "cost": 0.00031256,
+      "error": null
+    },
+    {
+      "model": "meta-llama/llama-4-scout",
+      "prompt_idx": 24,
+      "input_tokens": 114,
+      "output_tokens": 1787,
+      "cost": 0.00054522,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 0,
+      "input_tokens": 95,
+      "output_tokens": 3051,
+      "cost": 0.00118408,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 1,
+      "input_tokens": 98,
+      "output_tokens": 2707,
+      "cost": 0.0041095,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 2,
+      "input_tokens": 87,
+      "output_tokens": 2669,
+      "cost": 0.001091003,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 3,
+      "input_tokens": 94,
+      "output_tokens": 2616,
+      "cost": 0.00120352,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 4,
+      "input_tokens": 87,
+      "output_tokens": 2800,
+      "cost": 0.00475272,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 5,
+      "input_tokens": 85,
+      "output_tokens": 3138,
+      "cost": 0.00134091,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 6,
+      "input_tokens": 92,
+      "output_tokens": 2881,
+      "cost": 0.0011187,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 7,
+      "input_tokens": 94,
+      "output_tokens": 2955,
+      "cost": 0.00135607,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 8,
+      "input_tokens": 85,
+      "output_tokens": 2925,
+      "cost": 0.0011336,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 9,
+      "input_tokens": 89,
+      "output_tokens": 3146,
+      "cost": 0.001281985,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 10,
+      "input_tokens": 87,
+      "output_tokens": 2873,
+      "cost": 0.001172603,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 11,
+      "input_tokens": 87,
+      "output_tokens": 3546,
+      "cost": 0.0013701,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 12,
+      "input_tokens": 90,
+      "output_tokens": 3216,
+      "cost": 0.00137502,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 13,
+      "input_tokens": 89,
+      "output_tokens": 2527,
+      "cost": 0.00116207,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 14,
+      "input_tokens": 98,
+      "output_tokens": 3103,
+      "cost": 0.00526792,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 15,
+      "input_tokens": 88,
+      "output_tokens": 1421,
+      "cost": 0.00062058,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 16,
+      "input_tokens": 87,
+      "output_tokens": 3418,
+      "cost": 0.00156246,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 17,
+      "input_tokens": 97,
+      "output_tokens": 2835,
+      "cost": 0.00130291,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 18,
+      "input_tokens": 89,
+      "output_tokens": 2804,
+      "cost": 0.00120171,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 19,
+      "input_tokens": 99,
+      "output_tokens": 2960,
+      "cost": 0.001210631,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 20,
+      "input_tokens": 94,
+      "output_tokens": 2729,
+      "cost": 0.00125437,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 21,
+      "input_tokens": 96,
+      "output_tokens": 3238,
+      "cost": 0.00132064,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 22,
+      "input_tokens": 100,
+      "output_tokens": 2625,
+      "cost": 0.00120925,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 23,
+      "input_tokens": 85,
+      "output_tokens": 2650,
+      "cost": 0.00113595,
+      "error": null
+    },
+    {
+      "model": "deepseek/deepseek-v3.2",
+      "prompt_idx": 24,
+      "input_tokens": 104,
+      "output_tokens": 3318,
+      "cost": 0.001355176,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 0,
+      "input_tokens": 94,
+      "output_tokens": 2864,
+      "cost": 0.001155,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 1,
+      "input_tokens": 96,
+      "output_tokens": 3370,
+      "cost": 0.0013576,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 2,
+      "input_tokens": 88,
+      "output_tokens": 3272,
+      "cost": 0.0013176,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 3,
+      "input_tokens": 96,
+      "output_tokens": 4006,
+      "cost": 0.001612,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 4,
+      "input_tokens": 87,
+      "output_tokens": 2780,
+      "cost": 0.0011207,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 5,
+      "input_tokens": 85,
+      "output_tokens": 3574,
+      "cost": 0.0014381,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 6,
+      "input_tokens": 91,
+      "output_tokens": 3276,
+      "cost": 0.0013195,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 7,
+      "input_tokens": 95,
+      "output_tokens": 3450,
+      "cost": 0.0013895,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 8,
+      "input_tokens": 84,
+      "output_tokens": 4013,
+      "cost": 0.0016136,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 9,
+      "input_tokens": 90,
+      "output_tokens": 3355,
+      "cost": 0.001351,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 10,
+      "input_tokens": 88,
+      "output_tokens": 4002,
+      "cost": 0.0016096,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 11,
+      "input_tokens": 86,
+      "output_tokens": 2972,
+      "cost": 0.0011974,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 12,
+      "input_tokens": 89,
+      "output_tokens": 3312,
+      "cost": 0.0013337,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 13,
+      "input_tokens": 90,
+      "output_tokens": 3384,
+      "cost": 0.0013626,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 14,
+      "input_tokens": 97,
+      "output_tokens": 3310,
+      "cost": 0.0013337,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 15,
+      "input_tokens": 88,
+      "output_tokens": 3688,
+      "cost": 0.001484,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 16,
+      "input_tokens": 87,
+      "output_tokens": 3429,
+      "cost": 0.0013803,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 17,
+      "input_tokens": 98,
+      "output_tokens": 3452,
+      "cost": 0.0013906,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 18,
+      "input_tokens": 90,
+      "output_tokens": 3870,
+      "cost": 0.001557,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 19,
+      "input_tokens": 99,
+      "output_tokens": 3807,
+      "cost": 0.0015327,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 20,
+      "input_tokens": 97,
+      "output_tokens": 4003,
+      "cost": 0.0016109,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 21,
+      "input_tokens": 98,
+      "output_tokens": 2975,
+      "cost": 0.0011998,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 22,
+      "input_tokens": 100,
+      "output_tokens": 3253,
+      "cost": 0.0013112,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 23,
+      "input_tokens": 85,
+      "output_tokens": 3356,
+      "cost": 0.0013509,
+      "error": null
+    },
+    {
+      "model": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "prompt_idx": 24,
+      "input_tokens": 106,
+      "output_tokens": 3956,
+      "cost": 0.001593,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 0,
+      "input_tokens": 106,
+      "output_tokens": 3523,
+      "cost": 0.00142298,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 1,
+      "input_tokens": 106,
+      "output_tokens": 1370,
+      "cost": 0.00056178,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 2,
+      "input_tokens": 98,
+      "output_tokens": 773,
+      "cost": 0.00032194,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 3,
+      "input_tokens": 104,
+      "output_tokens": 2969,
+      "cost": 0.00120112,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 4,
+      "input_tokens": 98,
+      "output_tokens": 1963,
+      "cost": 0.00079794,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 5,
+      "input_tokens": 96,
+      "output_tokens": 2707,
+      "cost": 0.00109528,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 6,
+      "input_tokens": 103,
+      "output_tokens": 3830,
+      "cost": 0.00154539,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 7,
+      "input_tokens": 106,
+      "output_tokens": 4000,
+      "cost": 0.00161378,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 8,
+      "input_tokens": 96,
+      "output_tokens": 2986,
+      "cost": 0.00120688,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 9,
+      "input_tokens": 100,
+      "output_tokens": 1647,
+      "cost": 0.0006718,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 10,
+      "input_tokens": 98,
+      "output_tokens": 2645,
+      "cost": 0.00107074,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 11,
+      "input_tokens": 98,
+      "output_tokens": 1093,
+      "cost": 0.00044994,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 12,
+      "input_tokens": 101,
+      "output_tokens": 1537,
+      "cost": 0.00062793,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 13,
+      "input_tokens": 101,
+      "output_tokens": 3637,
+      "cost": 0.00146793,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 14,
+      "input_tokens": 108,
+      "output_tokens": 2100,
+      "cost": 0.00085404,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 15,
+      "input_tokens": 99,
+      "output_tokens": 596,
+      "cost": 0.00025127,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 16,
+      "input_tokens": 97,
+      "output_tokens": 1668,
+      "cost": 0.00067981,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 17,
+      "input_tokens": 107,
+      "output_tokens": 2215,
+      "cost": 0.00089991,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 18,
+      "input_tokens": 101,
+      "output_tokens": 1206,
+      "cost": 0.00049553,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 19,
+      "input_tokens": 110,
+      "output_tokens": 2009,
+      "cost": 0.0008179,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 20,
+      "input_tokens": 105,
+      "output_tokens": 1658,
+      "cost": 0.00067685,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 21,
+      "input_tokens": 107,
+      "output_tokens": 2257,
+      "cost": 0.00091671,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 22,
+      "input_tokens": 111,
+      "output_tokens": 2475,
+      "cost": 0.00100443,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 23,
+      "input_tokens": 96,
+      "output_tokens": 1524,
+      "cost": 0.00062208,
+      "error": null
+    },
+    {
+      "model": "nousresearch/hermes-4-70b",
+      "prompt_idx": 24,
+      "input_tokens": 116,
+      "output_tokens": 983,
+      "cost": 0.00040828,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 0,
+      "input_tokens": 108,
+      "output_tokens": 2700,
+      "cost": 0.0008208,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 1,
+      "input_tokens": 108,
+      "output_tokens": 3514,
+      "cost": 0.001065,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 2,
+      "input_tokens": 100,
+      "output_tokens": 3583,
+      "cost": 0.0010849,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 3,
+      "input_tokens": 107,
+      "output_tokens": 3226,
+      "cost": 0.0009785,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 4,
+      "input_tokens": 100,
+      "output_tokens": 2249,
+      "cost": 0.0006847,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 5,
+      "input_tokens": 98,
+      "output_tokens": 2575,
+      "cost": 0.0007823,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 6,
+      "input_tokens": 105,
+      "output_tokens": 3055,
+      "cost": 0.000927,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 7,
+      "input_tokens": 107,
+      "output_tokens": 2996,
+      "cost": 0.0009095,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 8,
+      "input_tokens": 98,
+      "output_tokens": 2605,
+      "cost": 0.0007913,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 9,
+      "input_tokens": 102,
+      "output_tokens": 3360,
+      "cost": 0.0010182,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 10,
+      "input_tokens": 100,
+      "output_tokens": 2797,
+      "cost": 0.0008491,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 11,
+      "input_tokens": 100,
+      "output_tokens": 2738,
+      "cost": 0.0008314,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 12,
+      "input_tokens": 103,
+      "output_tokens": 4000,
+      "cost": 0.0012103,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 13,
+      "input_tokens": 102,
+      "output_tokens": 2343,
+      "cost": 0.0007131,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 14,
+      "input_tokens": 111,
+      "output_tokens": 3485,
+      "cost": 0.0010566,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 15,
+      "input_tokens": 101,
+      "output_tokens": 2343,
+      "cost": 0.000713,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 16,
+      "input_tokens": 100,
+      "output_tokens": 3000,
+      "cost": 0.00091,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 17,
+      "input_tokens": 110,
+      "output_tokens": 3152,
+      "cost": 0.0009566,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 18,
+      "input_tokens": 102,
+      "output_tokens": 3194,
+      "cost": 0.0009684,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 19,
+      "input_tokens": 112,
+      "output_tokens": 2581,
+      "cost": 0.0007855,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 20,
+      "input_tokens": 107,
+      "output_tokens": 3285,
+      "cost": 0.0009962,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 21,
+      "input_tokens": 109,
+      "output_tokens": 2576,
+      "cost": 0.0007837,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 22,
+      "input_tokens": 113,
+      "output_tokens": 3461,
+      "cost": 0.0010496,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 23,
+      "input_tokens": 98,
+      "output_tokens": 2922,
+      "cost": 0.0008864,
+      "error": null
+    },
+    {
+      "model": "stepfun/step-3.5-flash",
+      "prompt_idx": 24,
+      "input_tokens": 117,
+      "output_tokens": 2817,
+      "cost": 0.0008568,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 0,
+      "input_tokens": 108,
+      "output_tokens": 4976,
+      "cost": 0.00130078,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 1,
+      "input_tokens": 108,
+      "output_tokens": 4303,
+      "cost": 0.0011258,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 2,
+      "input_tokens": 100,
+      "output_tokens": 9449,
+      "cost": 0.00246324,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 3,
+      "input_tokens": 106,
+      "output_tokens": 4655,
+      "cost": 0.00121719,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 4,
+      "input_tokens": 100,
+      "output_tokens": 4492,
+      "cost": 0.00117442,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 5,
+      "input_tokens": 98,
+      "output_tokens": 3943,
+      "cost": 0.00103155,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 6,
+      "input_tokens": 105,
+      "output_tokens": 4514,
+      "cost": 0.001180465,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 7,
+      "input_tokens": 108,
+      "output_tokens": 4317,
+      "cost": 0.00112944,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 8,
+      "input_tokens": 98,
+      "output_tokens": 6360,
+      "cost": 0.00165997,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 9,
+      "input_tokens": 102,
+      "output_tokens": 4845,
+      "cost": 0.00126633,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 10,
+      "input_tokens": 100,
+      "output_tokens": 4852,
+      "cost": 0.00126802,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 11,
+      "input_tokens": 100,
+      "output_tokens": 8677,
+      "cost": 0.00226252,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 12,
+      "input_tokens": 103,
+      "output_tokens": 4118,
+      "cost": 0.001077375,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 13,
+      "input_tokens": 103,
+      "output_tokens": 4121,
+      "cost": 0.001078155,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 14,
+      "input_tokens": 110,
+      "output_tokens": 7122,
+      "cost": 0.00185887,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 15,
+      "input_tokens": 101,
+      "output_tokens": 4676,
+      "cost": 0.001222325,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 16,
+      "input_tokens": 99,
+      "output_tokens": 5051,
+      "cost": 0.001319695,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 17,
+      "input_tokens": 111,
+      "output_tokens": 5144,
+      "cost": 0.001344655,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 18,
+      "input_tokens": 104,
+      "output_tokens": 4478,
+      "cost": 0.00117104,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 19,
+      "input_tokens": 112,
+      "output_tokens": 4197,
+      "cost": 0.0010985,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 20,
+      "input_tokens": 107,
+      "output_tokens": 5343,
+      "cost": 0.001396135,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 21,
+      "input_tokens": 109,
+      "output_tokens": 3927,
+      "cost": 0.001028105,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 22,
+      "input_tokens": 113,
+      "output_tokens": 4832,
+      "cost": 0.001263665,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 23,
+      "input_tokens": 98,
+      "output_tokens": 5273,
+      "cost": 0.00137735,
+      "error": null
+    },
+    {
+      "model": "qwen/qwen3.5-flash-02-23",
+      "prompt_idx": 24,
+      "input_tokens": 118,
+      "output_tokens": 4704,
+      "cost": 0.00123071,
+      "error": null
+    }
+  ],
+  "total_tokens": 586083,
+  "total_cost": 0.21566802300000013
+}

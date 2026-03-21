@@ -1,0 +1,52 @@
+A Manifest of Hope
+By Adam Lane Smith
+
+Amongst the rustling trees and the remnants of a time now past, a community has rebuilt itself around a sturdy hydroelectric dam on the outskirts of what was once Spokane, Washington. Known simply as The Dam, this once mighty testament to engineering ingenuity now serves as a sanctuary, a refuge from the harsh reality of the world beyond.
+
+The people of The Dam have worked tirelessly for two decades to rebuild their lives and create a sense of normalcy in the aftermath of the solar EMP disaster that nearly wiped out humanity. The daily rhythms of life revolve around the hum of the turbines as they generate electricity for the community. The Dam is their lifeblood, their source of power, and their symbol of hope for a better future.
+
+The Dam's inhabitants are a close-knit group of survivors who have learned to work together and rely on one another for survival. They are a mix of engineers, doctors, teachers, and everyday people who have found solace in the relative safety of the dam. They share a common goal: to rebuild civilization and protect their loved ones from the dangers that lurk beyond the confines of their small community.
+
+It's a warm summer day, and the community is bustling with activity. Children play in the fields that surround the dam, their laughter echoing through the air. The adults work diligently to maintain the hydroelectric plant and ensure that it continues to function properly. The Dam's creator and chief engineer, Dr. Arthur Jameson, walks among them, checking gauges and speaking with the workers. He is a man of few words, but his dedication to the community is evident in every action.
+
+As the day progresses, a stranger arrives at the gates of The Dam. His name is Thomas, and he claims to represent a larger settlement that has survived the solar EMP disaster. He carries with him a message of hope and unity, as well as a proposal for trade and cooperation between the two communities.
+
+The Dam's residents are immediately intrigued by this newcomer, but they are also wary of his intentions. In the aftermath of the EMP, trust is a rare commodity, and the people of The Dam have learned to be cautious of outsiders who may bring danger to their doorstep.
+
+As word of Thomas's arrival spreads throughout the community, a heated political debate ensues. Some argue that The Dam should remain isolated and self-sufficient, while others believe that the time has come to reach out to other survivors and forge alliances. The debate is fierce, with tempers flaring and voices raised in anger and frustration.
+
+In the midst of this political turmoil, Dr. Jameson steps forward and proposes a compromise. He suggests that a delegation be sent to investigate Thomas's settlement and determine whether it is safe to establish contact. This delegation would include members of The Dam's security team, as well as some of the community's political leaders.
+
+The delegation sets out on their journey, armed with weapons and supplies for the long trek through the wilderness. They travel for several days, navigating the treacherous landscape left behind by the solar EMP. The world beyond The Dam is a stark contrast to the sanctuary they have built for themselves. The cities are empty, their buildings crumbling and overgrown with vegetation. The silence is deafening, broken only by the occasional call of a bird or the rustling of leaves in the wind.
+
+As they journey deeper into the heart of the wasteland, the delegation begins to feel a sense of unease. They are not alone in this world, and the dangers that lurk in the shadows are all too real. They encounter roving bands of survivors, some of whom are friendly and others who are hostile. They must navigate through the ruins of abandoned towns and cities, scavenging for supplies and avoiding the threats that lie in wait.
+
+After weeks of travel, the delegation finally reaches the settlement that Thomas spoke of. It is a small community, nestled in the hills of what was once northern Idaho. The settlement is a stark contrast to The Dam, a hodgepodge of makeshift shelters and tents that have been cobbled together from the remnants of the pre-EMP world. The people who live here are a mix of survivors from all walks of life, each with their own story to tell of the horrors they have witnessed and the losses they have suffered.
+
+The delegation meets with the leaders of the settlement, who welcome them with open arms. They share stories of their struggles and their hopes for the future, and the delegates from The Dam begin to see the potential for cooperation and mutual aid between their two communities. They discuss the possibility of trade, the sharing of resources, and the exchange of information that could help both settlements survive and thrive in this new world.
+
+As the delegation prepares to return to The Dam, they are confronted with a harsh reality. The settlement they have visited is not the only one that has survived the EMP disaster. There are other communities, some friendly and others hostile, scattered throughout the region. The delegation realizes that the world beyond the confines of their sanctuary is far more complex and dangerous than they had ever imagined.
+
+The delegation returns to The Dam with a wealth of information and a renewed sense of purpose. They share their findings with the community, and the political debate that had been raging for months comes to a head. The people of The Dam must now decide whether to embrace the potential for cooperation and growth that lies beyond their borders, or to remain isolated and self-sufficient, trusting only in themselves and the sanctuary they have built.
+
+As the community begins to vote on this critical issue, Dr. Jameson steps forward once more to address his people. He speaks with passion and conviction, urging them to reach out to the other survivors and build a better future for all. He reminds them of the sacrifices they have made and the hardships they have endured, and he calls upon them to embrace the potential for hope and unity that lies beyond the walls of their sanctuary.
+
+The people of The Dam listen to his words with rapt attention, and in the end, they vote to send a delegation to the settlement in northern Idaho to establish formal relations and begin the process of cooperation. As the decision is announced, a sense of excitement and anticipation fills the air. The community begins to prepare for the journey, gathering supplies and making plans for the future.
+
+In the days that follow, a sense of hope and optimism begins to take root in The Dam. The people look to the future with a renewed sense of purpose, eager to build a better world for themselves and their children. They know that the road ahead will be difficult, and that there will be many challenges and obstacles to overcome, but they are ready to face them head-on.
+
+As the first delegation sets out from The Dam, they carry with them the hopes and dreams of their entire community. They journey through the wilderness, following the same path that had been taken by the first delegation months before. The world beyond The Dam is still a harsh and unforgiving place, but the delegates are determined to make the most of this opportunity for growth and cooperation.
+
+After weeks of travel, they finally reach the settlement in northern Idaho. They are greeted with open arms by the people who live there, and the two communities begin to forge a bond of friendship and mutual aid. The delegates from The Dam share their knowledge and expertise with their new allies, and in return, they learn valuable skills and techniques that will help them to survive and thrive in this new world.
+
+As the days turn into weeks, the two communities begin to work together to build a better future for all. They share resources, exchange information, and work side by side to rebuild the world that was lost in the solar EMP disaster. The Dam becomes a hub of activity, with people from both communities working together to generate electricity, grow food, and provide for their families.
+
+But even as they work towards a brighter future, the people of The Dam and their new allies are reminded of the dangers that still lurk in the shadows. They encounter roving bands of survivors who are not interested in cooperation or mutual aid, and they must defend themselves and their communities from those who would seek to do them harm.
+
+Through it all, however, the people of The Dam remain committed to their mission of building a better world. They know that the road ahead will be difficult, but they are determined to face whatever challenges may come their way. They have already survived the worst that the world could throw at them, and they are ready to face whatever may come next.
+
+As the sun sets on another day at The Dam, the people of the community gather together to celebrate their successes and honor their fallen comrades. They share stories of their struggles and their triumphs, and they look to the future with a sense of hope and optimism.
+
+The world beyond The Dam may be a harsh and unforgiving place, but the people who call this sanctuary home have proven time and time again that they have the strength and resilience to overcome any obstacle that may come their way. They have built a community that is strong, united, and committed to building a better future for all, and they will stop at nothing to ensure that their vision becomes a reality.
+
+As the night falls and the stars begin to shine in the sky above, the people of The Dam gather around the campfire and share their hopes and dreams for the future. They know that the road ahead will be long and difficult, but they are ready to face whatever challenges may come their way. They have already survived the worst that the world could throw at them, and they are ready to face whatever may come next. With a renewed sense of purpose and determination, they set out to build a better world for themselves and for generations to come. The Dam is their home, their sanctuary, and their hope for the future. And with each passing day, they grow stronger and more united in their mission to rebuild civilization and create a better world for all.

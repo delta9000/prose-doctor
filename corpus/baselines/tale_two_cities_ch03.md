@@ -1,0 +1,476 @@
+Mr. Jarvis Lorry and Miss Manette, emerging from the wine-shop thus,
+joined Monsieur Defarge in the doorway to which he had directed his own
+company just before. It opened from a stinking little black courtyard,
+and was the general public entrance to a great pile of houses, inhabited
+by a great number of people. In the gloomy tile-paved entry to the
+gloomy tile-paved staircase, Monsieur Defarge bent down on one knee
+to the child of his old master, and put her hand to his lips. It was
+a gentle action, but not at all gently done; a very remarkable
+transformation had come over him in a few seconds. He had no good-humour
+in his face, nor any openness of aspect left, but had become a secret,
+angry, dangerous man.
+
+“It is very high; it is a little difficult. Better to begin slowly.”
+ Thus, Monsieur Defarge, in a stern voice, to Mr. Lorry, as they began
+ascending the stairs.
+
+“Is he alone?” the latter whispered.
+
+“Alone! God help him, who should be with him!” said the other, in the
+same low voice.
+
+“Is he always alone, then?”
+
+“Yes.”
+
+“Of his own desire?”
+
+“Of his own necessity. As he was, when I first saw him after they
+found me and demanded to know if I would take him, and, at my peril be
+discreet--as he was then, so he is now.”
+
+“He is greatly changed?”
+
+“Changed!”
+
+The keeper of the wine-shop stopped to strike the wall with his hand,
+and mutter a tremendous curse. No direct answer could have been half so
+forcible. Mr. Lorry’s spirits grew heavier and heavier, as he and his
+two companions ascended higher and higher.
+
+Such a staircase, with its accessories, in the older and more crowded
+parts of Paris, would be bad enough now; but, at that time, it was vile
+indeed to unaccustomed and unhardened senses. Every little habitation
+within the great foul nest of one high building--that is to say,
+the room or rooms within every door that opened on the general
+staircase--left its own heap of refuse on its own landing, besides
+flinging other refuse from its own windows. The uncontrollable and
+hopeless mass of decomposition so engendered, would have polluted
+the air, even if poverty and deprivation had not loaded it with their
+intangible impurities; the two bad sources combined made it almost
+insupportable. Through such an atmosphere, by a steep dark shaft of dirt
+and poison, the way lay. Yielding to his own disturbance of mind, and to
+his young companion’s agitation, which became greater every instant, Mr.
+Jarvis Lorry twice stopped to rest. Each of these stoppages was made
+at a doleful grating, by which any languishing good airs that were left
+uncorrupted, seemed to escape, and all spoilt and sickly vapours seemed
+to crawl in. Through the rusted bars, tastes, rather than glimpses, were
+caught of the jumbled neighbourhood; and nothing within range, nearer
+or lower than the summits of the two great towers of Notre-Dame, had any
+promise on it of healthy life or wholesome aspirations.
+
+At last, the top of the staircase was gained, and they stopped for the
+third time. There was yet an upper staircase, of a steeper inclination
+and of contracted dimensions, to be ascended, before the garret story
+was reached. The keeper of the wine-shop, always going a little in
+advance, and always going on the side which Mr. Lorry took, as though he
+dreaded to be asked any question by the young lady, turned himself about
+here, and, carefully feeling in the pockets of the coat he carried over
+his shoulder, took out a key.
+
+“The door is locked then, my friend?” said Mr. Lorry, surprised.
+
+“Ay. Yes,” was the grim reply of Monsieur Defarge.
+
+“You think it necessary to keep the unfortunate gentleman so retired?”
+
+“I think it necessary to turn the key.” Monsieur Defarge whispered it
+closer in his ear, and frowned heavily.
+
+“Why?”
+
+“Why! Because he has lived so long, locked up, that he would be
+frightened--rave--tear himself to pieces--die--come to I know not what
+harm--if his door was left open.”
+
+“Is it possible!” exclaimed Mr. Lorry.
+
+“Is it possible!” repeated Defarge, bitterly. “Yes. And a beautiful
+world we live in, when it _is_ possible, and when many other such things
+are possible, and not only possible, but done--done, see you!--under
+that sky there, every day. Long live the Devil. Let us go on.”
+
+This dialogue had been held in so very low a whisper, that not a word
+of it had reached the young lady’s ears. But, by this time she trembled
+under such strong emotion, and her face expressed such deep anxiety,
+and, above all, such dread and terror, that Mr. Lorry felt it incumbent
+on him to speak a word or two of reassurance.
+
+“Courage, dear miss! Courage! Business! The worst will be over in a
+moment; it is but passing the room-door, and the worst is over. Then,
+all the good you bring to him, all the relief, all the happiness you
+bring to him, begin. Let our good friend here, assist you on that side.
+That’s well, friend Defarge. Come, now. Business, business!”
+
+They went up slowly and softly. The staircase was short, and they were
+soon at the top. There, as it had an abrupt turn in it, they came all at
+once in sight of three men, whose heads were bent down close together at
+the side of a door, and who were intently looking into the room to which
+the door belonged, through some chinks or holes in the wall. On hearing
+footsteps close at hand, these three turned, and rose, and showed
+themselves to be the three of one name who had been drinking in the
+wine-shop.
+
+“I forgot them in the surprise of your visit,” explained Monsieur
+Defarge. “Leave us, good boys; we have business here.”
+
+The three glided by, and went silently down.
+
+There appearing to be no other door on that floor, and the keeper of
+the wine-shop going straight to this one when they were left alone, Mr.
+Lorry asked him in a whisper, with a little anger:
+
+“Do you make a show of Monsieur Manette?”
+
+“I show him, in the way you have seen, to a chosen few.”
+
+“Is that well?”
+
+“_I_ think it is well.”
+
+“Who are the few? How do you choose them?”
+
+“I choose them as real men, of my name--Jacques is my name--to whom the
+sight is likely to do good. Enough; you are English; that is another
+thing. Stay there, if you please, a little moment.”
+
+With an admonitory gesture to keep them back, he stooped, and looked in
+through the crevice in the wall. Soon raising his head again, he struck
+twice or thrice upon the door--evidently with no other object than to
+make a noise there. With the same intention, he drew the key across it,
+three or four times, before he put it clumsily into the lock, and turned
+it as heavily as he could.
+
+The door slowly opened inward under his hand, and he looked into the
+room and said something. A faint voice answered something. Little more
+than a single syllable could have been spoken on either side.
+
+He looked back over his shoulder, and beckoned them to enter. Mr. Lorry
+got his arm securely round the daughter’s waist, and held her; for he
+felt that she was sinking.
+
+“A-a-a-business, business!” he urged, with a moisture that was not of
+business shining on his cheek. “Come in, come in!”
+
+“I am afraid of it,” she answered, shuddering.
+
+“Of it? What?”
+
+“I mean of him. Of my father.”
+
+Rendered in a manner desperate, by her state and by the beckoning of
+their conductor, he drew over his neck the arm that shook upon his
+shoulder, lifted her a little, and hurried her into the room. He sat her
+down just within the door, and held her, clinging to him.
+
+Defarge drew out the key, closed the door, locked it on the inside,
+took out the key again, and held it in his hand. All this he did,
+methodically, and with as loud and harsh an accompaniment of noise as he
+could make. Finally, he walked across the room with a measured tread to
+where the window was. He stopped there, and faced round.
+
+The garret, built to be a depository for firewood and the like, was dim
+and dark: for, the window of dormer shape, was in truth a door in the
+roof, with a little crane over it for the hoisting up of stores from
+the street: unglazed, and closing up the middle in two pieces, like any
+other door of French construction. To exclude the cold, one half of this
+door was fast closed, and the other was opened but a very little way.
+Such a scanty portion of light was admitted through these means, that it
+was difficult, on first coming in, to see anything; and long habit
+alone could have slowly formed in any one, the ability to do any work
+requiring nicety in such obscurity. Yet, work of that kind was being
+done in the garret; for, with his back towards the door, and his face
+towards the window where the keeper of the wine-shop stood looking at
+him, a white-haired man sat on a low bench, stooping forward and very
+busy, making shoes.
+
+CHAPTER VI.
+The Shoemaker
+
+“Good day!” said Monsieur Defarge, looking down at the white head that
+bent low over the shoemaking.
+
+It was raised for a moment, and a very faint voice responded to the
+salutation, as if it were at a distance:
+
+“Good day!”
+
+“You are still hard at work, I see?”
+
+After a long silence, the head was lifted for another moment, and the
+voice replied, “Yes--I am working.” This time, a pair of haggard eyes
+had looked at the questioner, before the face had dropped again.
+
+The faintness of the voice was pitiable and dreadful. It was not the
+faintness of physical weakness, though confinement and hard fare no
+doubt had their part in it. Its deplorable peculiarity was, that it was
+the faintness of solitude and disuse. It was like the last feeble echo
+of a sound made long and long ago. So entirely had it lost the life and
+resonance of the human voice, that it affected the senses like a once
+beautiful colour faded away into a poor weak stain. So sunken and
+suppressed it was, that it was like a voice underground. So expressive
+it was, of a hopeless and lost creature, that a famished traveller,
+wearied out by lonely wandering in a wilderness, would have remembered
+home and friends in such a tone before lying down to die.
+
+Some minutes of silent work had passed: and the haggard eyes had looked
+up again: not with any interest or curiosity, but with a dull mechanical
+perception, beforehand, that the spot where the only visitor they were
+aware of had stood, was not yet empty.
+
+“I want,” said Defarge, who had not removed his gaze from the shoemaker,
+“to let in a little more light here. You can bear a little more?”
+
+The shoemaker stopped his work; looked with a vacant air of listening,
+at the floor on one side of him; then similarly, at the floor on the
+other side of him; then, upward at the speaker.
+
+“What did you say?”
+
+“You can bear a little more light?”
+
+“I must bear it, if you let it in.” (Laying the palest shadow of a
+stress upon the second word.)
+
+The opened half-door was opened a little further, and secured at that
+angle for the time. A broad ray of light fell into the garret, and
+showed the workman with an unfinished shoe upon his lap, pausing in his
+labour. His few common tools and various scraps of leather were at his
+feet and on his bench. He had a white beard, raggedly cut, but not very
+long, a hollow face, and exceedingly bright eyes. The hollowness and
+thinness of his face would have caused them to look large, under his yet
+dark eyebrows and his confused white hair, though they had been really
+otherwise; but, they were naturally large, and looked unnaturally so.
+His yellow rags of shirt lay open at the throat, and showed his body
+to be withered and worn. He, and his old canvas frock, and his loose
+stockings, and all his poor tatters of clothes, had, in a long seclusion
+from direct light and air, faded down to such a dull uniformity of
+parchment-yellow, that it would have been hard to say which was which.
+
+He had put up a hand between his eyes and the light, and the very bones
+of it seemed transparent. So he sat, with a steadfastly vacant gaze,
+pausing in his work. He never looked at the figure before him, without
+first looking down on this side of himself, then on that, as if he had
+lost the habit of associating place with sound; he never spoke, without
+first wandering in this manner, and forgetting to speak.
+
+“Are you going to finish that pair of shoes to-day?” asked Defarge,
+motioning to Mr. Lorry to come forward.
+
+“What did you say?”
+
+“Do you mean to finish that pair of shoes to-day?”
+
+“I can’t say that I mean to. I suppose so. I don’t know.”
+
+But, the question reminded him of his work, and he bent over it again.
+
+Mr. Lorry came silently forward, leaving the daughter by the door. When
+he had stood, for a minute or two, by the side of Defarge, the shoemaker
+looked up. He showed no surprise at seeing another figure, but the
+unsteady fingers of one of his hands strayed to his lips as he looked at
+it (his lips and his nails were of the same pale lead-colour), and then
+the hand dropped to his work, and he once more bent over the shoe. The
+look and the action had occupied but an instant.
+
+“You have a visitor, you see,” said Monsieur Defarge.
+
+“What did you say?”
+
+“Here is a visitor.”
+
+The shoemaker looked up as before, but without removing a hand from his
+work.
+
+“Come!” said Defarge. “Here is monsieur, who knows a well-made shoe when
+he sees one. Show him that shoe you are working at. Take it, monsieur.”
+
+Mr. Lorry took it in his hand.
+
+“Tell monsieur what kind of shoe it is, and the maker’s name.”
+
+There was a longer pause than usual, before the shoemaker replied:
+
+“I forget what it was you asked me. What did you say?”
+
+“I said, couldn’t you describe the kind of shoe, for monsieur’s
+information?”
+
+“It is a lady’s shoe. It is a young lady’s walking-shoe. It is in the
+present mode. I never saw the mode. I have had a pattern in my hand.” He
+glanced at the shoe with some little passing touch of pride.
+
+“And the maker’s name?” said Defarge.
+
+Now that he had no work to hold, he laid the knuckles of the right hand
+in the hollow of the left, and then the knuckles of the left hand in the
+hollow of the right, and then passed a hand across his bearded chin, and
+so on in regular changes, without a moment’s intermission. The task of
+recalling him from the vagrancy into which he always sank when he
+had spoken, was like recalling some very weak person from a swoon, or
+endeavouring, in the hope of some disclosure, to stay the spirit of a
+fast-dying man.
+
+“Did you ask me for my name?”
+
+“Assuredly I did.”
+
+“One Hundred and Five, North Tower.”
+
+“Is that all?”
+
+“One Hundred and Five, North Tower.”
+
+With a weary sound that was not a sigh, nor a groan, he bent to work
+again, until the silence was again broken.
+
+“You are not a shoemaker by trade?” said Mr. Lorry, looking steadfastly
+at him.
+
+His haggard eyes turned to Defarge as if he would have transferred the
+question to him: but as no help came from that quarter, they turned back
+on the questioner when they had sought the ground.
+
+“I am not a shoemaker by trade? No, I was not a shoemaker by trade. I-I
+learnt it here. I taught myself. I asked leave to--”
+
+He lapsed away, even for minutes, ringing those measured changes on his
+hands the whole time. His eyes came slowly back, at last, to the face
+from which they had wandered; when they rested on it, he started, and
+resumed, in the manner of a sleeper that moment awake, reverting to a
+subject of last night.
+
+“I asked leave to teach myself, and I got it with much difficulty after
+a long while, and I have made shoes ever since.”
+
+As he held out his hand for the shoe that had been taken from him, Mr.
+Lorry said, still looking steadfastly in his face:
+
+“Monsieur Manette, do you remember nothing of me?”
+
+The shoe dropped to the ground, and he sat looking fixedly at the
+questioner.
+
+“Monsieur Manette”; Mr. Lorry laid his hand upon Defarge’s arm; “do you
+remember nothing of this man? Look at him. Look at me. Is there no old
+banker, no old business, no old servant, no old time, rising in your
+mind, Monsieur Manette?”
+
+As the captive of many years sat looking fixedly, by turns, at Mr.
+Lorry and at Defarge, some long obliterated marks of an actively intent
+intelligence in the middle of the forehead, gradually forced themselves
+through the black mist that had fallen on him. They were overclouded
+again, they were fainter, they were gone; but they had been there. And
+so exactly was the expression repeated on the fair young face of her who
+had crept along the wall to a point where she could see him, and where
+she now stood looking at him, with hands which at first had been only
+raised in frightened compassion, if not even to keep him off and
+shut out the sight of him, but which were now extending towards him,
+trembling with eagerness to lay the spectral face upon her warm young
+breast, and love it back to life and hope--so exactly was the expression
+repeated (though in stronger characters) on her fair young face, that it
+looked as though it had passed like a moving light, from him to her.
+
+Darkness had fallen on him in its place. He looked at the two, less and
+less attentively, and his eyes in gloomy abstraction sought the ground
+and looked about him in the old way. Finally, with a deep long sigh, he
+took the shoe up, and resumed his work.
+
+“Have you recognised him, monsieur?” asked Defarge in a whisper.
+
+“Yes; for a moment. At first I thought it quite hopeless, but I have
+unquestionably seen, for a single moment, the face that I once knew so
+well. Hush! Let us draw further back. Hush!”
+
+She had moved from the wall of the garret, very near to the bench on
+which he sat. There was something awful in his unconsciousness of the
+figure that could have put out its hand and touched him as he stooped
+over his labour.
+
+Not a word was spoken, not a sound was made. She stood, like a spirit,
+beside him, and he bent over his work.
+
+It happened, at length, that he had occasion to change the instrument
+in his hand, for his shoemaker’s knife. It lay on that side of him
+which was not the side on which she stood. He had taken it up, and was
+stooping to work again, when his eyes caught the skirt of her dress. He
+raised them, and saw her face. The two spectators started forward,
+but she stayed them with a motion of her hand. She had no fear of his
+striking at her with the knife, though they had.
+
+He stared at her with a fearful look, and after a while his lips began
+to form some words, though no sound proceeded from them. By degrees, in
+the pauses of his quick and laboured breathing, he was heard to say:
+
+“What is this?”
+
+With the tears streaming down her face, she put her two hands to her
+lips, and kissed them to him; then clasped them on her breast, as if she
+laid his ruined head there.
+
+“You are not the gaoler’s daughter?”
+
+She sighed “No.”
+
+“Who are you?”
+
+Not yet trusting the tones of her voice, she sat down on the bench
+beside him. He recoiled, but she laid her hand upon his arm. A strange
+thrill struck him when she did so, and visibly passed over his frame; he
+laid the knife down softly, as he sat staring at her.
+
+Her golden hair, which she wore in long curls, had been hurriedly pushed
+aside, and fell down over her neck. Advancing his hand by little and
+little, he took it up and looked at it. In the midst of the action
+he went astray, and, with another deep sigh, fell to work at his
+shoemaking.
+
+But not for long. Releasing his arm, she laid her hand upon his
+shoulder. After looking doubtfully at it, two or three times, as if to
+be sure that it was really there, he laid down his work, put his hand
+to his neck, and took off a blackened string with a scrap of folded rag
+attached to it. He opened this, carefully, on his knee, and it contained
+a very little quantity of hair: not more than one or two long golden
+hairs, which he had, in some old day, wound off upon his finger.
+
+He took her hair into his hand again, and looked closely at it. “It is
+the same. How can it be! When was it! How was it!”
+
+As the concentrated expression returned to his forehead, he seemed to
+become conscious that it was in hers too. He turned her full to the
+light, and looked at her.
+
+“She had laid her head upon my shoulder, that night when I was summoned
+out--she had a fear of my going, though I had none--and when I was
+brought to the North Tower they found these upon my sleeve. ‘You will
+leave me them? They can never help me to escape in the body, though they
+may in the spirit.’ Those were the words I said. I remember them very
+well.”
+
+He formed this speech with his lips many times before he could utter it.
+But when he did find spoken words for it, they came to him coherently,
+though slowly.
+
+“How was this?--_Was it you_?”
+
+Once more, the two spectators started, as he turned upon her with a
+frightful suddenness. But she sat perfectly still in his grasp, and only
+said, in a low voice, “I entreat you, good gentlemen, do not come near
+us, do not speak, do not move!”
+
+“Hark!” he exclaimed. “Whose voice was that?”
+
+His hands released her as he uttered this cry, and went up to his white
+hair, which they tore in a frenzy. It died out, as everything but his
+shoemaking did die out of him, and he refolded his little packet and
+tried to secure it in his breast; but he still looked at her, and
+gloomily shook his head.
+
+“No, no, no; you are too young, too blooming. It can’t be. See what the
+prisoner is. These are not the hands she knew, this is not the face
+she knew, this is not a voice she ever heard. No, no. She was--and He
+was--before the slow years of the North Tower--ages ago. What is your
+name, my gentle angel?”
+
+Hailing his softened tone and manner, his daughter fell upon her knees
+before him, with her appealing hands upon his breast.

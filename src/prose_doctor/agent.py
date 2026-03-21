@@ -32,6 +32,7 @@ class RevisionContext:
     edits_accepted: int = 0
     edits_rejected: int = 0
     turn: int = 0
+    max_turns: int = MAX_TURNS
     verbose: bool = False
 
 
@@ -72,6 +73,16 @@ def _do_replace(
     new_text: str,
 ) -> EditResult:
     """Execute a passage replacement with validation and rollback."""
+    if ctx.turn >= ctx.max_turns:
+        return EditResult(
+            accepted=False,
+            reason=f"Turn limit reached ({ctx.max_turns}). No more edits allowed.",
+            metrics_before=ctx.last_metrics or ProseMetrics(
+                pd_mean=0, pd_std=0, fg_inversion=0, fg_sl_cv=0,
+                fg_fragment=0, ic_rhythmicity=0, ic_spikes=0, ic_flatlines=0,
+            ),
+        )
+
     if old_text not in ctx.current_text:
         ctx.edits_rejected += 1
         return EditResult(
@@ -259,6 +270,7 @@ def run_revision(
     ctx = RevisionContext(
         current_text=text,
         filename=filename,
+        max_turns=max_turns,
         verbose=verbose,
     )
 
