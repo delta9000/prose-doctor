@@ -147,7 +147,8 @@ async def judge_pair(
     }
 
     async with httpx.AsyncClient(timeout=120.0) as client:
-        resp = await client.post(endpoint, json=payload)
+        url = endpoint.rstrip("/") + "/chat/completions"
+        resp = await client.post(url, json=payload)
         resp.raise_for_status()
         body = resp.json()
 

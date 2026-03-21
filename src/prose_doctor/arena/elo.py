@@ -87,6 +87,8 @@ class EloTracker:
     @classmethod
     def load(cls, matches_path: Path | str, ratings_path: Path | str) -> EloTracker:
         ratings_path = Path(ratings_path)
+        if not ratings_path.exists():
+            return cls()
         ratings_data = json.loads(ratings_path.read_text(encoding="utf-8"))
         ratings = {name: cfg["elo"] for name, cfg in ratings_data["configs"].items()}
         return cls(ratings=ratings)

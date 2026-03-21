@@ -7,27 +7,27 @@ import sys
 from prose_doctor.critique_config import CritiqueConfig
 
 
-async def revise_story(
+def revise_story_sync(
     text: str,
     config: CritiqueConfig,
     endpoint: str,
     model: str,
 ) -> tuple[str, dict]:
-    """Run orchestrated revision in a thread (it's sync internally)."""
-    loop = asyncio.get_event_loop()
+    """Run orchestrated revision synchronously.
 
-    def _run():
-        from prose_doctor.orchestrated_revise import run_orchestrated
-        result = run_orchestrated(
-            text,
-            max_turns=config.max_turns,
-            endpoint=endpoint,
-            model_name=model,
-            critique_config=config,
-        )
-        return result.final_text, result.metrics_final.model_dump()
-
-    return await loop.run_in_executor(None, _run)
+    Not threaded — ProviderPool's lazy-loaded models (GPT-2, spaCy)
+    are not thread-safe, so concurrent threads cause meta tensor errors.
+    Revisions run sequentially; the LLM network calls are the real bottleneck.
+    """
+    from prose_doctor.orchestrated_revise import run_orchestrated
+    result = run_orchestrated(
+        text,
+        max_turns=config.max_turns,
+        endpoint=endpoint,
+        model_name=model,
+        critique_config=config,
+    )
+    return result.final_text, result.metrics_final.model_dump()
 
 
 async def run_match(
@@ -47,14 +47,12 @@ async def run_match(
 
     print(f"  Match: {config_a.name} vs {config_b.name} on {story_id}", file=sys.stderr)
 
-    # Revise under both configs concurrently (bounded by semaphore)
-    async def _bounded(cfg):
-        async with semaphore:
-            return await revise_story(original, cfg, endpoint, revision_model)
-
-    (revised_a_text, metrics_a), (revised_b_text, metrics_b) = await asyncio.gather(
-        _bounded(config_a),
-        _bounded(config_b),
+    # Revise sequentially — ProviderPool models are not thread-safe
+    revised_a_text, metrics_a = revise_story_sync(
+        original, config_a, endpoint, revision_model,
+    )
+    revised_b_text, metrics_b = revise_story_sync(
+        original, config_b, endpoint, revision_model,
     )
 
     # Judge
