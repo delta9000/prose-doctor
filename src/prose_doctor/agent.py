@@ -45,15 +45,22 @@ quality by making targeted edits, one metric at a time.
 
 1. Call `scan_deep` to measure the current text against human prose baselines.
 2. Call `critique` to see prioritized prescriptions for the worst metrics.
-3. Call `read_passage` to find the specific passage you want to improve.
-4. Rewrite ONLY that passage — keep plot, characters, and dialogue intact.
-5. Call `replace_passage` with the old and new text. It will tell you if the \
+3. Call `find_issues` with the worst metric name to get SPECIFIC passages that \
+are problematic — with paragraph indices, text excerpts, and context. This also \
+tells you which passages to PRESERVE (intentional craft) vs which to FIX (crutches).
+4. Call `read_passage` to get the full text of paragraphs you want to edit.
+5. Rewrite ONLY the passages marked as fixable — keep plot, characters, and \
+dialogue intact. Do NOT touch passages marked as "preserve".
+6. Call `replace_passage` with the old and new text. It will tell you if the \
 edit was accepted (metric improved) or rejected (regression detected, auto-reverted).
-6. Repeat from step 1, targeting the next worst metric.
+7. Repeat from step 1, targeting the next worst metric.
 
 ## Rules
 
 - Fix ONE metric per edit. Do not try to fix everything at once.
+- ALWAYS call find_issues before editing — never guess which passages to change.
+- Respect the preserve/fix classification. Passages marked "preserve" are \
+intentional craft (e.g., fragments mimicking fragmented voices, rhythm contrasts).
 - Preserve the story content. Change prose technique, not plot.
 - Keep edits surgical — replace a paragraph or a few sentences, not the whole chapter.
 - If an edit is rejected, try a different approach to the same passage, or move on.
@@ -226,6 +233,23 @@ def create_agent(
             ctx.deps.filename, sections,
             word_count=ctx.deps.last_report.get("word_count", 0),
         )
+
+    @agent.tool
+    def find_issues(ctx: RunContext[RevisionContext], metric: str) -> str:
+        """Find specific problematic passages for a metric, with citations and context.
+
+        Call this AFTER critique to get exact passages to target. Returns which
+        passages to fix and which to preserve (intentional craft).
+
+        Args:
+            metric: The metric to investigate. One of: fg_fragment, fg_inversion,
+                    pd_mean, pd_std, ic_rhythmicity, ic_flatlines.
+        """
+        if ctx.deps.last_report is None:
+            return "ERROR: Run scan_deep first."
+        from prose_doctor.agent_issues import find_issues as _find, format_issues
+        issues = _find(metric, ctx.deps.current_text, ctx.deps.last_report)
+        return format_issues(issues)
 
     @agent.tool
     def read_passage(ctx: RunContext[RevisionContext], start_paragraph: int, end_paragraph: int) -> str:
