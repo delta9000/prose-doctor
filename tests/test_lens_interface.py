@@ -56,3 +56,16 @@ def test_lens_registry_rejects_duplicate():
         assert False, "Should have raised"
     except ValueError:
         pass
+
+
+def test_default_registry_has_all_lenses():
+    from prose_doctor.lenses.defaults import default_registry
+    registry = default_registry()
+    expected = [
+        "pacing", "emotion_arc", "foregrounding", "info_contour",
+        "psychic_distance", "sensory", "dialogue_voice", "slop_classifier",
+        "perplexity", "uncertainty_reduction", "boyd_narrative_role",
+        "fragment_classifier", "narrative_attention",
+    ]
+    for name in expected:
+        assert registry.get(name) is not None, f"Missing lens: {name}"
