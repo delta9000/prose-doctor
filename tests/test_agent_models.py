@@ -7,6 +7,7 @@ def test_prose_metrics_total_distance_at_baseline():
         pd_mean=0.336, pd_std=0.093, fg_inversion=44.2,
         fg_sl_cv=0.706, fg_fragment=6.7, ic_rhythmicity=0.129,
         ic_spikes=8, ic_flatlines=3,
+        dr_entropy=0.65, dr_implicit=0.90, cn_abstract=0.27, ss_shift_rate=1.5,
     )
     assert m.total_distance == 0.0
 
@@ -17,6 +18,7 @@ def test_prose_metrics_total_distance_above_baseline():
         pd_mean=0.5, pd_std=0.15, fg_inversion=50.0,
         fg_sl_cv=0.8, fg_fragment=4.0, ic_rhythmicity=0.08,
         ic_spikes=10, ic_flatlines=2,
+        dr_entropy=0.70, dr_implicit=0.85, cn_abstract=0.30, ss_shift_rate=2.0,
     )
     assert m.total_distance == 0.0
 
@@ -27,6 +29,7 @@ def test_prose_metrics_worst_metric():
         pd_mean=0.1, pd_std=0.093, fg_inversion=44.2,
         fg_sl_cv=0.706, fg_fragment=6.7, ic_rhythmicity=0.129,
         ic_spikes=7, ic_flatlines=3,
+        dr_entropy=0.65, dr_implicit=0.90, cn_abstract=0.27, ss_shift_rate=1.5,
     )
     assert m.worst_metric == "pd_mean"
 
@@ -36,11 +39,14 @@ def test_prose_metrics_distances():
         pd_mean=0.2, pd_std=0.093, fg_inversion=44.2,
         fg_sl_cv=0.706, fg_fragment=6.7, ic_rhythmicity=0.129,
         ic_spikes=7, ic_flatlines=3,
+        dr_entropy=0.65, dr_implicit=0.90, cn_abstract=0.27, ss_shift_rate=1.5,
     )
     d = m.distances()
     assert d["pd_mean"] > 0
     assert d["pd_std"] == 0
     assert d["fg_inversion"] == 0
+    assert d["dr_entropy"] == 0
+    assert d["cn_abstract"] == 0
 
 
 def test_edit_result_serialization():

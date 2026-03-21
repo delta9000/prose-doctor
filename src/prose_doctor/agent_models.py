@@ -12,6 +12,13 @@ BASELINES: dict[str, tuple[float, str]] = {
     "ic_rhythmicity":(0.129, "lower"),
     "ic_spikes":     (7.7,   "higher"),
     "ic_flatlines":  (3.1,   "lower"),
+    # Discourse — human prose uses diverse, explicit connectives
+    "dr_entropy":    (0.65,  "higher"),   # human range 0.62-0.82, AI mean 0.43
+    "dr_implicit":   (0.90,  "lower"),    # human range 0.86-0.90, AI mean 0.94
+    # Concreteness — human prose is more abstract than AI
+    "cn_abstract":   (0.27,  "higher"),   # human range 0.23-0.34, AI mean 0.19
+    # Situation shifts — normalized to per-paragraph rate
+    "ss_shift_rate": (1.5,   "higher"),   # human ~2 shifts/para, AI ~1 shift/para
 }
 
 
@@ -25,6 +32,10 @@ class ProseMetrics(BaseModel):
     ic_rhythmicity: float
     ic_spikes: int
     ic_flatlines: int
+    dr_entropy: float = 0.0
+    dr_implicit: float = 1.0
+    cn_abstract: float = 0.0
+    ss_shift_rate: float = 0.0
 
     def _metric_distance(self, key: str) -> float:
         """Normalized distance from baseline for one metric. 0 = at/past baseline."""
