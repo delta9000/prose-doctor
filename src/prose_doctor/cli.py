@@ -764,6 +764,106 @@ def cmd_classify(args: argparse.Namespace) -> None:
                 print(f"  [{s['index']:>3}] {s['slop_prob']:.2f} {rule_tag} {short}")
 
 
+def cmd_validate(args: argparse.Namespace) -> None:
+    """Validate lenses against human/LLM corpus."""
+    from prose_doctor.providers import require_ml, ProviderPool
+    from prose_doctor.lenses.defaults import default_registry
+    from prose_doctor.lenses.runner import LensRunner
+    from prose_doctor.validation.corpus import load_corpus
+    from prose_doctor.validation.discriminator import compute_discrimination
+    from prose_doctor.validation.promotion import check_tier
+
+    require_ml()
+    pool = ProviderPool()
+    registry = default_registry()
+
+    # Determine corpus paths
+    human_dir = Path(args.human_corpus) if args.human_corpus else Path("corpus/human")
+    llm_dir = Path(args.llm_corpus) if args.llm_corpus else Path("corpus")  # uses subdirs
+
+    # Load corpus
+    if not human_dir.exists():
+        print(f"Human corpus not found at {human_dir}", file=sys.stderr)
+        sys.exit(1)
+
+    human_files = load_corpus(human_dir)
+    # LLM corpus: load from all subdirectories under corpus/ that aren't "human"
+    llm_files = []
+    if llm_dir.exists():
+        for subdir in sorted(llm_dir.iterdir()):
+            if subdir.is_dir() and subdir.name != "human":
+                llm_files.extend(load_corpus(subdir))
+
+    if not human_files or not llm_files:
+        print("Need both human and LLM corpus files for validation.", file=sys.stderr)
+        sys.exit(1)
+
+    # Determine which lenses to validate
+    if args.all_lenses:
+        lens_names = registry.all_names()
+    elif args.lens:
+        lens_names = [args.lens]
+    else:
+        print("Specify a lens name or --all", file=sys.stderr)
+        sys.exit(1)
+
+    runner = LensRunner(registry, pool)
+    results_table = []
+
+    for lens_name in lens_names:
+        lens = registry.get(lens_name)
+        if lens is None:
+            print(f"Unknown lens: {lens_name}", file=sys.stderr)
+            continue
+
+        print(f"Validating {lens_name}...", file=sys.stderr)
+
+        # Run lens on both corpora, collect per_chapter metrics
+        human_scores: dict[str, list[float]] = {}
+        llm_scores: dict[str, list[float]] = {}
+
+        for filename, text in human_files:
+            try:
+                result = runner.run_one(lens_name, text, filename)
+                if result.per_chapter:
+                    for key, val in result.per_chapter.items():
+                        if isinstance(val, (int, float)):
+                            human_scores.setdefault(key, []).append(float(val))
+            except Exception as e:
+                print(f"  Warning: {filename}: {e}", file=sys.stderr)
+
+        for filename, text in llm_files:
+            try:
+                result = runner.run_one(lens_name, text, filename)
+                if result.per_chapter:
+                    for key, val in result.per_chapter.items():
+                        if isinstance(val, (int, float)):
+                            llm_scores.setdefault(key, []).append(float(val))
+            except Exception as e:
+                print(f"  Warning: {filename}: {e}", file=sys.stderr)
+
+        # Compute discrimination per metric
+        best_d = 0.0
+        best_p = 1.0
+        best_metric = ""
+        for metric in human_scores:
+            if metric in llm_scores and len(human_scores[metric]) >= 3 and len(llm_scores[metric]) >= 3:
+                stats = compute_discrimination(human_scores[metric], llm_scores[metric])
+                if abs(stats["cohens_d"]) > abs(best_d):
+                    best_d = stats["cohens_d"]
+                    best_p = stats["p_value"]
+                    best_metric = metric
+
+        tier = check_tier({"cohens_d": best_d, "p_value": best_p}, revision_evidence=[])
+        results_table.append((lens_name, best_metric, best_d, best_p, tier))
+
+    # Print table
+    print(f"\n{'Lens':<25} {'Best Metric':<20} {'Cohen d':>8} {'p-value':>10} {'Tier':<12}")
+    print("-" * 77)
+    for name, metric, d, p, tier in results_table:
+        print(f"{name:<25} {metric:<20} {d:>8.3f} {p:>10.6f} {tier:<12}")
+
+
 def cmd_revise(args: argparse.Namespace) -> None:
     """Run the agentic revision loop."""
     try:
@@ -832,6 +932,8 @@ def main() -> None:
     scan_p.add_argument("files", nargs="+", help="Files or directories to scan")
     scan_p.add_argument("--deep", action="store_true", help="Run ML analysis too")
     scan_p.add_argument("--json", action="store_true", help="JSON output")
+    scan_p.add_argument("--experimental", action="store_true", help="Include experimental lenses")
+    scan_p.add_argument("--validated", action="store_true", help="Include validated + stable lenses")
 
     # init
     subparsers.add_parser("init", help="Generate .prose-doctor.toml template")
@@ -896,6 +998,16 @@ def main() -> None:
                           help="LLM endpoint")
     revise_p.add_argument("--model", type=str, default="gpt-oss-120b",
                           help="Model name")
+    revise_p.add_argument("--experimental", action="store_true", help="Include experimental lenses")
+    revise_p.add_argument("--validated", action="store_true", help="Include validated + stable lenses")
+
+    # validate
+    validate_p = subparsers.add_parser("validate", help="Validate lenses against human/LLM corpus")
+    validate_p.add_argument("lens", nargs="?", default=None, help="Lens to validate (or --all)")
+    validate_p.add_argument("--all", action="store_true", dest="all_lenses", help="Validate all lenses")
+    validate_p.add_argument("--promote", action="store_true", help="Auto-promote and write tiers.toml")
+    validate_p.add_argument("--human-corpus", type=str, default=None, help="Path to human prose corpus")
+    validate_p.add_argument("--llm-corpus", type=str, default=None, help="Path to LLM prose corpus")
 
     args = parser.parse_args()
 
@@ -914,5 +1026,6 @@ def main() -> None:
         "sensory": cmd_sensory,
         "critique": cmd_critique,
         "revise": cmd_revise,
+        "validate": cmd_validate,
     }
     handlers[args.command](args)
