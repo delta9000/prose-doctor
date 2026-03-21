@@ -47,6 +47,10 @@ class ChapterHealth:
     sensory: dict | None = None
     dialogue: dict | None = None
     pacing: dict | None = None
+    discourse_relations: dict | None = None
+    concreteness: dict | None = None
+    situation_shifts: dict | None = None
+    referential_cohesion: dict | None = None
 
     @property
     def total_issues(self) -> int:
@@ -73,6 +77,10 @@ class ChapterHealth:
             "sensory": self.sensory,
             "dialogue": self.dialogue,
             "pacing": self.pacing,
+            "discourse_relations": self.discourse_relations,
+            "concreteness": self.concreteness,
+            "situation_shifts": self.situation_shifts,
+            "referential_cohesion": self.referential_cohesion,
         }
 
 
