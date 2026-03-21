@@ -571,6 +571,98 @@ def find_generic_issues(text: str, report: dict) -> list[Issue]:
     return issues
 
 
+def find_discourse_issues(text: str, report: dict) -> list[Issue]:
+    """Find paragraphs with monotonous discourse relations.
+
+    Targets two patterns empirically shown to separate AI from human prose:
+    1. Long runs of implicit relations (no connectives at all)
+    2. Additive-only zones (only "and" connectives, no causal/contrastive)
+
+    Prescriptions focus on adding causal ("because", "so") and contrastive
+    ("but", "however") connectives — the types most underused by AI.
+    """
+    pool = ProviderPool()
+    nlp = pool.spacy
+
+    paragraphs = split_paragraphs(text)
+    dr = report.get("discourse_relations") or {}
+    entropy = dr.get("relation_entropy", 1.0)
+    implicit = dr.get("implicit_ratio", 0.0)
+
+    # Only flag if chapter-level metrics are in AI territory.
+    if entropy > 0.55 and implicit < 0.92:
+        return []
+
+    from prose_doctor.lenses.discourse_relations import _classify_sentence
+
+    issues = []
+    consecutive_implicit = 0
+
+    for pi, para in enumerate(paragraphs):
+        doc = nlp(para)
+        sents = list(doc.sents)
+        para_relations = []
+
+        for sent in sents:
+            rel_name, _, evidence = _classify_sentence(sent.text)
+            para_relations.append(rel_name)
+
+        # Count implicit sentences in this paragraph
+        n_implicit = sum(1 for r in para_relations if r == "implicit")
+        n_additive = sum(1 for r in para_relations if r == "additive")
+        n_total = len(para_relations)
+
+        if n_total < 2:
+            consecutive_implicit = 0
+            continue
+
+        all_implicit = n_implicit == n_total
+        all_additive_or_implicit = all(r in ("implicit", "additive") for r in para_relations)
+
+        if all_implicit:
+            consecutive_implicit += 1
+        else:
+            consecutive_implicit = 0
+
+        # Flag: 3+ consecutive all-implicit paragraphs
+        if consecutive_implicit >= 3:
+            first_sent = sents[0].text.strip()[:150] if sents else ""
+            ctx_before = paragraphs[pi - 1][:100] if pi > 0 else ""
+            ctx_after = paragraphs[pi + 1][:100] if pi < len(paragraphs) - 1 else ""
+            issues.append(Issue(
+                paragraph_idx=pi,
+                sentence_text=first_sent,
+                context_before=ctx_before,
+                context_after=ctx_after,
+                reason=(
+                    f"implicit relation run ({consecutive_implicit} paragraphs with no connectives) — "
+                    f"add a causal ('because', 'since') or contrastive ('but', 'however') "
+                    f"connective to show how sentences relate"
+                ),
+                preserve=False,
+            ))
+
+        # Flag: additive-only paragraph (all "and" connectives)
+        elif all_additive_or_implicit and n_additive >= 2:
+            first_sent = sents[0].text.strip()[:150] if sents else ""
+            ctx_before = paragraphs[pi - 1][:100] if pi > 0 else ""
+            ctx_after = paragraphs[pi + 1][:100] if pi < len(paragraphs) - 1 else ""
+            issues.append(Issue(
+                paragraph_idx=pi,
+                sentence_text=first_sent,
+                context_before=ctx_before,
+                context_after=ctx_after,
+                reason=(
+                    f"additive-only paragraph ({n_additive} 'and' connectives, no causal or contrastive) — "
+                    f"replace some 'and' with 'because', 'so', 'but', or 'although' "
+                    f"to show logical relationships"
+                ),
+                preserve=False,
+            ))
+
+    return issues[:15]
+
+
 METRIC_FINDERS = {
     "fg_fragment": find_fragment_issues,
     "fg_inversion": find_inversion_issues,
@@ -580,6 +672,8 @@ METRIC_FINDERS = {
     "ic_flatlines": find_flatline_issues,
     "ic_spikes": find_spike_issues,
     "generic": find_generic_issues,
+    "dr_entropy": find_discourse_issues,
+    "dr_implicit": find_discourse_issues,
 }
 
 

@@ -1,5 +1,5 @@
 """Tests for per-passage issue finder."""
-from prose_doctor.agent_issues import find_fragment_issues, find_issues, format_issues
+from prose_doctor.agent_issues import find_fragment_issues, find_discourse_issues, find_issues, format_issues
 
 
 SAMPLE_TEXT = """\
@@ -79,6 +79,37 @@ def test_find_issues_unknown_metric():
     """Unknown metrics should return empty list."""
     result = find_issues("nonexistent_metric", "some text", {})
     assert result == []
+
+
+def test_find_discourse_issues():
+    """Additive-only prose should produce discourse issues."""
+    text = (
+        "Marcus walked down the corridor. And the walls were grey. And the "
+        "floor was concrete. And the lights hummed overhead.\n\n"
+        "He reached the end of the hall. And there was a door. And the door "
+        "was locked. And he tried the handle again.\n\n"
+        "The room beyond was small. And it was empty. And the window was "
+        "boarded up. And dust covered every surface."
+    )
+    report = {"discourse_relations": {"relation_entropy": 0.15, "implicit_ratio": 0.95}}
+    issues = find_discourse_issues(text, report)
+    assert len(issues) > 0
+    assert any("connective" in i.reason.lower() or "implicit" in i.reason.lower() for i in issues)
+
+
+def test_find_discourse_issues_healthy():
+    """Prose with good entropy and low implicit ratio should have no issues."""
+    text = (
+        "Marcus waited because the guard hadn't passed yet. Although the "
+        "corridor looked clear, he knew better.\n\n"
+        "Then he moved, fast and low. But the floor creaked under his weight. "
+        "Consequently, the guard turned.\n\n"
+        "Meanwhile, Elena watched from the rooftop. She could see the whole "
+        "courtyard, so she tracked his progress."
+    )
+    report = {"discourse_relations": {"relation_entropy": 0.70, "implicit_ratio": 0.85}}
+    issues = find_discourse_issues(text, report)
+    assert len(issues) == 0
 
 
 def test_format_issues_empty():
