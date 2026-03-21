@@ -66,6 +66,8 @@ def test_default_registry_has_all_lenses():
         "psychic_distance", "sensory", "dialogue_voice", "slop_classifier",
         "perplexity", "uncertainty_reduction", "boyd_narrative_role",
         "fragment_classifier", "narrative_attention",
+        "concreteness", "referential_cohesion", "situation_shifts",
+        "discourse_relations",
     ]
     for name in expected:
         assert registry.get(name) is not None, f"Missing lens: {name}"

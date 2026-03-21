@@ -17,12 +17,18 @@ def default_registry() -> LensRegistry:
     from prose_doctor.lenses.boyd_narrative_role import BoydNarrativeRoleLens
     from prose_doctor.lenses.fragment_classifier import FragmentClassifierLens
     from prose_doctor.lenses.narrative_attention import NarrativeAttentionLens
+    from prose_doctor.lenses.concreteness import ConcretenessLens
+    from prose_doctor.lenses.referential_cohesion import ReferentialCohesionLens
+    from prose_doctor.lenses.situation_shifts import SituationShiftsLens
+    from prose_doctor.lenses.discourse_relations import DiscourseRelationsLens
 
     for cls in [
         PacingLens, EmotionArcLens, ForegroundingLens, InfoContourLens,
         PsychicDistanceLens, SensoryLens, DialogueVoiceLens, SlopClassifierLens,
         PerplexityLens, UncertaintyReductionLens, BoydNarrativeRoleLens,
         FragmentClassifierLens, NarrativeAttentionLens,
+        ConcretenessLens, ReferentialCohesionLens, SituationShiftsLens,
+        DiscourseRelationsLens,
     ]:
         registry.register(cls())
     return registry

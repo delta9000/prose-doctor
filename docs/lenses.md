@@ -8,9 +8,9 @@ A lens is a focused analytical perspective over prose. Every lens returns a `Len
 
 The repo distinguishes three maturity tiers:
 
-- `experimental`: the lens runs, but the evidence is weak or the prescriptions are not yet trustworthy
-- `validated`: the lens shows non-trivial discrimination on the project corpus
-- `stable`: the lens is validated and has revision evidence behind it
+- `experimental`: the lens runs and measures something, but it is not yet proven useful for revision. May be consumed by meta-lenses.
+- `validated`: the lens has good discrimination stats (Cohen's d ≥ 0.5 or p < 0.01) AND revision evidence showing edits guided by it are accepted — proof it meaningfully improves text.
+- `stable`: rock solid. Good discrimination, extensive revision evidence (3+ accepted edits across 2+ chapters).
 
 The promotion rules are documented in `src/prose_doctor/validation/promotion.py`, and the current evidence summary is in `docs/specs/2026-03-20-lens-architecture.md`.
 
@@ -51,6 +51,10 @@ print(result.per_chapter)
 | `boyd_narrative_role` | validated | Python, `validate` | staging vs progression vs tension balance |
 | `fragment_classifier` | stable | Python, `validate` | deliberate fragments vs filler fragments |
 | `narrative_attention` | validated | Python, `validate` | cross-lens structural coherence |
+| `concreteness` | validated | Python, `validate` | semantic vagueness and abstract-concrete balance |
+| `referential_cohesion` | experimental | Python, `validate` | entity continuity and referent churn |
+| `situation_shifts` | experimental | Python, `validate` | time/space/actor transitions at paragraph boundaries |
+| `discourse_relations` | experimental | Python, `validate` | connective diversity and additive-only zones |
 
 ---
 
@@ -410,10 +414,112 @@ print(result.per_chapter)
 
 ---
 
+### `concreteness` (`validated`)
+
+**What it is.** Scores prose on the concrete-abstract spectrum using Brysbaert et al. (2014) concreteness norms for known words (~40K, CC-BY) and direction-vector projection in mpnet-base-v2 embedding space for OOV words. Reports `concreteness_mean`, `abstractness_ratio`, `vague_noun_density`, and per-sentence/paragraph scores.
+
+**Why it is useful.** Catches prose that drifts into semantic vagueness — "something shifted in the dynamic between them" — without the writer noticing. Concrete prose grounds the reader; abstract prose floats. The vague-noun detector flags words like "thing," "stuff," "aspect" that are semantically empty without qualification.
+
+**How to use it.**
+- Access through Python or `prose-doctor validate concreteness`
+- Treat `vague_noun_density` as the highest-priority revision signal
+- Use `concreteness_mean` comparatively across chapters — fiction typically sits 2.5–3.5
+- `abstractness_ratio` flags chapters where most sentences score below 2.5
+
+**Research backing.**
+- **Brysbaert, Warriner & Kuperman (2014)**, "Concreteness ratings for 40,000 generally known English word lemmas," *Behavior Research Methods* 46, 904-911, DOI: [10.3758/s13428-013-0403-5](https://doi.org/10.3758/s13428-013-0403-5) — the norm set. 4,000+ participant ratings on a 1–5 concreteness scale. CC-BY licensed.
+- **Paivio (1991)**, *Dual Coding Theory* — concrete words activate both verbal and imagistic representations, making them more memorable and vivid.
+- **Snefjella & Kuperman (2016)**, "It's all in the delivery: Effects of context valence, concreteness, and affordances on visual word processing," *Cognition* — concreteness effects in processing.
+- Direction-vector validation: r = 0.69 against Brysbaert norms on 5,000-word sample using all-mpnet-base-v2 embeddings.
+
+**Caveats.**
+- Brysbaert norms are lemma-level, context-free ratings. "Bank" gets one score whether it means a riverbank or a financial institution.
+- The OOV embedding fallback is less reliable than norm lookup (r ≈ 0.69 vs ground truth).
+- Concreteness is not a proxy for quality. Abstract prose is not inherently bad — it depends on genre and intent.
+- Vague-noun detection is a word list, not a semantic analysis. "The weight of the pack" is concrete despite "weight" appearing abstract.
+
+---
+
+### `referential_cohesion` (`experimental`)
+
+**What it is.** Builds an entity grid from spaCy dependency parsing — tracking each entity's grammatical role (subject, object, other, absent) across sentences — and scores transition probabilities. Also builds an entity co-occurrence graph via networkx for structural analysis.
+
+**Why it is useful.** Catches prose where entities appear from nowhere, disappear without resolution, or churn so fast the reader loses track. The entity-grid model is a well-established measure of local coherence in computational linguistics.
+
+**How to use it.**
+- Access through Python or `prose-doctor validate referential_cohesion`
+- `coherence_score` is the primary signal — higher means smoother entity transitions
+- `subject_churn` flags passages where new subjects keep appearing
+- `entity_continuity` per paragraph shows where referential threads break
+
+**Research backing.**
+- **Barzilay & Lapata (2008)**, "Modeling Local Coherence: An Entity-Based Approach," *Computational Linguistics* 34(1), [aclanthology.org/J08-1001](https://aclanthology.org/J08-1001/) — core paper. Shows entity grids predict text coherence with high accuracy. S→S and S→O transitions mark coherent text; —→S transitions mark incoherent text.
+- **Graesser et al. (2011)**, "Coh-Metrix: Providing Multilevel Analyses of Text Characteristics," *Educational Researcher* 40(5), DOI: [10.3102/0013189X11413260](https://doi.org/10.3102/0013189X11413260) — referential cohesion as a key dimension of text readability.
+- **Grosz, Joshi & Weinstein (1995)**, "Centering: A Framework for Modeling the Local Coherence of Discourse," *Computational Linguistics* 21(2) — centering theory, the theoretical basis for entity-grid models.
+
+**Caveats.**
+- Pronoun resolution uses a naive nearest-entity heuristic, not a trained coreference resolver.
+- en_core_web_sm NER misses many character references, especially pronouns and epithets.
+- The transition-scoring weights are heuristic, not learned from a coherence corpus.
+- Entity matching is exact-string on lemmatized heads — "the old man" and "Marcus" won't match without coreference.
+
+---
+
+### `situation_shifts` (`experimental`)
+
+**What it is.** Detects time, space, and actor shifts at paragraph boundaries using spaCy NER, morphological tense analysis, temporal marker word lists, motion verbs, and subject tracking. Based on the event-indexing model.
+
+**Why it is useful.** Catches disorienting scene transitions — jumps in time without temporal grounding, location changes without spatial markers, character switches without introduction. The event-indexing model predicts that ungrounded shifts increase cognitive load and reduce comprehension.
+
+**How to use it.**
+- Access through Python or `prose-doctor validate situation_shifts`
+- `total_shifts` is a scene-complexity measure, not a quality score
+- `disorientation_score` is the revision signal — shifts detected only from tense change (no explicit markers) are the hardest for readers to follow
+- Per-paragraph flags show exactly where each shift type occurs
+
+**Research backing.**
+- **Zwaan, Langston & Graesser (1995)**, "The Construction of Situation Models in Narrative Comprehension: An Event-Indexing Model," *Psychological Science* 6(5), DOI: [10.1111/j.1467-9280.1995.tb00513.x](https://doi.org/10.1111/j.1467-9280.1995.tb00513.x) — core paper. Readers track five situational dimensions (time, space, protagonist, causation, intentionality). Shifts on any dimension increase processing time.
+- **Zwaan & Radvansky (1998)**, "Situation Models in Language Comprehension and Memory," *Psychological Bulletin* 123(2) — comprehensive review of situation model theory.
+- **Rinck & Weber (2003)**, "Who When Where: An Experimental Test of the Event-Indexing Model," *Memory & Cognition* 31(8) — experimental validation showing readers monitor all five dimensions simultaneously.
+
+**Caveats.**
+- Only three of five event-indexing dimensions are tracked (time, space, actor). Causation and intentionality are not implemented.
+- Temporal detection relies on word lists and tense morphology — indirect time references ("years had passed since") may be missed.
+- Space shift detection depends on NER quality. en_core_web_sm misses many fictional locations.
+- Actor shift detection uses grammatical subject only. Pronoun subjects are not flagged as shifts to avoid false positives.
+
+---
+
+### `discourse_relations` (`experimental`)
+
+**What it is.** Classifies inter-sentence discourse relations as causal, contrastive, temporal, additive, or implicit by detecting connective words and phrases. Reports relation entropy, per-paragraph diversity, and additive-only zones.
+
+**Why it is useful.** Catches prose that relies too heavily on additive ("and... and... and...") or implicit connections. Diverse connective usage signals stronger argumentative and narrative structure. Additive-only zones suggest list-like prose without logical progression.
+
+**How to use it.**
+- Access through Python or `prose-doctor validate discourse_relations`
+- `relation_entropy` is the primary diversity measure — higher is more varied
+- `additive_only_zones` flags runs of 2+ paragraphs with only additive/implicit relations
+- Per-paragraph `relation_diversity` shows which paragraphs are structurally monotonous
+
+**Research backing.**
+- **Sanders & Noordman (2000)**, "The Role of Coherence Relations and Their Linguistic Markers in Text Processing," *Discourse Processes* 29(1), DOI: [10.1207/S15326950dp2901_3](https://doi.org/10.1207/S15326950dp2901_3) — core paper. Shows coherence relations affect processing speed and text recall. Causal and contrastive relations produce deeper processing than additive relations.
+- **Koornneef & Sanders (2013)**, "Establishing Coherence Relations in Discourse: The Influence of Implicit Causality and Connectives on Pronoun Resolution," *Language and Cognitive Processes* 28(8), DOI: [10.1080/01690965.2012.699076](https://doi.org/10.1080/01690965.2012.699076) — connectives guide reader expectations and affect comprehension.
+- **Knott & Dale (1994)**, "Using Linguistic Phenomena to Motivate a Set of Coherence Relations," *Discourse Processes* 18(1) — taxonomy of discourse relations based on linguistic markers.
+- **Prasad et al. (2008)**, "The Penn Discourse TreeBank 2.0," *LREC* — large-scale annotated discourse relation corpus. The four-way classification (causal, contrastive, temporal, additive) aligns with PDTB's top-level senses.
+
+**Caveats.**
+- Connective detection is word-list based, not syntactic. "Since" is classified as causal even when temporal ("since Tuesday").
+- Multi-word connectives ("on the other hand") are checked only at sentence start.
+- Implicit relations (no connective) are the majority in most prose — the lens can only characterize explicit connective usage.
+- "And" at sentence start in fiction is often a stylistic choice (biblical cadence, stream of consciousness), not an additive-only deficiency.
+
+---
+
 ## Cross-Cutting References
 
 ### NLP Infrastructure
-- **spaCy** — Honnibal & Montani (2017), [spacy.io](https://spacy.io). Used by: psychic_distance, info_contour, foregrounding, dialogue_voice, fragment_classifier, pacing.
+- **spaCy** — Honnibal & Montani (2017), [spacy.io](https://spacy.io). Used by: psychic_distance, info_contour, foregrounding, dialogue_voice, fragment_classifier, pacing, concreteness, referential_cohesion, situation_shifts, discourse_relations.
 - **sentence-transformers** — Reimers & Gurevych (2019), "Sentence-BERT," *EMNLP*, [aclanthology.org/D19-1410](https://aclanthology.org/D19-1410/). Used by: foregrounding, dialogue_voice, sensory (separate model).
 - **Hugging Face Transformers** — Wolf et al. (2020), *EMNLP Demos*, [aclanthology.org/2020.emnlp-demos.6](https://aclanthology.org/2020.emnlp-demos.6/). Used by: info_contour, perplexity, uncertainty_reduction (GPT-2), slop_classifier (ModernBERT), emotion_arc (DistilBERT).
 
@@ -423,6 +529,9 @@ print(result.per_chapter)
 - Shklovsky (1917), "Art as Technique" — defamiliarization
 - Mukarovský (1964), "Standard Language and Poetic Language" — foregrounding theory
 - Boyd (2009), *On the Origin of Stories* — evolutionary narrative theory
+- Zwaan, Langston & Graesser (1995), "Event-Indexing Model" — situation model tracking
+- Barzilay & Lapata (2008), "Entity-Based Coherence" — entity-grid local coherence
+- Brysbaert, Warriner & Kuperman (2014), "Concreteness Ratings" — semantic concreteness norms
 
 ### Computational Literary Studies
 - van Dalen-Oskam (2023), *The Riddle of Literary Quality* — multi-feature quality analysis

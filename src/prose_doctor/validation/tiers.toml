@@ -38,3 +38,15 @@ tier = "experimental"
 
 [fragment_classifier]
 tier = "stable"
+
+[concreteness]
+tier = "experimental"
+
+[referential_cohesion]
+tier = "experimental"
+
+[situation_shifts]
+tier = "experimental"
+
+[discourse_relations]
+tier = "experimental"
