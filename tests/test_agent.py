@@ -98,3 +98,52 @@ def test_replace_passage_no_change_same_distance():
         result = _do_replace(ctx, old_text="Text to replace.", new_text="New text.")
     assert not result.accepted
     assert ctx.current_text == "Text to replace."
+
+
+def test_replace_passage_rejects_single_metric_regression():
+    """Reject if total_distance improves but one metric regresses badly."""
+    ctx = RevisionContext(
+        current_text="Original text.",
+        filename="test.md",
+    )
+    # Start: bad fg_fragment, ok pd_mean
+    ctx.last_metrics = _make_metrics(fg_fragment=15.0, pd_mean=0.3)
+    # After: fg_fragment improves a lot, but pd_mean craters
+    # total_distance goes down (net improvement) but pd_mean regressed > 0.20
+    after = _make_metrics(fg_fragment=7.0, pd_mean=0.05)
+
+    with patch("prose_doctor.agent._do_scan", return_value=(after, {})):
+        result = _do_replace(ctx, old_text="Original text.", new_text="New text.")
+    assert not result.accepted
+    assert "regressed" in result.reason.lower()
+    assert ctx.current_text == "Original text."
+
+
+def test_replace_passage_allows_small_metric_regression():
+    """Accept if a metric regresses slightly (under threshold) while total improves."""
+    ctx = RevisionContext(
+        current_text="Original text.",
+        filename="test.md",
+    )
+    ctx.last_metrics = _make_metrics(fg_fragment=15.0, pd_mean=0.3)
+    # fg_fragment improves, pd_mean drops slightly (within 0.20 limit)
+    after = _make_metrics(fg_fragment=7.0, pd_mean=0.25)
+
+    with patch("prose_doctor.agent._do_scan", return_value=(after, {})):
+        result = _do_replace(ctx, old_text="Original text.", new_text="New text.")
+    assert result.accepted
+
+
+def test_replace_passage_max_turns_enforced():
+    """Reject once max_turns is reached."""
+    ctx = RevisionContext(
+        current_text="Some text.",
+        filename="test.md",
+        max_turns=2,
+    )
+    ctx.turn = 2
+    ctx.last_metrics = _make_metrics()
+
+    result = _do_replace(ctx, old_text="Some text.", new_text="New.")
+    assert not result.accepted
+    assert "turn limit" in result.reason.lower()

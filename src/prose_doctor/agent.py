@@ -19,6 +19,7 @@ from prose_doctor.text import split_paragraphs
 DEFAULT_ENDPOINT = "http://localhost:8081/v1"
 DEFAULT_MODEL = "gpt-oss-120b"
 MAX_TURNS = 8
+METRIC_REGRESSION_LIMIT = 0.20  # reject if any single metric regresses > 20% of its distance
 
 
 @dataclass
@@ -101,6 +102,29 @@ def _do_replace(
 
     after_metrics, after_report = _do_scan(ctx)
 
+    # Per-metric delta analysis
+    improved = []
+    worsened = []
+    deltas: dict[str, float] = {}
+    if before_metrics:
+        before_d = before_metrics.distances()
+        after_d = after_metrics.distances()
+        for k in BASELINES:
+            delta = after_d[k] - before_d[k]
+            deltas[k] = round(delta, 4)
+            if after_d[k] < before_d[k]:
+                improved.append(k)
+            elif after_d[k] > before_d[k]:
+                worsened.append(k)
+
+    # Verbose per-metric logging
+    if ctx.verbose and before_metrics:
+        import sys as _sys
+        print(f"  [delta] per-metric changes:", file=_sys.stderr)
+        for k, d in sorted(deltas.items(), key=lambda x: x[1]):
+            marker = "+" if d > 0 else ("-" if d < 0 else " ")
+            print(f"    {marker} {k}: {d:+.4f}", file=_sys.stderr)
+
     # Check for regression: reject if total_distance didn't decrease
     if before_metrics and after_metrics.total_distance >= before_metrics.total_distance:
         ctx.current_text = previous_text
@@ -116,22 +140,35 @@ def _do_replace(
             metrics_after=after_metrics,
         )
 
+    # Check for individual metric regression > threshold
+    if before_metrics:
+        before_d = before_metrics.distances()
+        after_d = after_metrics.distances()
+        for k in BASELINES:
+            regression = after_d[k] - before_d[k]
+            if regression > METRIC_REGRESSION_LIMIT:
+                ctx.current_text = previous_text
+                ctx.edits_rejected += 1
+                return EditResult(
+                    accepted=False,
+                    reason=(
+                        f"Edit rejected: {k} regressed by {regression:.4f} "
+                        f"(limit: {METRIC_REGRESSION_LIMIT}). "
+                        f"Worsened: {', '.join(worsened)}. Reverted."
+                    ),
+                    metrics_before=before_metrics,
+                    metrics_after=after_metrics,
+                )
+
     # Accept
     ctx.last_metrics = after_metrics
     ctx.last_report = after_report
     ctx.edits_accepted += 1
 
-    improved = []
-    if before_metrics:
-        before_d = before_metrics.distances()
-        after_d = after_metrics.distances()
-        for k in BASELINES:
-            if after_d[k] < before_d[k]:
-                improved.append(k)
-
     return EditResult(
         accepted=True,
         reason=f"Edit accepted. Improved: {', '.join(improved) or 'marginal'}. "
+               f"Worsened: {', '.join(worsened) or 'none'}. "
                f"total_distance: {before_metrics.total_distance:.4f} → "
                f"{after_metrics.total_distance:.4f}",
         metrics_before=before_metrics,
