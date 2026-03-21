@@ -79,8 +79,8 @@ def _get_sensory_probe():
     """Lazy-load the sensory modality probe."""
     global _SENSORY_PROBE
     if _SENSORY_PROBE is None:
-        from prose_doctor.lenses.sensory import SensoryProbe
-        _SENSORY_PROBE = SensoryProbe()
+        from prose_doctor.lenses.sensory import _SensoryProbe
+        _SENSORY_PROBE = _SensoryProbe()
     return _SENSORY_PROBE
 
 

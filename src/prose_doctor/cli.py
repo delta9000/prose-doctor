@@ -12,6 +12,20 @@ from prose_doctor.output.json_output import reports_to_json
 from prose_doctor.output.table import format_chapter_report, format_summary
 
 
+def _resolve_tier_filter(args: argparse.Namespace) -> str:
+    """Map --experimental / --validated flags to a tier filter string.
+
+    Default (no flag): 'stable' — run only stable lenses.
+    --validated: run validated + stable lenses.
+    --experimental: run all lenses including experimental.
+    """
+    if getattr(args, "experimental", False):
+        return "experimental"
+    if getattr(args, "validated", False):
+        return "validated"
+    return "stable"
+
+
 def _discover_files(paths: list[str]) -> list[Path]:
     """Expand file arguments: accept files, directories, and globs."""
     result: list[Path] = []
@@ -55,9 +69,11 @@ def cmd_scan(args: argparse.Namespace) -> None:
 
                 from prose_doctor.lenses.defaults import default_registry
                 from prose_doctor.lenses.runner import LensRunner
+                from prose_doctor.validation.tiers import load_tiers
 
                 registry = default_registry()
-                runner = LensRunner(registry, providers)
+                tier_filter = _resolve_tier_filter(args)
+                runner = LensRunner(registry, providers, tier_filter=tier_filter, tiers=load_tiers())
 
                 # Classifier with density budgets — only report classes
                 # that exceed a per-1000-word threshold. Individual hits
@@ -772,6 +788,7 @@ def cmd_validate(args: argparse.Namespace) -> None:
     from prose_doctor.validation.corpus import load_corpus
     from prose_doctor.validation.discriminator import compute_discrimination
     from prose_doctor.validation.promotion import check_tier
+    from prose_doctor.validation.tiers import load_tiers, write_tiers
 
     require_ml()
     pool = ProviderPool()
@@ -862,6 +879,28 @@ def cmd_validate(args: argparse.Namespace) -> None:
     print("-" * 77)
     for name, metric, d, p, tier in results_table:
         print(f"{name:<25} {metric:<20} {d:>8.3f} {p:>10.6f} {tier:<12}")
+
+    # --promote: merge computed tiers into tiers.toml (only upgrade, never downgrade)
+    if args.promote and results_table:
+        existing = load_tiers()
+        tier_rank = {"experimental": 0, "validated": 1, "stable": 2}
+        updated = dict(existing)
+        changes = []
+        for name, _, _, _, new_tier in results_table:
+            old_tier = existing.get(name, "experimental")
+            if tier_rank.get(new_tier, 0) > tier_rank.get(old_tier, 0):
+                updated[name] = new_tier
+                changes.append(f"  {name}: {old_tier} -> {new_tier}")
+            elif name not in updated:
+                updated[name] = new_tier
+        if changes:
+            write_tiers(updated)
+            print(f"\nPromoted {len(changes)} lens(es):")
+            for c in changes:
+                print(c)
+            print("Written to tiers.toml")
+        else:
+            print("\nNo promotions — all lenses already at or above computed tier.")
 
 
 def cmd_revise(args: argparse.Namespace) -> None:
