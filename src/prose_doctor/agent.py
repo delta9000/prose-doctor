@@ -70,9 +70,20 @@ intentional craft (e.g., fragments mimicking fragmented voices, rhythm contrasts
 
 
 def _do_scan(ctx: RevisionContext) -> tuple[ProseMetrics, dict]:
-    """Run scan_deep — extracted for testability."""
+    """Run scan_deep — extracted for testability.
+
+    First scan is full (includes sensory, patterns, etc).
+    Subsequent scans use metrics_only=True to skip expensive
+    non-metric analyzers, carrying forward previous results.
+    """
     from prose_doctor.agent_scan import scan_deep
-    return scan_deep(ctx.current_text, filename=ctx.filename)
+    is_first = ctx.initial_metrics is None
+    return scan_deep(
+        ctx.current_text,
+        filename=ctx.filename,
+        metrics_only=not is_first,
+        previous_report=ctx.last_report,
+    )
 
 
 def _do_replace(
@@ -243,7 +254,7 @@ def create_agent(
 
         Args:
             metric: The metric to investigate. One of: fg_fragment, fg_inversion,
-                    pd_mean, pd_std, ic_rhythmicity, ic_flatlines.
+                    pd_mean, pd_std, ic_rhythmicity, ic_flatlines, ic_spikes.
         """
         if ctx.deps.last_report is None:
             return "ERROR: Run scan_deep first."
