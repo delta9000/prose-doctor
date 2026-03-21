@@ -666,6 +666,61 @@ def cmd_classify(args: argparse.Namespace) -> None:
                 print(f"  [{s['index']:>3}] {s['slop_prob']:.2f} {rule_tag} {short}")
 
 
+def cmd_revise(args: argparse.Namespace) -> None:
+    """Run the agentic revision loop."""
+    try:
+        from prose_doctor.ml import require_ml
+        require_ml()
+    except ImportError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
+
+    files = _discover_files(args.files)
+    if not files:
+        print("No files found.", file=sys.stderr)
+        sys.exit(1)
+
+    if args.dry_run:
+        from prose_doctor.agent_scan import scan_deep
+        from prose_doctor.critique import build_critique, format_critique_prompt
+        for f in files:
+            text = f.read_text()
+            metrics, report = scan_deep(text, filename=f.name)
+            sections = build_critique(report)
+            print(format_critique_prompt(f.name, sections, word_count=report.get("word_count", 0)))
+            print(f"\nMetrics: {metrics.distances()}")
+            print(f"Total distance: {metrics.total_distance}")
+            print(f"Worst: {metrics.worst_metric}")
+        return
+
+    from prose_doctor.agent import run_revision
+
+    for f in files:
+        text = f.read_text()
+        result = run_revision(
+            text,
+            filename=f.name,
+            max_turns=args.max_turns,
+            endpoint=args.endpoint,
+            model_name=args.model,
+            verbose=args.verbose,
+        )
+
+        if args.output:
+            Path(args.output).write_text(result.final_text)
+            print(f"Wrote revised chapter to {args.output}", file=sys.stderr)
+        else:
+            print(result.final_text)
+
+        print(f"\n--- Revision Summary ---", file=sys.stderr)
+        print(f"Turns: {result.turns_used}", file=sys.stderr)
+        print(f"Edits accepted: {result.edits_accepted}", file=sys.stderr)
+        print(f"Edits rejected: {result.edits_rejected}", file=sys.stderr)
+        print(f"Improved: {', '.join(result.metrics_improved) or 'none'}", file=sys.stderr)
+        print(f"Worsened: {', '.join(result.metrics_worsened) or 'none'}", file=sys.stderr)
+        print(f"Distance: {result.metrics_initial.total_distance:.4f} → {result.metrics_final.total_distance:.4f}", file=sys.stderr)
+
+
 def main() -> None:
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -728,6 +783,22 @@ def main() -> None:
     crit_p.add_argument("--model", type=str, default=None,
                         help="Model name for retexture (default: bartowski-drummer-24b-q6k_l)")
 
+    # revise (agent)
+    revise_p = subparsers.add_parser("revise", help="Agentic iterative revision [ML+Agent]")
+    revise_p.add_argument("files", nargs="+", help="Files to revise")
+    revise_p.add_argument("-o", "--output", type=str, default=None,
+                          help="Output file (default: stdout)")
+    revise_p.add_argument("--max-turns", type=int, default=8,
+                          help="Maximum revision turns (default: 8)")
+    revise_p.add_argument("--dry-run", action="store_true",
+                          help="Scan and critique only, don't rewrite")
+    revise_p.add_argument("--verbose", action="store_true",
+                          help="Print each turn's metrics delta")
+    revise_p.add_argument("--endpoint", type=str, default="http://localhost:8081/v1",
+                          help="LLM endpoint")
+    revise_p.add_argument("--model", type=str, default="gpt-oss-120b",
+                          help="Model name")
+
     args = parser.parse_args()
 
     if args.command is None:
@@ -744,5 +815,6 @@ def main() -> None:
         "contour": cmd_contour,
         "sensory": cmd_sensory,
         "critique": cmd_critique,
+        "revise": cmd_revise,
     }
     handlers[args.command](args)
