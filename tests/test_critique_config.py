@@ -124,3 +124,13 @@ def test_default_issue_finder_thresholds():
     assert cfg.inversion_pct_gate == pytest.approx(15.0)
     # spikes
     assert cfg.spike_surprisal_margin == pytest.approx(0.1)
+
+
+def test_default_yaml_matches_code_defaults():
+    """default.yaml must produce the same config as CritiqueConfig()."""
+    cfg_code = CritiqueConfig()
+    cfg_yaml = CritiqueConfig.from_yaml(Path("arena/configs/default.yaml"))
+    assert cfg_yaml.baselines == cfg_code.baselines
+    assert cfg_yaml.prescriptions == cfg_code.prescriptions
+    assert cfg_yaml.major_threshold == cfg_code.major_threshold
+    assert cfg_yaml.discourse_entropy_gate == cfg_code.discourse_entropy_gate
