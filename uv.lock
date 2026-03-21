@@ -2476,6 +2476,9 @@ wheels = [
 name = "prose-doctor"
 version = "0.2.0"
 source = { editable = "." }
+dependencies = [
+    { name = "pyyaml" },
+]
 
 [package.optional-dependencies]
 agent = [
@@ -2510,6 +2513,7 @@ requires-dist = [
     { name = "numpy", marker = "extra == 'ml'", specifier = ">=1.26" },
     { name = "prose-doctor", extras = ["ml"], marker = "extra == 'agent'" },
     { name = "pydantic-ai", marker = "extra == 'agent'", specifier = ">=1.60.0" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "sentence-transformers", marker = "extra == 'ml'", specifier = ">=3.0" },
     { name = "spacy", marker = "extra == 'ml'", specifier = ">=3.7" },
     { name = "torch", marker = "extra == 'ml'", specifier = ">=2.0" },
