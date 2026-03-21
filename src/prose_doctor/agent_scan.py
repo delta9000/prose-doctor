@@ -5,6 +5,13 @@ from prose_doctor.agent_models import ProseMetrics
 from prose_doctor.config import ProjectConfig
 
 
+# Lens names that feed into ProseMetrics — always run.
+_METRIC_LENSES = {"psychic_distance", "info_contour", "foregrounding"}
+
+# Additional lenses for full scans.
+_FULL_LENSES = _METRIC_LENSES | {"sensory"}
+
+
 def scan_deep(
     text: str,
     filename: str = "chapter.md",
@@ -27,15 +34,31 @@ def scan_deep(
 
     Returns (ProseMetrics, report_dict).
     """
-    from prose_doctor.ml import require_ml
+    from prose_doctor.providers import require_ml, ProviderPool
+    from prose_doctor.lenses import LensRegistry
+    from prose_doctor.lenses.defaults import default_registry
+    from prose_doctor.lenses.runner import LensRunner
+
     require_ml()
-    from prose_doctor.ml.models import ModelManager
 
     cfg = config or ProjectConfig()
-    mm = ModelManager()
+
+    # Build a registry scoped to only the lenses we need.
+    wanted = _METRIC_LENSES if metrics_only else _FULL_LENSES
+    full_registry = default_registry()
+    registry = LensRegistry()
+    for name in wanted:
+        lens = full_registry.get(name)
+        if lens is not None:
+            registry.register(lens)
+
+    pool = ProviderPool()
+    runner = LensRunner(registry, pool)
+    results = runner.run_all(text, filename)
+
+    # --- Build report_dict (rule-based health + lens results) ---
 
     if metrics_only:
-        # Lightweight: skip diagnose() and sensory — just compute the 8 metrics
         from prose_doctor.analyzers.doctor import ChapterHealth
         from prose_doctor.text import count_words
         report = ChapterHealth(
@@ -46,57 +69,61 @@ def scan_deep(
         from prose_doctor.analyzers.doctor import diagnose
         report = diagnose(text, filename=filename, config=cfg)
 
-    # Psychic distance — always run (feeds pd_mean, pd_std)
-    from prose_doctor.ml.psychic_distance import analyze_chapter as pd_analyze
-    pd = pd_analyze(text, filename, mm)
-    report.psychic_distance = {
-        "mean_distance": pd.mean_distance,
-        "std_distance": pd.std_distance,
-        "label": pd.label,
-        "zoom_jumps": len(pd.zoom_jumps),
-        "paragraph_means": [round(m, 3) for m in pd.paragraph_means],
-    }
+    # Attach lens results onto the report object so to_dict() includes them.
+    pd_res = results.get("psychic_distance")
+    if pd_res:
+        pc = pd_res.per_chapter or {}
+        report.psychic_distance = {
+            "mean_distance": pc.get("pd_mean", 0),
+            "std_distance": pc.get("pd_std", 0),
+            "label": (pd_res.raw or {}).get("label", ""),
+            "zoom_jumps": int(pc.get("zoom_jump_count", 0)),
+            "paragraph_means": (pd_res.per_paragraph or {}).get("pd_mean", []),
+        }
 
-    # Information contour — always run (feeds ic_rhythmicity, ic_spikes, ic_flatlines)
-    from prose_doctor.ml.info_contour import analyze_chapter as ic_analyze
-    ic = ic_analyze(text, filename, mm)
-    report.info_contour = {
-        "mean_surprisal": ic.mean_surprisal,
-        "cv_surprisal": ic.cv_surprisal,
-        "label": ic.label,
-        "dominant_period": ic.dominant_period,
-        "dominant_period_words": ic.dominant_period_words,
-        "rhythmicity": ic.rhythmicity,
-        "flatlines": ic.flatlines,
-        "spikes": len(ic.spikes),
-    }
+    ic_res = results.get("info_contour")
+    if ic_res:
+        pc = ic_res.per_chapter or {}
+        report.info_contour = {
+            "mean_surprisal": pc.get("mean_surprisal", 0),
+            "cv_surprisal": pc.get("cv_surprisal", 0),
+            "label": (ic_res.raw or {}).get("label", ""),
+            "dominant_period": pc.get("dominant_period", 0),
+            "dominant_period_words": (ic_res.raw or {}).get("dominant_period_words", 0),
+            "rhythmicity": pc.get("rhythmicity", 0),
+            "flatlines": int(pc.get("flatlines", 0)),
+            "spikes": int(pc.get("spikes", 0)),
+        }
 
-    # Foregrounding — always run (feeds fg_inversion, fg_sl_cv, fg_fragment)
-    from prose_doctor.ml.foregrounding import score_chapter
-    fg = score_chapter(text, filename, mm)
-    report.foregrounding = {
-        "index": round(fg.index, 2),
-        "inversion_pct": round(fg.inversion_pct, 1),
-        "sentence_length_cv": round(fg.sl_cv, 2),
-        "fragment_pct": round(fg.fragment_pct, 1),
-        "weakest_axis": fg.weakest_axis,
-        "prescription": fg.prescription,
-    }
+    fg_res = results.get("foregrounding")
+    if fg_res:
+        pc = fg_res.per_chapter or {}
+        report.foregrounding = {
+            "index": round(pc.get("index", 0), 2),
+            "inversion_pct": round(pc.get("inversion_pct", 0), 1),
+            "sentence_length_cv": round(pc.get("sl_cv", 0), 2),
+            "fragment_pct": round(pc.get("fragment_pct", 0), 1),
+            "weakest_axis": (fg_res.raw or {}).get("weakest_axis", ""),
+            "prescription": (fg_res.raw or {}).get("prescription", ""),
+        }
 
-    if not metrics_only:
-        # Sensory profiler — only on full scans
-        from prose_doctor.ml.sensory import profile_chapter
-        sp = profile_chapter(text, filename, mm)
+    sensory_res = results.get("sensory")
+    if sensory_res:
+        pc = sensory_res.per_chapter or {}
+        raw = sensory_res.raw or {}
         report.sensory = {
-            "dominant": sp.dominant_modality,
-            "weakest": sp.weakest_modality,
-            "balance": round(sp.balance_ratio, 3),
-            "scores": sp.scores,
-            "deserts": len(sp.deserts),
-            "prescription": sp.prescription,
+            "dominant": pc.get("dominant_modality", ""),
+            "weakest": pc.get("weakest_modality", ""),
+            "balance": round(pc.get("balance_ratio", 0), 3),
+            "scores": {
+                m: pc.get(m, 0)
+                for m in ["visual", "auditory", "haptic",
+                           "olfactory", "gustatory", "interoceptive"]
+            },
+            "deserts": len(raw.get("deserts", [])),
+            "prescription": raw.get("prescription", ""),
         }
     elif previous_report:
-        # Carry forward sensory from previous full scan
         report.sensory = previous_report.get("sensory")
 
     report_dict = report.to_dict()
@@ -107,7 +134,8 @@ def scan_deep(
             if key in previous_report and key not in report_dict:
                 report_dict[key] = previous_report[key]
 
-    # Build ProseMetrics from report
+    # --- Build ProseMetrics from report_dict ---
+
     ic_dict = report_dict.get("info_contour") or {}
     spikes_val = ic_dict.get("spikes", 0)
     if isinstance(spikes_val, list):
