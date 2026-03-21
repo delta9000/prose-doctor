@@ -64,6 +64,19 @@ def test_edit_result_serialization():
     assert "metrics_before" in d
 
 
+def test_prose_metrics_custom_baselines():
+    """ProseMetrics uses custom baselines when provided."""
+    custom = {"pd_mean": (0.5, "higher"), "pd_std": (0.1, "higher")}
+    m = ProseMetrics(
+        pd_mean=0.5, pd_std=0.1,
+        fg_inversion=44.2, fg_sl_cv=0.706, fg_fragment=6.7,
+        ic_rhythmicity=0.129, ic_spikes=8, ic_flatlines=3,
+        baselines=custom,
+    )
+    assert m.total_distance == 0.0
+    assert len(m.distances()) == 2
+
+
 def test_revision_result_serialization():
     m = ProseMetrics(
         pd_mean=0.336, pd_std=0.093, fg_inversion=44.2,
