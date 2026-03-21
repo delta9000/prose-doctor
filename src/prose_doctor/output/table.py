@@ -84,7 +84,9 @@ def format_chapter_report(health: ChapterHealth) -> str:
         if d.get("all_same_voice"):
             lines.append("    WARNING: all characters sound identical")
         if d.get("talking_heads"):
-            lines.append(f"    WARNING: {len(d['talking_heads'])} talking-head stretches")
+            th = d['talking_heads']
+            count = len(th) if isinstance(th, list) else th
+            lines.append(f"    WARNING: {count} talking-head stretches")
         if d.get("prescription"):
             lines.append(f"    Rx: {d['prescription']}")
 
