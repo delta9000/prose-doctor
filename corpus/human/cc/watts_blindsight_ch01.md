@@ -1,85 +1,5 @@
-Each time You
-	distribute or publicly digitally perform the Work or a Collective
-	Work, the Licensor offers to the recipient a license to the Work on
-	the same terms and conditions as the license granted to You under
-	this License. 
-
-
-	
-
-	
-
-
-	
-
-Each time You
-	distribute or publicly digitally perform a Derivative Work, Licensor
-	offers to the recipient a license to the original Work on the same
-	terms and conditions as the license granted to You under this
-	License. 
-
-
-	
-
-	
-
-
-	
-
-If any provision of
-	this License is invalid or unenforceable under applicable law, it
-	shall not affect the validity or enforceability of the remainder of
-	the terms of this License, and without further action by the parties
-	to this agreement, such provision shall be reformed to the minimum
-	extent necessary to make such provision valid and enforceable. 
-
-
-	
-
-	
-
-
-	
-
-No term or
-	provision of this License shall be deemed waived and no breach
-	consented to unless such waiver or consent shall be in writing and
-	signed by the party to be charged with such waiver or consent. 
-
-
-	
-
-	
-
-
-	
-
-This License
-	constitutes the entire agreement between the parties with respect to
-	the Work licensed here. There are no understandings, agreements or
-	representations with respect to the Work not specified here.
-	Licensor shall not be bound by any additional provisions that may
-	appear in any communication from You. This License may not be
-	modified without the mutual written agreement of the Licensor and
-	You. 
-
-
-	
-
-
-
-
-
-
-Creative Commons is
-not a party to this License, and makes no warranty whatsoever in
-connection with the Work. Creative Commons will not be liable to You
-or any party on any legal theory for any damages whatsoever,
-including without limitation any general, special, incidental or
-consequential damages arising in connection to this license.
-Notwithstanding the foregoing two (2) sentences, if Creative Commons
-has expressly identified itself as the Licensor hereunder, it shall
-have all rights and obligations of Licensor. 
+Blood
+makes noise.  �Susanne Vega
 
 
 
@@ -87,1942 +7,822 @@ have all rights and obligations of Licensor.
 
 
 
-Except for the
-limited purpose of indicating to the public that the Work is licensed
-under the CCPL, neither party will use the trademark &quot;Creative
-Commons&quot; or any related trademark or logo of Creative Commons
-without the prior written consent of Creative Commons. Any permitted
-use will be in compliance with Creative Commons' then-current
-trademark usage guidelines, as may be published on its website or
-otherwise made available upon request from time to time.
 
 
 
+Imagine you are Siri Keeton:
 
 
-Creative
-Commons may be contacted at 
 
-http://creativecommons.org/
-
+You wake in an agony of resurrection, gasping after a
+record-shattering bout of sleep apnea spanning one hundred forty
+days.  You can feel your blood, syrupy with dobutamine and
+leuenkephalin, forcing its way through arteries shriveled by months
+on standby.  The body 
+inflates
+ in painful increments: blood
+vessels dilate; flesh peels apart from flesh; ribs crack in your ears
+with sudden unaccustomed flexion.  Your joints have seized up through
+disuse.  You're a stick-man, frozen in some perverse 
+rigor vitae
 .
 
 
+
+You'd scream if you had the breath.
+
+
+
+Vampires did this all the time, you remember.  It was 
+normal
+
+for them, it was their own unique take on resource conservation. 
+They could have taught your kind a few things about restraint, if
+that absurd aversion to right-angles hadn't done them in at the dawn
+of civilization.  Maybe they still can.  They're back now, after all�
+raised from the grave with the voodoo of paleogenetics, stitched
+together from junk genes and fossil marrow steeped in the blood of
+sociopaths and high-functioning autistics.  One of them commands this
+very mission.  A handful of his genes live on in your own body so it
+too can rise from the dead, here at the edge of interstellar space. 
+Nobody gets past Jupiter without becoming part vampire.
+
+
+
+The pain begins, just slightly, to recede.  You fire up your inlays
+and access your own vitals:  it'll be long minutes before your body
+responds fully to motor commands,  hours before it stops hurting. 
+The pain's an unavoidable side effect.  That's just what happens when
+you splice vampire subroutines into Human code.  You asked about
+painkillers once, but nerve blocks of any kind 
+compromise
+metabolic reactivation
+.  Suck it up, soldier.
+
+
+
+You wonder if this was how it felt for Chelsea, before the end.  But
+that evokes a whole other kind of pain, so you block it out and
+concentrate on the life pushing its way back into your extremities. 
+Suffering in silence, you check the logs for fresh telemetry.
+
+
+
+You think:  
+That can't be right
+.
+
+
+
+Because if it is, you're in the wrong part of the universe.  You're
+not in the Kuiper Belt where you belong:  you're high above the
+ecliptic and deep into the Oort, the realm of long-period comets that
+only grace the sun every million years or so.  You've gone
+
+interstellar
+, which means (you bring up the system clock)
+you've been undead for eighteen hundred days.
+
+
+
+You've overslept by almost five years.
+
+
+
+The lid of your coffin slides away.  Your own cadaverous body
+reflects from the mirrored bulkhead opposite, a desiccated lungfish
+waiting for the rains.  Bladders of isotonic saline cling to its
+limbs like engorged antiparasites, like the opposite of leeches.  You
+remember the needles going in just before you shut down, way back
+when your veins were more than dry twisted filaments of beef jerky.
+
+
+
+Szpindel's reflection stares back from his own pod to your immediate
+right.  His face is as bloodless and skeletal as yours.  His wide
+sunken eyes jiggle in their sockets as he reacquires his own links,
+sensory interfaces so massive that your own off-the-shelf inlays
+amount to shadow-puppetry in comparison.
+
+
+
+You hear coughing and the rustling of limbs just past line-of-sight,
+catch glimpses of reflected motion where the others stir at the edge
+of vision.
+
+
+
+Wha� Your voice is barely more than a hoarse
+whisper.  �happ�?
+
+
+
+Szpindel works his jaw.  Bone cracks audibly.
+
+
+
+�Sssuckered, he hisses.
+
+
+
+You haven't even met the aliens yet, and already they're running
+rings around you.
+
+
+
+
+
+
+
+
+
+*
+
+
+
+
+
+
+
+
+
+So we dragged ourselves back from the dead:  five part-time cadavers,
+naked, emaciated, barely able to move even in zero gee.  We emerged
+from our coffins like premature moths ripped from their cocoons,
+still half-grub.  We were alone and off course and utterly helpless,
+and it took a conscious effort to remember:  they would never have
+risked our lives if we hadn't been essential.
+
+
+
+Morning, commissar.  Isaac Szpindel reached one
+trembling, insensate hand for the feedback gloves at the base of his
+pod.  Just past him, Susan James was curled into a loose fetal ball,
+murmuring to herselves.  Only Amanda Bates, already dressed and
+cycling through a sequence of bone-cracking isometrics,  possessed
+anything approaching mobility.  Every now and then she tried bouncing
+a rubber ball off the bulkhead; but not even she was up to catching
+it on the rebound yet.
+
+
+
+The journey had melted us down to a common archetype.  James' round
+cheeks and hips, Szpindel's high forehead and lumpy, lanky
+chassis�even the enhanced carboplatinum brick shit-house that
+Bates used for a body� all had shriveled to the same desiccated
+collection of sticks and bones.  Even our hair seemed to have become
+strangely discolored during the voyage, although I knew that was
+impossible.  More likely it was just filtering the pallor of the skin
+beneath.  Still.  The pre-dead James had been dirty blond, Szpindel's
+hair had been almost dark enough to call 
+black
+� but the
+stuff floating from their scalps looked the same dull kelpy brown to
+me now.  Bates kept her head shaved, but even her eyebrows weren't as
+rusty as I remembered them.
+
+
+
+We'd revert to our old selves soon enough.  Just add water.  For now,
+though, the old slur was freshly relevant:  the Undead really did all
+look the same, if you didn't know how to look.
+
+
+
+If you did, of course�if you forgot appearance and watched for
+motion, ignored meat and studied 
+topology
+�you'd never
+mistake one for another.  Every facial tic was a data point, every
+conversational pause spoke volumes more than the words to either
+side.  I could see James' personae shatter and coalesce in the
+flutter of an eyelash.  Szpindel's unspoken distrust of Amanda Bates
+shouted from the corner of his smile.  Every twitch of the phenotype
+cried aloud to anyone who knew the language.
+
+
+
+Where's� James croaked, coughed, waved one spindly
+arm at Sarasti's empty coffin gaping at the end of the row. 
+
+
+
+
+Szpindel's lips cracked in a small rictus.  Gone back to Fab,
+eh?  Getting the ship to build some dirt to lie on.
+
+
+
+Probably communing with the Captain.  Bates breathed
+louder than she spoke, a dry rustle from pipes still getting
+reacquainted with the idea of respiration. 
+
+
+
+
+James again:  Could do that up here.
+
+
+
+Could take a dump up here, too, Szpindel rasped.  Some
+things you do by yourself, eh?
+
+
+
+And some things you kept 
+to
+ yourself.   Not many baselines
+felt comfortable locking stares with a vampire�Sarasti, ever
+courteous, tended to avoid eye contact for exactly that reason�but
+there were other surfaces to his topology, just as mammalian and just
+as readable.  If he had withdrawn from public view, maybe I was the
+reason.  Maybe he was keeping secrets.
+
+
+
+After all, 
+Theseus
+ damn well was. 
+
+
+
+
+
+
+
+
+
+
+*
+
+
+
+
+
+
+
+
+
+She'd taken us a good fifteen AUs towards our destination before
+something scared her off course.  Then she'd skidded north like a
+startled cat and started climbing:  a wild high three-gee burn off
+the ecliptic, thirteen hundred tonnes of momentum bucking against
+Newton's First. She'd emptied her Penn tanks, bled dry her substrate
+mass, squandered a hundred forty days' of fuel in hours.  Then a long
+cold coast through the abyss, years of stingy accounting, the thrust
+of every antiproton weighed against the drag of sieving it from the
+void.  Teleportation isn't magic:  the Icarus stream couldn't send us
+the actual antimatter it made, only the quantum specs.  
+Theseus
+
+had to filterfeed the raw material from space, one ion at a time. 
+For long dark years she'd made do on pure inertia, hoarding every
+swallowed atom.  Then a flip; ionizing lasers strafing the space
+ahead; a ramscoop thrown wide in a hard brake.  The weight of a
+trillion trillion protons slowed
  
+her down and refilled her gut
+and flattened us all over again.  
+Theseus
+ had burned
+relentless until almost the moment of our resurrection.
+
+
+
+It was easy enough to retrace those steps; our course was there in
+ConSensus for anyone to see.  Exactly why the ship had blazed that
+trail was another matter.  Doubtless it would all come out during the
+post-rez briefing.  We were hardly the first vessel to travel under
+the cloak of 
+sealed orders
+, and if there'd been a pressing
+need to know by now we'd have known by now.  Still, I wondered who
+had locked out the Comm logs.  Mission Control, maybe.  Or Sarasti. 
+Or 
+Theseus
+ herself, for that matter.  It was easy to forget
+the Quantical AI at the heart of our ship.  It stayed so discreetly
+in the background, nurtured and carried us and permeated our
+existence like an unobtrusive God; but like God, it never took your
+calls.
+
+
+
+Sarasti was the official intermediary.  When the ship did speak, it
+spoke to him� and Sarasti called it 
+Captain
+.
+
+
+
+So did we all.
 
 
 
 
 
-	
-
-1
-
-	http://www.rifters.com/blindsight/vampires.htm
 
 
 
 
-
-	
-
-2
-
-	Pennish, E.  2003.  Cannibalism and prion disease may have been
-	rampant in ancient humans.  
-Science
- 300: 227-228.
+*
 
 
 
 
 
-	
-
-3
-
-	Mead, S. 
-et al.
-  2003.  Balancing Selection at the Prion
-	Protein Gene Consistent with Prehistoric Kurulike Epidemics. 
-	
-Science
- 300: 640-643.
 
 
 
 
+He'd given us four hours to come back.  It took more than three just
+to get me out of the crypt.  By then my brain was at least firing on
+most of its synapses, although my body�still sucking fluids
+like a thirsty sponge� continued to ache with every movement. 
+I swapped out drained electrolyte bags for fresh ones and headed aft.
 
-	
 
-4
 
-	Anonymous., 2004.  Autism: making the connection.  
-The Economist
+
+Fifteen minutes to spin-up.  Fifty to the post-resurrection briefing.
+ Just enough time for those who preferred gravity-bound sleep to haul
+their personal effects into the drum and stake out their allotted 4.4
+square meters of floor space.
+
+
+
+Gravity�or any centripetal facsimile thereof�did not
+appeal to me.  I set up my own tent in zero-gee and as far to stern
+as possible, nuzzling the forward wall of the starboard shuttle tube.
+ The tent inflated like an abscess on 
+Theseus'
+ spine, a little
+climate-controlled bubble of atmosphere in the dark cavernous vacuum
+beneath the ship's carapace.  My own effects were minimal; it took
+all of thirty seconds to stick them to the wall, and another thirty
+to program the tent's environment.
+
+
+
+Afterwards I went for a hike.  After five years, I needed the
+exercise.
+
+
+
+Stern was closest, so I started there:  at the shielding that
+separated payload from propulsion.  A single sealed hatch blistered
+the aft bulkhead dead center.  Behind it, a service tunnel wormed
+back through machinery best left untouched by human hands.  The fat
+superconducting torus of the ramscoop ring; the antennae fan behind
+it, unwound now into an indestructible soap-bubble big enough to
+shroud a city, its face turned sunward to catch the faint quantum
+sparkle of the Icarus antimatter stream.  More shielding behind that;
+then the telematter reactor, where raw hydrogen and refined
+information conjured fire three hundred times hotter than the sun's. 
+I knew the incantations, of course�antimatter cracking and
+deconstruction, the teleportation of quantum serial numbers�but
+it was still magic to me, how we'd come so far so fast.  It would
+have been magic to anyone.
+
+
+
+Except Sarasti, maybe.
+
+
+
+Around me, the same magic worked at cooler temperatures and to less
+volatile ends: a small riot of chutes and dispensers crowded the
+bulkhead on all sides.  A few of those openings would choke on my
+fist: one or two could swallow me whole.  
+Theseus
+' fabrication
+plant could build everything from cutlery to cockpits.  Give it a big
+enough matter stockpile and it could have even been built another
+
+Theseus
+, albeit in many small pieces and over a very long
+time.  Some wondered if it could build another crew as well, although
+we'd all been assured that was impossible.  Not even these machines
+had fine enough fingers to reconstruct a few trillion synapses in the
+space of a human skull.  Not yet, anyway.
+
+
+
+I believed it.  They would never have shipped us out fully-assembled
+if there'd been a cheaper alternative.
+
+
+
+I faced forward.  Putting the back of my head against that sealed
+hatch I could see almost to 
+Theseus
+' bow,  an uninterrupted
+line-of-sight extending to a tiny dark bull's-eye thirty meters
+ahead.   It was like staring at a great textured target in shades of
+white and gray:  concentric circles, hatches centered within
+bulkheads one behind another, perfectly aligned.   Every one stood
+open, in nonchalant defiance of a previous generation's safety codes.
+ We could keep them closed if we wanted to, if it made us feel safer.
+ That was all it would do, though;  it wouldn't improve our empirical
+odds one whit.  In the event of trouble those hatches would slam shut
+long milliseconds before Human senses could even make sense of an
+alarm.  They weren't even computer-controlled.  
+Theseus
+' body
+parts had 
+reflexes
+.
+
+
+
+I pushed off against the stern plating�wincing at the tug and
+stretch of disused tendons�and coasted forward, leaving Fab
+behind.   The shuttle-access hatches to 
+Scylla
+ and 
+Charybdis
+
+briefly constricted my passage to either side.  Past them the spine
+widened into a corrugated extensible cylinder two meters across
+and�at the moment�maybe fifteen long.  A pair of ladders
+ran opposite each other along its length; raised portholes the size
+of manhole covers stippled the bulkhead to either side.   Most of
+those just looked into the hold.  A couple served as general-purpose
+airlocks, should anyone want to take a stroll beneath the carapace. 
+One opened into my tent.  Another, four meters further forward,
+opened into Bates'.  
+
+
+
+
+From a third, just short of the forward bulkhead, Jukka Sarasti
+climbed into view like a long white spider.
+
+
+
+If he'd been Human I'd have known instantly what I saw there, I'd
+have smelled 
+murderer
+ all over his topology.  And I wouldn't
+have been able to even guess at the number of his victims, because
+his affect was so utterly without remorse.  The killing of a hundred
+would leave no more stain on Sarasti's surfaces than the swatting of
+an insect; guilt beaded and rolled off this creature like water on
+wax.
+
+
+
+But Sarasti wasn't human.  Sarasti was a whole different animal, and
+coming from him all those homicidal refractions meant nothing more
+than 
+predator
+.  He had the inclination, was born to it;
+whether he had ever acted on it was between him and Mission Control.
+
+
+
+
+Maybe they cut you some slack
+, I didn't say to him.  
+Maybe
+it's just a cost of doing business.  You're mission-critical, after
+all.  For all I know you cut a deal.  You're so very smart, you know
+we wouldn't have brought you back in the first place if we hadn't
+
+needed
+ you.  From the day they cracked the vat you knew you
+had leverage.
+
+
+
+
+
+Is that how it works, Jukka?  You save the world, and the folks
+who hold your leash agree to look the other way?
+
+
+
+
+As a child I'd read tales about jungle predators transfixing their
+prey with a stare.  Only after I'd met Jukka Sarasti did I know how
+it felt.  But he wasn't looking at me now.  He was focused on
+installing his own tent, and even if he 
+had
+ looked me in the
+eye there'd have been nothing to see but the dark wraparound visor he
+wore in deference to Human skittishness.  He ignored me as I grabbed
+a nearby rung and squeezed past.
+
+
+
+I could have sworn I smelled raw meat on his breath.
+
+
+
+Into the drum (
+drums
+, technically; the BioMed hoop at the back
+spun on its own bearings).  I flew through the center of a cylinder
+sixteen meters across.  
+Theseus
+' spinal nerves ran along its
+axis, the exposed plexii and piping bundled against the ladders on
+either side.  Past them, Szpindel's and James' freshly-erected tents
+rose from nooks on opposite sides of the world.  Szpindel himself
+floated off my shoulder, still naked but for his gloves, and I could
+tell from the way his fingers moved that his favorite color was
+green.   He anchored himself to one of three stairways to nowhere
+arrayed around the drum:  steep narrow steps rising five vertical
+meters from the deck into empty air.
+
+
+
+The next hatch gaped dead-center of the drum's forward wall; pipes
+and conduits plunged into the bulkhead to each side.  I grabbed a
+convenient rung to slow myself�biting down once more on the
+pain�and floated through.
+
+
+
+T-junction.  The spinal corridor continued forward, a smaller
+diverticulum branched off to an EVA cubby and the forward airlock.  I
+stayed the course and found myself back in the crypt, mirror-bright
+and less than two meters deep.  Empty pods gaped to the left; sealed
+ones huddled to the right.  We were so irreplaceable we'd come with
+replacements.  They slept on, oblivious.  I'd met three of them back
+in training.  Hopefully none of us would be getting reacquainted any
+time soon.
+
+
+
+Only four pods to starboard, though.  No backup for Sarasti.
+
+
+
+Another hatchway.  Smaller this time.  I squeezed through into the
+bridge.  Dim light there, a silent shifting mosaic of icons and
+alphanumerics iterating across dark glassy surfaces.  Not so much
+bridge as cockpit, and a cramped one at that.  I'd emerged between
+two acceleration couches, each surrounded by a horseshoe array of
+controls and readouts.  Nobody expected to ever 
+use 
+this
+compartment.  
+Theseus
+ was perfectly capable of running
+herself, and if she wasn't we were capable of running her from our
+inlays, and if we weren't the odds were overwhelming that we were all
+dead anyway.  Still, against that astronomically off-the-wall chance,
+this was where one or two intrepid survivors could pilot the ship
+home again after everything else had failed.
+
+
+
+Between the footwells the engineers had crammed one last hatch and
+one last passageway:  to the observation blister on 
+Theseus
+'
+prow.  I hunched my shoulders (tendons cracked and complained) and
+pushed through�
+
+
+
+�into darkness.  Clamshell shielding covered the outside of the
+dome like a pair of eyelids squeezed tight.  A single icon glowed
+softly from a touchpad to my left; faint stray light followed me
+through from the spine, brushed dim fingers across the concave
+enclosure.  The dome resolved in faint shades of blue and gray as my
+eyes adjusted.  A stale draft stirred the webbing floating from the
+rear bulkhead, mixed oil and machinery at the back of my throat. 
+Buckles clicked faintly in the breeze like impoverished wind chimes.
+
+
+
+I reached out and touched the crystal:  the innermost layer of two,
+warm air piped through the gap between to cut the cold.  Not
+completely, though.  My fingertips chilled instantly.
+
+
+
+Space out there.
+
+
+
+Perhaps, en route to our original destination, 
+Theseus
+ had
+seen something that scared her clear out of the solar system.  More
+likely she hadn't been running away from anything but 
+to
+
+something else, something that hadn't been discovered until we'd
+already died and gone from Heaven.  In which case...
+
+
+
+I reached back and tapped the touchpad.  I half-expected nothing to
+happen; 
+Theseus'
+ windows could be as easily locked as her comm
+logs.  But the dome split instantly before me, a crack then a
+crescent then a wide-eyed lidless stare as the shielding slid
+smoothly back into the hull.   My fingers clenched reflexively into a
+fistful of webbing.  The sudden void stretched empty and unforgiving
+in all directions, and there was nothing to cling to but a metal disk
+barely four meters across.
+
+
+
+Stars, everywhere.  So many stars that I could not for the life me
+understand how the sky could contain them all yet be so black. 
+Stars, and�
+
+
+
+�nothing else.
+
+
+
+
+What did you expect? 
+I chided myself.  
+An alien mothership
+hanging off the starboard bow?
+
+
+
+
+Well, why not?  We were out here for 
+something
+.
+
+
+
+The others were, anyway.  They'd be essential no matter where we'd
+ended up.  But my own situation was a bit different, I realized.  
+My
+
+usefulness degraded with distance.
+
+
+
+And we were over half a light year from home.
+
+
+
+
+When
+it is dark enough, you can see the stars.  
+
+
+
+
+
+
+�
+
+Emerson
+
+
+
+
+
+
+
+
+
+
+Where was I when the lights came down?
+
+
+
+I was emerging from the gates of Heaven, mourning a father who was�to
+his own mind, at least�still alive.  
+
+
+
+
+It had been scarcely two months since Helen had disappeared under the
+cowl.  Two months by our reckoning, at least.   From her perspective
+it could have been a day or a decade; the Virtually Omnipotent set
+their subjective clocks along with everything else.
+
+
+
+She wasn't coming back.  She would only deign to see her husband
+under conditions that amounted to a slap in the face.  He didn't
+complain.  He visited as often as she would allow:  twice a week,
+then once.  Then every two.  Their marriage decayed with the
+exponential determinism of a radioactive isotope and still he sought
+her out, and accepted her conditions.
+
+
+
+On the day the lights came down, I had joined him at my mother's
+side.  It was a special occasion, the last time we would ever see her
+in the flesh.  For two months her body had lain in state along with
+five hundred other new ascendants on the ward, open for viewing by
+the next of kin.  The interface was no more real than it would ever
+be, of course; the body could not talk to us.  But at least it was
+
+there
+, its flesh warm, the sheets clean and straight.  Helen's
+lower face was still visible below the cowl, though eyes and ears
+were helmeted.   We could touch her.  My father often did.  Perhaps
+some distant part of her still felt it.
+
+
+
+But eventually someone has to close the casket and dispose of the
+remains.  Room must be made for the new arrivals�and so we came
+to this last day at my mother's side.  Jim took her hand one more
+time.  She would still be available in her world, on her terms, but
+later this day the body would be packed into storage facilities
+crowded far too efficiently for flesh and blood visitors.  We had
+been assured that the body would remain intact�the muscles
+electrically exercised, the body flexed and fed, the corpus kept
+ready to return to active duty should Heaven experience some
+inconceivable and catastrophic meltdown.  Everything was reversible,
+we were told.  And yet�there were so many who had ascended, and
+not even the deepest catacombs go on forever.  There were rumors of
+dismemberment, of nonessential body parts hewn away over time
+according to some optimum-packing algorithm.  Perhaps Helen would be
+a torso this time next year, a disembodied head the year after. 
+Perhaps her chassis would be stripped down to the brain before we'd
+even left the building, awaiting only that final technological
+breakthrough that would herald the arrival of the Great Digital
+Upload.
+
+
+
+Rumors, as I say.  I personally didn't know of anyone who'd come back
+after ascending, but then why would anyone want to?  Not even Lucifer
+left Heaven until he was pushed.
+
+
+
+Dad might have known for sure�Dad knew more than most people,
+about the things most people weren't supposed to know�but he
+never told tales out of turn.  Whatever he knew, he'd obviously
+decided its disclosure wouldn't have changed Helen's mind.  That
+would have been enough for him.
+
+
+
+We donned the hoods that served as day passes for the Unwired, and we
+met my mother in the spartan visiting room she imagined for these
+visits.  She'd built no windows into the world she occupied, no hint
+of whatever utopian environment she'd constructed for herself.   She
+hadn't even opted for one of the prefab visiting environments
+designed to minimize dissonance among visitors.  We found ourselves
+in a featureless beige sphere five meters across.  There was nothing
+in there but her.
+
+
+
+
+Maybe not so far removed from her vision of utopia after all
 ,
-	372(8387): 66.
+I thought.
 
 
 
+My father smiled.  Helen.
 
 
-	
 
-5
+Jim.  She was twenty years younger than the thing on the
+bed, and still she made my skin crawl.  Siri!  You came!
 
-	Balter, M. 2002.  Ehat made Humans modern?  
-Science
- 295:
-	1219-1225.
 
 
+She always used my name.  I don't think she ever called me 
+son
+.
 
 
 
-	
+You're still happy here? my father asked.
 
-6
 
-	Blanco-Arias, P.,  C.A. Sargent, and N.A. Affara1. 2004. A
-	comparative analysis of the pig, mouse, and human PCDHX genes. 
-	
-Mammalian Genome
-, 15(4): 296-306.
 
+Wonderful.  I do wish you could join us.
 
 
 
+Jim smiled.  Someone has to keep the lights on.  
 
-	
 
-7
 
-	 Kreider MS, 
-et al.
-  1990.  Reduction of
-	thyrotropin-releasing hormone concentrations in central nervous
-	system of African lungfish during estivation.  
-Gen Comp
-	Endocrinol.
- 77(3):435-41.
 
+Now you 
+know
+ this isn't goodbye, she said.  You
+can visit whenever you like.
 
 
 
-
-	
-
-8
-
-	Cui, Y. 
-et al.
- 1996.  State-dependent changes of brain
-	endogenous opioids in mammalian hibernation. 
-Brain Research
-	Bulletin
- 40(2):129-33.
-
-
-
-
-
-	
-
-9
-
-	 Miller, K.  2004.  Mars astronauts 'will hibernate for 50
-	million-mile journey in space'.  News.telegraph.co.uk, 11/8/04.
-
-
-
-
-
-	
-
-10
-
-	Calvin, W.H. 1990.  The Cerebral Symphony:  Seashore Reflections on
-	the Structure of Consciousness.  401pp.  Bantam Books, NY.
-
-
-
-
-
-	
-
-11
-
-	Pennisi, E.  2004.  The first language?  
-Science
- 303: 
-	1319-1320.
-
-
-
-
-
-	
-
-12
-
-	Recordings of Hadzane click-based phonemes can be heard at
-	http://hctv.humnet.ucla.edu/departments/linguistics/VowelsandConsonants/index.html
-
-
-
-
-
-	
-
-13
-
-	Ramachandran, V.S. 1990.  pp346-360 in The Utilitarian Theory of
-	Perception, C. Blakemore (Ed.), Cambridge University Press,
-	Cambridge. 
-	
-
-
-
-
-
-	
-
-14
-
-	Purves, D. and R.B. Lotto.  2003.  Why We See What We Do An
-	Empirical Theory of Vision.  Sinauer Associates, Sunderland, MA. 
-	272 pp. 
-	
-
-
-
-
-
-	
-
-15
-
-	Yarbus, A.L. 1967. Eye movements during perception of complex
-	objects.
- In
- L. A. Riggs, Ed., Eye Movements and Vision,
-	Plenum Press, New York, Chapter VII, 171-196.
-
-
-
-
-
-	
-
-16
-
-	Pringle, H.L., 
-et al
-.  2001.  The role of attentional breadth
-	in perceptual change detection.  
-Psychonomic Bulletin &amp;
-	Review
- 8: 89-95(7)
-
-
-
-
-
-	
-
-17
-
-	Simons, D.J., and  Chabris, C.F. 1999. Gorillas in our midst: 
-	sustained inattentional blindness for dynamic events.  
-Perception
-
-	28: 1059-1074
-
-
-
-
-
-	
-
-18
-
-	Simons, D.J., and Rensink, R.A. 2003.  Induced Failures of Visual
-	Awareness. 
- Journal of Vision
- 3(1).
-
-
-
-
-
-	
-
-19
-
-	http://viscog.beckman.uiuc.edu/djs_lab/demos.html
-
-
-
-
-
-	
-
-20
-
-	Metzinger, T.  2003.  Being No One:  The Self-Model Theory of
-	Subjectivity.  MIT Press, Cambridge, MA.  713pp.
-
-
-
-
-
-	
-
-21
-
-	Wegner, D.M.  2002.  The Illusion of Conscious Will.  MIT Press,
-	Cambridge.  405pp.
-
-
-
-
-
-	
-
-22
-
-	Saks, O.  1970.  The Man who mistook his wife for a hat and other
-	clinical tales.  Simon &amp; Shuster, NY.
-
-
-
-
-
-	
-
-23
-
-	American Psychiatric Association. 2000.  Diagnostic and Statistical
-	Manual of Mental Disorders. (4
-th
- Ed., Text Revision). 
-	Brandon/Hill.
-
-
-
-
-
-	
-
-24
-
-	Ramachandran, V.S., and Blakeslee, S. 1998. Phantoms in the Brain:
-	Probing the Mysteries of the Human Mind.  William Morrow, New York. 
-	
-
-
-
-
-
-	
-
-25
-
-	Persinger, M.A. 2001 The Neuropsychiatry of Paranormal Experiences.
-
-	J Neuropsychiatry &amp; Clinical Neuroscience
- 13: 515-524.
-
-
-
-
-
-	
-
-26
-
-	Kamitani, Y. and  Shimojo, S.  1999.  Manifestation of scotomas
-	created by transcranial magnetic stimulation of human visual cortex.
-	 
-Nature Neuroscience
-  2: 767-771.
-
-
-
-
-
-	
-
-27
-
-	Hallett, M. 2000. Transcranial magnetic stimulation and the human
-	brain. 
-Nature
- 406: 147-150.
-
-
-
-
-
-	
-
-28
-
-	Goldberg, C. 2003.  Zap! Scientist bombards brains with
-	super-magnets to edifying effect.  Boston Globe 14/1/2003, pE1.
-
-
-
-
-
-	
-
-29
-
-	Porter, R., and Lemon, R. 1993.  Corticospinal function and
-	voluntary movement.  Oxford University Press, NY.
-
-
-
-
-
-	
-
-30
-
-	Delgado, J.M.R.  1969. Physical control of the mind: toward a
-	psychocivilised society.  Harper &amp; Row, NY.
-
-
-
-
-
-	
-
-31
-
-	Libet, B. 1993. The neural time factor in conscious and unconscious
-	events. 
-Experimental and Theoretical Studies of Consciousness
-
-	174: 123-146.
-
-
-
-
-
-	
-
-32
-
-	P. Haggard, P., and Eimer , M.  1999. On the relation between brain
-	potentials and the awareness of voluntary movements.  
-Experimental
-	Brain Research 
-126: 128-133.
-
-
-
-
-
-	
-
-33
-
-	Velmans, M. 2003. Preconscious free will. 
-Journal of
-	Consciousness Studies
- 10: 42-61. 
-	
-
-
-
-
-
-	
-
-34
-
-	Pinto, C.  2003.  Putting the brain on trial.  May 5, 2003, Media
-	General News Service.
-
-
-
-
-
-	
-
-35
-
-	Macmillan, M.  2000.  An Odd Kind of Fame Stories:  of Phineas Gage.
-	 MIT Press, Cambridge, MA.
-
-
-
-
-
-	
-
-36
-
-	Ehrsson, H.H., C. Spence, and R.E. Passingham  2004. That's My Hand!
-	Activity in Premotor Cortex Reflects Feeling of Ownership of a Limb.
-	 
-Science
- 305: 875-877.
-
-
-
-
-
-	
-
-37
-
-	Gottleib, J., and P. Mazzoni. 2004.  Action, illusion, and
-	perception.  
-Science
- 303: 317-318.
-
-
-
-
-
-	
-
-38
-
-	Schwartz, A.B., D.W. Moran, and G.A. Reina. 2004.  Differential
-	representation of perception and action in the frontal cortex. 
-	
-Science
- 303: 380-383. 
-	
-
-
-
-
-
-	
-
-39
-
-	Norton, S.J., 2003.  Can ultrasound be used to stimulate nerve
-	tissue? 
-BioMedical Engineering OnLine
- 2:6, available at
-	
-
-http://www.biomedical-engineering-online.com/content/2/1/6
-
-
-	. 
-	
-
-
-
-
-
-	
-
-40
-
-	Hogan, J., and Fox, B.  2005.  Sony patent takes first step towards
-	real-life Matrix.  Excerpted from 
-New Scientist 
-2494:10,
-	available at
-	http://www.newscientist.com/article.ns?id=mg18624944.600 .
-
-
-
-
-
-	
-
-41
-
-	Riebe, M. 
-et al.
-  2004.  Deterministic quantum teleportation
-	with atoms. 
-Nature
- 429: 734 - 737.
-
-
-
-
-
-	
-
-42
-
-	Furusawa, A. 
-et al.
- 1998. Unconditional Quantum
-	Teleportation.  
-Science
-, 282(5389): 706-709
-
-
-
-
-
-	
-
-43
-
-	Carlton M. Caves, C.M. 1998.  A Tale of Two Cities.  
-Science
-,
-	282: 637-638
-
-
-
-
-
-	
-
-44
-
-	Braunstein, S.L., and Kimble, H.J.  1998. Teleportation of
-	continuous quantum variables.  
-Physical Review Letters 
-80:
-	869-872.
-
-
-
-
-
-	
-
-45
-
-	http://www.research.ibm.com/quantuminfo/teleportation/ 
-	
-
-
-
-
-
-	
-
-46
-
-	http://math.ucr.edu/home/baez/physics/Relativity/SR/rocket.html
-
-
-
-
-
-	
-
-47
-
-	Atkinson, N. 2004.  Magnetic Bubble Could Protect Astronauts on Long
-	Trips .  
-Universe Today
-, 
-	http://www.universetoday.com/am/publish/magnetic_bubble_protect.html
-
-
-
-
-
-	
-
-48
-
-	Holzscheiter, M.H., 
-et al
-.  1996. Production and trapping of
-	antimatter for space propulsion applications. American Institute of
-	Aeronautics and Astronautics-1996-2786 ASME, SAE, and ASEE, Joint
-	Propulsion Conference and Exhibit, 32nd, Lake Buena Vista, FL, July
-	1-3. 
-	
-
-
-
-
-
-	
-
-49
-
-	www.engr.psu.edu/antimatter/Papers/NASA_anti.pdf
-
-
-
-
-
-	
-
-50
-
-	Blacstone, E., 
-et al.
- 2005.  H 2 S Induces a Suspended
-	Animation�Like State in Mice.  
-Science
- 308: 518.
-
-
-
-
-
-	
-
-51
-
-	The data have not been published as of this writing.
-
-
-
-
-
-	
-
-52
-
-	Bails, J. 2005.  Pitt scientists resurrect hope of cheating death. 
-	Pittburgh Tribune-Review, June 29.  Available online at
-	http://www.pittsburghlive.com/x/tribune-review/trib/regional/s_348517.html
-
-
-
-
-
-	
-
-53
-
-	Oasa, Y. 
-et al.
- 1999.  A deep near-infrared survey of the
-	chamaeleon i dark cloud core. 
-Astrophysical Journal
- 526:
-	336-343.
-
-
-
-
-
-	
-
-54
-
-	Normile, D.  2001.  Cosmic misfits elude star-formation theories. 
-	
-Science
- 291: 1680.
-
-
-
-
-
-	
-
-55
-
-	Lucas, P.W., and P.F. Roche. 2000. A population of very young brown
-	dwarfs and free-floating planets in Orion. Monthly Notices of the
-	Royal Astronomical Society 314: 858-864.
-
-
-
-
-
-	
-
-56
-
-	Najita, J.R., G.P. Tiede, and J.S. Carr. 2000. From stars to
-	superplanets: The low-mass initial mass function in the young
-	cluster IC 348. Astrophysical Journal 541(Oct. 1):977-1003.
-
-
-
-
-
-	
-
-57
-
-	Matthews, Jaymie. 2005.  Personal communication.
-
-
-
-
-
-	
-
-58
-
-	Liu, W., and Schultz, D.R. 1999. Jovian x-ray aurora and energetic
-	oxygen ion precipitation. 
-Astrophysical Journal
- 526:538-543.
-
-
-
-
-
-	
-
-59
-
-	Chen, P.V. 2001.  Magnetic field on Jupiter.  
-The Physics
-	Factbook
-, http://hypertextbook.com/facts/
-
-
-
-
-
-	
-
-60
-
-	Osorio, M.R.Z. 
-et al
-.  2000. Discovery of Young, Isolated
-	Planetary Mass Objects in the 
-&#61555;
-
-	Orionis Star Cluster.  
-Science
- 290: 103-106.
-
-
-
-
-
-	
-
-61
-
-	Lemley, B. 2002.  Nuclear Planet.  
-Discover
-23(8). 
-	
-
-
-
-
-
-	
-
-62
-
-	http://www.nuclearplanet.com/
-
-
-
-
-
-	
-
-63
-
-	Dulk, G.A., 
-et al.
- 1997. Search for Cyclotron-maser Radio
-	Emission from Extrasolar Planets.  Abstracts of the 29th Annual
-	Meeting of the Division for Planetary Sciences of the American
-	Astronomical Society, July 28�August 1, 1997, Cambridge,
-	Massachusetts.
-
-
-
-
-
-	
-
-64
-
-	Marley, M. 
-et al.
- 1997. Model Visible and Near-infrared
-	Spectra of Extrasolar Giant Planets. Abstracts of the 29th Annual
-	Meeting of the Division for Planetary Sciences of the American
-	Astronomical Society, July 28�August 1, 1997, Cambridge,
-	Massachusetts.
-
-
-
-
-
-	
-
-65
-
-	Boss, A.  2001.  Formation of Planetary-Mass Objects by Protostellar
-	Collapse and Fragmentation.  
-Astrophys. J
-. 551: L167.
-
-
-
-
-
-	
-
-66
-
-	Low, C., and D. Lynden-Bell. 1976.  The minimum Jeans mass or when
-	fragmentation must stop.   
-Mon. Not. R. Astron. Soc.
- 176:
-	367.
-
-
-
-
-
-	
-
-67
-
-	Jayawardhana, R. 2004. Unraveling Brown Dwarf Origins.  
-Science
-
-	 303: 322-323
-
-
-
-
-
-	
-
-68
-
-	Fegley, B., and K. Lodders. 1996.  Atmospheric Chemistry of the
-	Brown Dwarf Gliese 229B: Thermochemical Equilibrium Predictions. 
-
-	Astrophys. J.
- 472: L37.
-
-
-
-
-
-	
-
-69
-
-	Lodders, K.  2004.  Brown Dwarfs--Faint at Heart, Rich in Chemistry.
-	 
-Science
- 303: 323-324
-
-
-
-
-
-	
-
-70
-
-	Adam Burgasser.  2002.  June 1 edition of the Astrophysics Journal
-	Letters
-
-
-
-
-
-	
-
-71
-
-	Reid, I.N. 2002  Failed stars or overacheiving planets?  
-Science
-
-	296: 2154-2155. 
-	
-
-
-
-
-
-	
-
-72
-
-	Gizis, J.E.  2001.  Brown dwarfs (enhanced review)  Online article
-	supplementing 
-Science
- 294: 801.
-
-
-
-
-
-	
-
-73
-
-	Clarke, S. 2003.  Milky Way's nearest neighbour revealed. 
-	
-NewScientist.com
- News Service,  04/11/03.
-
-
-
-
-
-	
-
-74
-
-	Basri, G. 2000. Observations of brown dwarfs.  
-Annu. Rev. Astron.
-	Astrophys
- 38:485�519.
-
-
-
-
-
-	
-
-75
-
-	Tamura, M. 
-et al.
- 1998.  Isolated and Companion Young Brown
-	Dwarfs in the Taurus and Chamaeleon Molecular Clouds.  
-Science
-
-	282: 1095-1097.
-
-
-
-
-
-	
-
-76
-
-	Berger, E. 2001.  Discovery of radio emission from the brown dwarf
-	LP944-20.  
-Nature
- 410: 338-340.
-
-
-
-
-
-	
-
-77
-
-	Anonymous, 2000.  A brown dwarf solar flare.
-  Science@Nasa
-,
-	http://science.nasa.gov/headlines/y2000/ast12jul_1m.htm
-
-
-
-
-
-	
-
-78
-
-	Schilling, G.  2001.  Comet's course hints at mystery planet. 
-	
-Science
- 292: 33.
-
-
-
-
-
-	
-
-79
-Evelyne
-	Kohler, E. 
-et al.
- 2002. Hearing Sounds, Understanding
-	Actions: Action Representation in Mirror Neurons. 
-Science
-
-	297: 846-848
-
-
-
-
-
-	
-
-80
-
-	Rizzolatti, G, and Arbib, M.A. 1998.  Language Within Our Grasp.
-	
-Trends in Neuroscience
- 21(5):188-194.
-
-
-
-
-
-	
-
-81
-
-	Hauser, M.D., N. Chomsky, and W.T. Fitch.  2002.  The faculty of
-	language:  what is it, who has it, and how did it evolve?  
-Science
-
-	298:  1569-1579.
-
-
-
-
-
-	
-
-82
-
-	Miller, G.  2005.  Reflecting on Another's Mind.  
-Science
-
-	308: 945-947
-
-
-
-
-
-	
-
-83
-
-	Pfeiffer, T.,  S.  Schuster, and S. Bonhoeffer. 2001.  Cooperation
-	and Competition in the Evolution of ATP-Producing Pathways  
-Science
-
-	20 292: 504-507. 
-	
-
-
-
-
-
-	
-
-84
-
-	McMahon, R.J.  2003.  Chemical Reactions Involving Quantum
-	Tunneling. 
-Science
- 299:  833-834.
-
-
-
-
-
-	
-
-85
-
-	Zuev, P.S. 
-et al.
- 2003.  Carbon Tunneling from a Single
-	Quantum State.  
-Science 
-299: 867-870
-
-
-
-
-
-	
-
-86
-
-	Darwin, Charlie &quot;Chuckles&quot;.  1859.  The Origin of  Species
-	by Means of Natural Selection.  Penguin Classics Edition, reprinted
-	1968.  Originally published by John Murray, London.
-
-
-
-
-
-	
-
-87
-
-	Cho, A. 2004.  Life's Patterns: No Need to Spell It Out? 
-Science
-
-	303: 782-783. 
-	
-
-
-
-
-
-	
-
-88
-
-	Cohen, J., and Stewart, S. 2005.  Where are the dolphins?  
-Nature
-
-	409: 1119-1122.
-
-
-
-
-
-	
-
-89
-Reilly,
-	J.J.  1995.  After Darwin.  
-First Things
-, June/July.  Article
-	also available online at http://pages.prodigy.net/aesir/darwin.htm.
-
-
-
-
-
-	
-
-90
-
-	Devlin, K. 2004.  Cracking the da Vinci Code. 
- Discover
-
-	25(6): 64-69.
-
-
-
-
-
-	
-
-91
-
-	Snir, Y, and Kamien, R.D. 2005.  Entropically Driven Helix
-	Formation.  
-Science
- 307: 1067.
-
-
-
-
-
-	
-
-92
-
-	Wolfram, S.  2002.  A New Kind of Science.  Wolfram Media. 1192pp.
-
-
-
-
-
-	
-
-93
-
-	Albert, M.L. 2004.  Danger in Wonderland. 
-Science
- 303: 1141
-
-
-
-
-
-	
-
-94
-
-	Muotri, A.R., 
-et al.
- 2005.  Somatic mosaicism in neuronal
-	precursor cells mediated by L1 retrotransposition. 
-Nature
-
-	435: 903-910.
-
-
-
-
-
-	
-
-95
-
-	Nelson, D.L., and M.M Cox.  200.  Lehninger principles of
-	biochemistry. Worth, NY, NY.
-
-
-
-
-
-	
-
-96
-
-	Prigonine, I., and G. Nicholis.  1989.  Exploring Complexity. 
-	Freeman, NY.
-
-
-
-
-
-	
-
-97
-
-	Dawkins, R. 1988.  The Blind Watchmaker: Why the Evidence of
-	Evolution Reveals a Universe Without Design.  Norton.
-
-
-
-
-
-	
-
-98
-
-	Pinker, S.  1997.  How the mind works.  WW Norton &amp; Co., NY. 
-	660pp.
-
-
-
-
-
-	
-
-99
-
-	Koch, C.  2004.  The Quest for Consciousness:  A Neurobiological
-	Approach Roberts, Englewood, CO. 447pp.
-
-
-
-
-
-	
-
-100
-
-	McFadden, J. 2002.  Synchronous firing and its influence on the
-	brain�s electromagnetic field:  evidence for an
-	electromagnetic field theory of consciousness.   J.  Consciousness
-	Studies, 9, No. 4, 2002, pp. 23�50
-
-
-
-
-
-	
-
-101
-
-	Penrose, R.  1989.  The Emporer's New Mind.  Oxford University
-	Press.
-
-
-
-
-
-	
-
-102
-
-	Tononi, G., and G.M. Edelman.  1998.  Consciousness and Complexity. 
-	
-Science
- 282: 1846-1851.
-
-
-
-
-
-	
-
-103
-
-	Baars, B.J.  1988.  A Cognitive Theory of Consciousness. Cambridge
-	Univ. Press, New York.
-
-
-
-
-
-	
-
-104
-
-	Hilgetag, C.C.  2004.  Learning from switched-off brains.  
-Sci.
-	Amer.
- 14: 8-9.
-
-
-
-
-
-	
-
-105
-
-	Roth, G.  2004. The quest to find consciousness.  
-Sci. Amer.
-
-	14: 32-39.
-
-
-
-
-
-	
-
-106
-
-	Pauen, M. 2004. Does free will arise freely?  
-Sci. Amer.
- 14:
-	41-47.
-
-
-
-
-
-	
-
-107
-
-	Zimmer, C. 2003.  How the mind reads other minds.  
-Science
-
-	300:1079-1080.
-
-
-
-
-
-	
-
-108
-
-	Crick, F.H.C., and C. Koch.  2000.  The unconscious homunculus.  
-In
-
-	Neural Correlates of Consciousness�Empirical and Conceptual
-	Questions (T. Metzinger, Ed.)  MIT Press, Cambridge.
-
-
-
-
-
-	
-
-109
-
-	Churchland, P.S. 2002.  Self-Representation in Nervous Systems. 
-	
-Science
- 296: 308-310.
-
-
-
-
-
-	
-
-110
-
-	Miller, G.  2005.  What is the biological basis of consciousness? 
-	
-Science
- 309: 79.
-
-
-
-
-
-	
-
-111
-
-	Blakeslee, S.  2003.  The christmas tree in your brain.  
-Toronto
-	Star
-, 21/12/03
-
-
-
-
-
-	
-
-112
-
-	Matsumoto, K., and K. Tanaka.  2004.  Conflict and Cognitive
-	Control. 
-Science
- 303: 969-970.
-
-
-
-
-
-	
-
-113
-
-	Kerns, J.G., 
-et al.
- 2004.  Anterior Cingulate Conflict
-	Monitoring and Adjustments in Control.  
-Science
- 303: 
-	1023-1026.
-
-
-
-
-
-	
-
-114
-
-	Petersen, S.E. 
-et al.
- 1998.  The effects of practice on the
-	functional anatomy of task performance. 
-Proceedings of the 
-	National  Academy of Sciences
-  95: 853-860.
-
-
-
-
-
-	
-
-115
-
-	Nrretranders, T.  1999.  The User Illusion: Cutting Consciousness
-	Down to Size.  Penguin Press Science. 467pp.
-
-
-
-
-
-	
-
-116
-
-	Altenm�ller, E.O. 2004. Music in your head.  
-Scientific
-	American.
- 14: 24-31.
-
-
-
-
-
-	
-
-117
-
-	Helmuth, L.  2003.  Fear and Trembling in the Amygdala.  
-SCience
-
-	300: 568-569.
-
-
-
-
-
-	
-
-118
-
-	Dolan, R.J.  2002.  Emotion, cognition, and behavior.  
-Science
-
-	298: 1191-1194.
-
-
-
-
-
-	
-
-119
-
-	Treffert, D.A., and G.L. Wallace. 2004.  Islands of genius. 
-	
-Scientific American
- 14: 14-23.
-
-
-
-
-
-	
-
-120
-
-	Wegner, D.M. 1994.  Ironic processes of mental control.  
-Psychol.
-	Rev.
- 101: 34-52.
-
-
-
-
-
-	
-
-121
-
-	
-Proceedings of the Royal Society of London B
- (DOI
-	10.1098/rspb.2003.2548)
-
-
-
-
-
-	
-
-	
-122
-
-	Aiello, L., and C. Dean.  1990. An introduction to human
-	evolutionary anatomy. Academic Press, London.
-
-
-
-
-
-	
-
-123
-
-	Gallup, G.G. (Jr.). 1997.  On the rise and fall of self-conception in primates. In The Self Across Psychology� self-recognition, 
-	self-awareness, and the Self Concept.  
-Annals of the NY Acad. Sci.
- 818:4-17
-
-
-
-
-
-	
-
-124
-
-	Carstairs-McCarthy, A.  2004.  Many perspectives, no concensus�a
-	review of 
-Language Evolution
-, by Christiansen &amp; Kirby
-	(Eds).  
-Science
- 303:1299-1300.
-
-
-
-
-
-	
-
-125
-Dijksterhuis,
-	A., 
-et al.
-
- 2006. 
-
-Science
-
-
-	311:1005-1007.
-
-
-
-
-
-
-	
-
-126
-Vince,
-	G 2006. �'Sleeping on it' best for complex decisions.� 
-	Newscientist.com,
-	http://www.newscientist.com/channel/being-human/dn8732.html.
-
-
-
-
-
-	
-
-127
-
-	Devlin, A.M., 
-et al.
- 2003.  Clinical outcomes of
-	hemispherectomy for epilepsy in childhood and adolescence  
-Brain
-
-	126: 556-566.
-
-
-
-
-
-	
-
-128
-
-	Pulsifer, M,B., 
-et al.
-  2004. The cognitive outcome of
-	hemispherectomy in 71 children.  
-Epilepsia
-. 45: 243-54.
-
-
-
-
-
-	
-
-129
-
-	Moles, A., Keiffer, B.L., and F.R. D'Amato.  2004.  Deficit in
-	attachment behavior in mice lacking the 
-&#61549;
--Opioid
-	receptor gene.  
-Science
- 304: 1983-1986.
-
-
-
-
-
-	
-
-130
-
-	Plane, J.M.C., 
-et al.
-  2004.  Removal of meteoric iron on
-	polar mesospheric clouds.  
-Science
- 304: 426-428.
-
-
-
-
-
-	
-
-131
-
-	Fitch, W.T., and M.D. Hauser.  2004.  Computational Constraints on
-	Syntactic Processing in a Nonhuman Primate.  
-Science
-
-	303:377-380.
-
-
-
-
-
-	
-
-132
-
-	Premack, D.  2004.  Is Language the Key to Human Intelligence? 
-	
-Science
- 303: 318-320
-
-
-
-
-
-	
-
-133
-
-	Holden, C.  2004.  The origin of speech.  
-Science
- 303:
-	1316-1319.
-
-
-
-
-
-	
-
-134
-
-	Graddol, D.  2004.  The future of language.  
-Science
- 303:
-	1329-1331.
-
-
-
-
-
-	
-
-135
-
-	BBC News. 2005.  Brain chip reads man's thoughts. March 31.  Story
-	online at  http://news.bbc.co.uk/go/pr/fr/-/1/hi/health/4396387.stm
-
-
-
-
-
-	
-
-136
-
-	Weng, J. 
-et al.
- 2001.  Autonomous Mental Development by
-	Robots and Animals.  
-Science
- 291: 599-600.
-
-
-
-
-
-	
-
-137
-
-	Von Melchner, L, 
-et al.
- 2000. Visual behaviour mediated by
-	retinal projections directed to the auditory pathway.  
-Nature
-
-	404: 871-876.
-
-
-
-
-
-	
-
-138
-
-	Baughman, R.H. 2003.  Muscles made from metal.  
-Science
- 300:
-	268-269.
-
-
-
-
-
-	
-
-139
-
-	Weissm�ller, J., 
-et al.
- 2003. Change-induced reversible
-	strain in a metal.  
-Science
- 300: 312-315.
-
-
-
-
-
-	
-
-140
-
-	Piper, A.,  and Merskey, H. 2004.  The Persistence of Folly: A
-	Critical Examination of Dissociative Identity Disorder. Part I. The
-	Excesses of an Improbable Concept.  
-Can. J. Psychiatry
- 49:
-	592-600.
-
-
-
-
-
-	
-
-141
-
-
-	
-Piper, A.,  and Merskey, H. 2004.  The Persistence of Folly: A
-	Critical Examination of Dissociative Identity Disorder. Part II. The
-	Defence and Decline of Multiple Personality or Dissociative Identity
-	Disorder.  
-Can. J. Psychiatry
- 49: 678�683.
-
-
-
-
-
-	
-
-142
-
-	Kaplan, F.S., 
-et al.
-  1998.  The Molecules of Immobility:
-	Searching for the Skeleton Key. Univ. Pennsylvania Orthopaedic J.
-	11: 59-66.  Available online at
-	http://www.uphs.upenn.edu/ortho/oj/1998/oj11sp98p59.html
-
-
-
-
-
-	
-
-143
-
-	Chernoff, H.  1973.  Using faces to represent points in
-	k-dimensional space graphically. 
-Journal of the Americal
-	Statistical Association 
-68:361-368.
-
-
-
-
-
-	
-
-144
-
-	Wilkinson, L. 1982.  An experimental evaluation of multivariate
-	graphical point representations.  
-Human Factors in Computer
-	Systems:  Proceedings
-.  Gaithersberg, MD, 202-209.
+Only if you do something about the scenery. Not just a
+joke, but a lie; Jim would have come at her call even if the gauntlet
+involved bare feet and broken glass.
+

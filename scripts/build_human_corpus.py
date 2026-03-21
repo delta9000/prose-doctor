@@ -65,16 +65,23 @@ GUTENBERG_WORKS = [
 # --- CC-licensed works ---
 # Format: (url, author_slug, title_slug, genre, license)
 CC_WORKS = [
-    ("https://craphound.com/littlebrother/download/", "doctorow", "little_brother", "ya_sf", "CC BY-NC-SA"),
-    ("https://craphound.com/makers/download/", "doctorow", "makers", "near_future", "CC BY-NC-SA"),
-    ("https://craphound.com/down/download/", "doctorow", "down_and_out", "sci-fi", "CC BY-NC-SA-ND"),
-    ("https://craphound.com/est/download/", "doctorow", "eastern_standard_tribe", "sci-fi", "CC BY-NC-SA-ND"),
-    ("https://craphound.com/ftw/download/", "doctorow", "for_the_win", "ya_thriller", "CC BY-NC-SA"),
-    ("https://rifters.com/real/Blindsight.htm", "watts", "blindsight", "hard_sf", "CC BY-NC-SA"),
-    ("https://www.antipope.org/charlie/blog-static/fiction/accelerando/accelerando.html", "stross", "accelerando", "sci-fi", "CC BY-NC-ND"),
-    ("https://bsanderson.storage.googleapis.com/wp-content/uploads/2020/02/12213419/Warbreaker_hardcover_1st_ed.pdf", "sanderson", "warbreaker", "epic_fantasy", "CC BY-NC-ND"),
-    ("https://www.kschroeder.com/my-books/ventus/free-ebook-version", "schroeder", "ventus", "sci-fi", "CC BY-NC-ND"),
-    ("https://jimmunroe.net/writing/everyoneinsilico.pdf", "munroe", "everyone_in_silico", "cyberpunk", "CC BY-NC-SA"),
+    # Doctorow — direct .txt links
+    ("http://craphound.com/littlebrother/Cory_Doctorow_-_Little_Brother.txt",
+     "doctorow", "little_brother", "ya_sf", "CC BY-NC-SA"),
+    ("http://craphound.com/makers/Cory_Doctorow_-_Makers.txt",
+     "doctorow", "makers", "near_future", "CC BY-NC-SA"),
+    ("http://craphound.com/down/Cory_Doctorow_-_Down_and_Out_in_the_Magic_Kingdom.txt",
+     "doctorow", "down_and_out", "sci-fi", "CC BY-NC-SA-ND"),
+    ("http://craphound.com/est/Cory_Doctorow_-_Eastern_Standard_Tribe.txt",
+     "doctorow", "eastern_standard_tribe", "sci-fi", "CC BY-NC-SA-ND"),
+    ("http://craphound.com/ftw/Cory_Doctorow_-_For_the_Win.txt",
+     "doctorow", "for_the_win", "ya_thriller", "CC BY-NC-SA"),
+    # Watts — full HTML (sections: Prologue, Theseus, Rorschach, Charybdis)
+    ("https://rifters.com/real/Blindsight.htm",
+     "watts", "blindsight", "hard_sf", "CC BY-NC-SA"),
+    # Stross — full HTML (needs SSL bypass for antipope.org cert)
+    ("https://www.antipope.org/charlie/blog-static/fiction/accelerando/accelerando.html",
+     "stross", "accelerando", "sci-fi", "CC BY-NC-ND"),
 ]
 
 
@@ -243,8 +250,12 @@ def build_cc_corpus() -> dict:
         print(f"  Fetching CC: {key}...", end=" ", flush=True)
 
         try:
+            import ssl
+            ctx = ssl.create_default_context()
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
             req = Request(url, headers={"User-Agent": "prose-doctor-corpus-builder/1.0"})
-            with urlopen(req, timeout=30) as resp:
+            with urlopen(req, timeout=30, context=ctx) as resp:
                 content_type = resp.headers.get("Content-Type", "")
                 raw = resp.read()
 
