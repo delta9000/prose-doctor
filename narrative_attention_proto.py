@@ -30,10 +30,8 @@ def build_paragraph_features(text: str, filename: str) -> dict:
     from prose_doctor.ml.models import ModelManager
     from prose_doctor.ml.psychic_distance import analyze_chapter as pd_analyze
     from prose_doctor.ml.info_contour import analyze_chapter as ic_analyze
-    from prose_doctor.ml.foregrounding import (
-        _measure_fragment_ratio, _measure_inversion,
-        _measure_sentence_length_cv,
-    )
+    from prose_doctor.ml.pacing import _classify_paragraph
+    from prose_doctor.ml.emotion import EmotionArcAnalyzer
 
     mm = ModelManager()
     nlp = mm.spacy
@@ -117,6 +115,74 @@ def build_paragraph_features(text: str, filename: str) -> dict:
         )
         para_dialogue_ratio.append(dial_chars / max(len(para), 1))
 
+    # --- NEW: Emotion valence (per-paragraph) ---
+    print("  Computing emotion valence...", file=sys.stderr, flush=True)
+    ea = EmotionArcAnalyzer(model_manager=mm)
+    ea._load()
+    para_valence = []
+    for para in paragraphs:
+        if len(para.split()) < 5:
+            para_valence.append(0.5)  # neutral for tiny paras
+        else:
+            para_valence.append(ea._score_intensity(para))
+
+    # --- NEW: Pacing mode (one-hot: action, interiority, setting) ---
+    # dialogue already captured; encode the other 3 as ratios
+    para_action = []
+    para_interiority = []
+    para_setting = []
+    for para in paragraphs:
+        mode = _classify_paragraph(para)
+        para_action.append(1.0 if mode == "action" else 0.0)
+        para_interiority.append(1.0 if mode == "interiority" else 0.0)
+        para_setting.append(1.0 if mode == "setting" else 0.0)
+
+    # --- NEW: Verb energy (dynamic vs stative verbs) ---
+    _DYNAMIC_VERBS = frozenset({
+        "ran", "run", "walked", "grabbed", "pulled", "pushed", "threw",
+        "hit", "jumped", "climbed", "fell", "opened", "closed", "turned",
+        "moved", "reached", "picked", "dropped", "kicked", "punched",
+        "slammed", "ripped", "cut", "shot", "fired", "swung", "caught",
+        "lunged", "stumbled", "sprinted", "crawled", "lifted", "carried",
+        "shattered", "cracked", "snapped", "tore", "broke", "crashed",
+        "dove", "leapt", "hurled", "seized", "yanked", "wrenched",
+    })
+    _STATIVE_VERBS = frozenset({
+        "was", "were", "is", "seemed", "appeared", "felt", "looked",
+        "remained", "stayed", "stood", "sat", "lay", "had", "knew",
+        "thought", "believed", "wanted", "needed", "meant", "existed",
+    })
+    para_verb_energy = []
+    for para in paragraphs:
+        doc = nlp(para)
+        verbs = [t.text.lower() for t in doc if t.pos_ == "VERB"]
+        if not verbs:
+            para_verb_energy.append(0.5)
+            continue
+        dynamic = sum(1 for v in verbs if v in _DYNAMIC_VERBS)
+        stative = sum(1 for v in verbs if v in _STATIVE_VERBS)
+        total_classified = dynamic + stative
+        if total_classified == 0:
+            para_verb_energy.append(0.5)
+        else:
+            para_verb_energy.append(dynamic / total_classified)
+
+    # --- NEW: Surprisal variance within paragraph ---
+    para_surprisal_var = []
+    sent_idx2 = 0
+    for para in paragraphs:
+        doc = nlp(para)
+        sents = [s for s in doc.sents if len(s.text.strip().split()) >= 4]
+        count = len(sents)
+        if count >= 2 and sent_idx2 + count <= len(sent_surprisals):
+            chunk = sent_surprisals[sent_idx2:sent_idx2 + count]
+            para_surprisal_var.append(float(np.std(chunk)))
+            sent_idx2 += count
+        else:
+            para_surprisal_var.append(0.0)
+            if count > 0:
+                sent_idx2 += count
+
     # --- Semantic embedding (sentence-transformer, low-dim projection) ---
     st = mm.sentence_transformer
     para_embeddings = st.encode(paragraphs, show_progress_bar=False)
@@ -141,20 +207,34 @@ def build_paragraph_features(text: str, filename: str) -> dict:
         else:
             para_counter += 1
 
+    # --- Normalize surprisal_var by paragraph length to remove length artifact ---
+    para_surprisal_var_norm = []
+    for sv, wc in zip(para_surprisal_var, para_word_count):
+        # Normalize: surprisal variance per sentence (not per paragraph)
+        para_surprisal_var_norm.append(sv)  # already per-sentence std, no length bias
+
     # --- Assemble structural features ---
+    # Kept: orthogonal or low-correlation features
+    # Dropped: setting (r=-0.70 with dialogue), interiority (zero variance),
+    #          log_word_count (r=0.73 with sl_cv, length artifact)
     structural = np.column_stack([
-        np.array(pd_means[:n]),          # psychic distance
-        np.array(para_surprisals[:n]),   # information density
-        np.array(para_fragment),         # fragment ratio
-        np.array(para_inversion),        # inversion ratio
-        np.array(para_sl_cv),            # sentence length variation
-        np.array(para_dialogue_ratio),   # dialogue density
-        np.log1p(para_word_count),       # log word count (scale)
+        np.array(pd_means[:n]),              # psychic distance — orthogonal (max|r|=0.22)
+        np.array(para_surprisals[:n]),       # information density
+        np.array(para_fragment),             # fragment ratio
+        np.array(para_inversion),            # inversion ratio
+        np.array(para_sl_cv),                # sentence length variation
+        np.array(para_dialogue_ratio),       # dialogue density
+        # Orthogonal additions
+        np.array(para_valence),              # emotion valence — most orthogonal (max|r|=0.19)
+        np.array(para_action),               # pacing: action mode
+        np.array(para_verb_energy),          # dynamic vs stative verbs
+        np.array(para_surprisal_var_norm),   # surprisal variation within paragraph
     ])
 
     structural_names = [
         "pd_mean", "surprisal", "fragment_ratio", "inversion_ratio",
-        "sl_cv", "dialogue_ratio", "log_word_count",
+        "sl_cv", "dialogue_ratio",
+        "emotion_valence", "pacing_action", "verb_energy", "surprisal_var",
     ]
 
     # --- Positional encoding ---
@@ -220,6 +300,13 @@ def build_paragraph_features(text: str, filename: str) -> dict:
             "sl_cvs": para_sl_cv,
             "dialogue_ratios": para_dialogue_ratio,
             "word_counts": para_word_count,
+            "valence": para_valence,
+            "verb_energy": para_verb_energy,
+            "surprisal_var": para_surprisal_var,
+            "pacing_modes": [
+                "action" if a else ("interiority" if i else ("setting" if s else "dialogue"))
+                for a, i, s in zip(para_action, para_interiority, para_setting)
+            ],
         },
     }
 
@@ -335,6 +422,8 @@ def analyze_attention(
         scene_surp = [raw["surprisals"][i] for i in scene_paras if i < len(raw["surprisals"])]
         scene_frag = [raw["fragment_ratios"][i] for i in scene_paras if i < len(raw["fragment_ratios"])]
         scene_dial = [raw["dialogue_ratios"][i] for i in scene_paras if i < len(raw["dialogue_ratios"])]
+        scene_val = [raw["valence"][i] for i in scene_paras if i < len(raw["valence"])]
+        scene_energy = [raw["verb_energy"][i] for i in scene_paras if i < len(raw["verb_energy"])]
 
         # Scene coherence: mean within-scene attention
         scene_attn = []
@@ -342,6 +431,12 @@ def analyze_attention(
             for j in scene_paras:
                 if i != j:
                     scene_attn.append(attn[i, j])
+
+        # Pacing mode distribution within scene
+        scene_modes = [raw["pacing_modes"][i] for i in scene_paras if i < len(raw["pacing_modes"])]
+        from collections import Counter
+        mode_dist = Counter(scene_modes)
+        dominant = mode_dist.most_common(1)[0][0] if mode_dist else "?"
 
         arc.append({
             "scene": si,
@@ -352,6 +447,9 @@ def analyze_attention(
             "surprisal_mean": round(float(np.mean(scene_surp)), 3) if scene_surp else 0,
             "fragment_density": round(float(np.mean(scene_frag)), 3) if scene_frag else 0,
             "dialogue_ratio": round(float(np.mean(scene_dial)), 3) if scene_dial else 0,
+            "valence_mean": round(float(np.mean(scene_val)), 3) if scene_val else 0,
+            "verb_energy": round(float(np.mean(scene_energy)), 3) if scene_energy else 0,
+            "dominant_mode": dominant,
             "coherence": round(float(np.mean(scene_attn)), 3) if scene_attn else 0,
         })
 
@@ -448,6 +546,9 @@ def main():
                 f"surp={scene['surprisal_mean']} "
                 f"frag={scene['fragment_density']:.0%} "
                 f"dial={scene['dialogue_ratio']:.0%} "
+                f"val={scene.get('valence_mean', 0):.2f} "
+                f"energy={scene.get('verb_energy', 0):.2f} "
+                f"mode={scene.get('dominant_mode', '?')} "
                 f"coher={scene['coherence']}"
             )
 
