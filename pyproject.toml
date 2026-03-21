@@ -1,6 +1,6 @@
 [project]
 name = "prose-doctor"
-version = "0.1.0"
+version = "0.2.0"
 description = "Prose analysis toolkit: pattern detection, vocabulary crutches, density budgets, and ML-powered scoring"
 readme = "README.md"
 authors = [
@@ -33,6 +33,11 @@ prose-doctor = "prose_doctor.cli:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
