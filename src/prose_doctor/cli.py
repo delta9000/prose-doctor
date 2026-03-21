@@ -48,27 +48,30 @@ def cmd_scan(args: argparse.Namespace) -> None:
         # Deep mode: run ML analyzers
         if args.deep:
             try:
-                from prose_doctor.ml import require_ml
+                from prose_doctor.providers import ProviderPool, require_ml
 
                 require_ml()
-                from prose_doctor.ml.models import ModelManager
+                providers = ProviderPool()
 
-                mm = ModelManager()
+                from prose_doctor.lenses.defaults import default_registry
+                from prose_doctor.lenses.runner import LensRunner
+
+                registry = default_registry()
+                runner = LensRunner(registry, providers)
 
                 # Classifier with density budgets — only report classes
                 # that exceed a per-1000-word threshold. Individual hits
                 # are candidates; accumulation makes them findings.
                 try:
-                    from collections import Counter
-                    from prose_doctor.ml.slop_scorer import SlopScorer
+                    from prose_doctor.lenses.slop_classifier import SlopScorer
 
-                    scorer = SlopScorer(model_manager=mm, config=config)
-                    stats = scorer.chapter_stats(text)
+                    scorer = SlopScorer(config=config)
+                    scored = scorer.score_paragraphs(text)
                     word_count = report.word_count or 1
 
                     # Count hits per class
                     class_hits: dict[str, list[dict]] = {}
-                    for s in stats.get("scored", []):
+                    for s in scored:
                         if s["slop_prob"] > 0.5 and s.get("class_name", "clean") != "clean":
                             class_hits.setdefault(s["class_name"], []).append(s)
 
@@ -103,107 +106,136 @@ def cmd_scan(args: argparse.Namespace) -> None:
                         file=sys.stderr,
                     )
 
-                # Foregrounding (always available with ML deps)
-                from prose_doctor.ml.foregrounding import score_chapter
-
-                fg = score_chapter(text, f.name, mm)
+                # Foregrounding
+                fg = runner.run_one("foregrounding", text, f.name)
+                fg_ch = fg.per_chapter or {}
                 report.foregrounding = {
-                    "index": round(fg.index, 2),
-                    "alliteration_per_1k": round(fg.alliteration, 1),
-                    "inversion_pct": round(fg.inversion_pct, 1),
-                    "sentence_length_cv": round(fg.sl_cv, 2),
-                    "fragment_pct": round(fg.fragment_pct, 1),
-                    "weakest_axis": fg.weakest_axis,
-                    "prescription": fg.prescription,
+                    "index": round(fg_ch.get("index", 0), 2),
+                    "alliteration_per_1k": round(fg_ch.get("alliteration", 0), 1),
+                    "inversion_pct": round(fg_ch.get("inversion_pct", 0), 1),
+                    "sentence_length_cv": round(fg_ch.get("sl_cv", 0), 2),
+                    "fragment_pct": round(fg_ch.get("fragment_pct", 0), 1),
+                    "weakest_axis": fg.raw.get("weakest_axis", ""),
+                    "prescription": fg.raw.get("prescription", ""),
                 }
 
                 # Perplexity
-                from prose_doctor.ml.perplexity import PerplexityScorer
-
-                ppl = PerplexityScorer(model_manager=mm)
-                report.perplexity = ppl.score_chapter(text, filename=f.name)
+                ppl = runner.run_one("perplexity", text, f.name)
+                ppl_ch = ppl.per_chapter or {}
+                ppl_raw = ppl.raw or {}
+                report.perplexity = {
+                    **ppl_raw.get("stats", {}),
+                    "smoothest_paragraphs": ppl_raw.get("smoothest_paragraphs", []),
+                }
 
                 # Emotion arc
-                from prose_doctor.ml.emotion import EmotionArcAnalyzer
-
-                ea = EmotionArcAnalyzer(model_manager=mm)
-                emo = ea.analyze_chapter(text, filename=f.name)
+                emo = runner.run_one("emotion_arc", text, f.name)
+                emo_ch = emo.per_chapter or {}
+                emo_raw = emo.raw or {}
                 report.emotion = {
-                    "flat": emo["flat"],
-                    "arc": emo.get("arc", "?"),
-                    "std": emo.get("stats", {}).get("std", 0),
-                    "dynamic_range": emo.get("stats", {}).get("dynamic_range", 0),
+                    "flat": bool(emo_ch.get("flat", 0)),
+                    "arc": emo_raw.get("arc", "?"),
+                    "std": emo_raw.get("stats", {}).get("std", 0),
+                    "dynamic_range": emo_ch.get("dynamic_range", 0),
                 }
 
                 # Psychic distance
-                from prose_doctor.ml.psychic_distance import analyze_chapter as pd_analyze
-
-                pd = pd_analyze(text, f.name, mm)
+                pd_r = runner.run_one("psychic_distance", text, f.name)
+                pd_ch = pd_r.per_chapter or {}
+                pd_raw = pd_r.raw or {}
+                pd_para = pd_r.per_paragraph or {}
                 report.psychic_distance = {
-                    "mean_distance": pd.mean_distance,
-                    "std_distance": pd.std_distance,
-                    "label": pd.label,
-                    "zoom_jumps": len(pd.zoom_jumps),
-                    "paragraph_means": [round(m, 3) for m in pd.paragraph_means],
+                    "mean_distance": pd_ch.get("pd_mean", 0),
+                    "std_distance": pd_ch.get("pd_std", 0),
+                    "label": pd_raw.get("label", ""),
+                    "zoom_jumps": len(pd_raw.get("zoom_jumps", [])),
+                    "paragraph_means": pd_para.get("pd_mean", []),
                 }
 
                 # Information contour
-                from prose_doctor.ml.info_contour import analyze_chapter as ic_analyze
-
-                ic = ic_analyze(text, f.name, mm)
+                ic = runner.run_one("info_contour", text, f.name)
+                ic_ch = ic.per_chapter or {}
+                ic_raw = ic.raw or {}
                 report.info_contour = {
-                    "mean_surprisal": ic.mean_surprisal,
-                    "cv_surprisal": ic.cv_surprisal,
-                    "label": ic.label,
-                    "dominant_period": ic.dominant_period,
-                    "dominant_period_words": ic.dominant_period_words,
-                    "rhythmicity": ic.rhythmicity,
-                    "flatlines": len(ic.flatlines),
-                    "spikes": len(ic.spikes),
+                    "mean_surprisal": ic_ch.get("mean_surprisal", 0),
+                    "cv_surprisal": ic_ch.get("cv_surprisal", 0),
+                    "label": ic_raw.get("label", ""),
+                    "dominant_period": ic_ch.get("dominant_period", 0),
+                    "dominant_period_words": ic_raw.get("dominant_period_words", 0),
+                    "rhythmicity": ic_ch.get("rhythmicity", 0),
+                    "flatlines": int(ic_ch.get("flatlines", 0)),
+                    "spikes": int(ic_ch.get("spikes", 0)),
                 }
 
                 # Sensory profiler
-                from prose_doctor.ml.sensory import profile_chapter
-
-                sp = profile_chapter(text, f.name, mm)
+                sp = runner.run_one("sensory", text, f.name)
+                sp_ch = sp.per_chapter or {}
+                sp_raw = sp.raw or {}
                 report.sensory = {
-                    "dominant": sp.dominant_modality,
-                    "weakest": sp.weakest_modality,
-                    "balance": round(sp.balance_ratio, 3),
-                    "scores": sp.scores,
-                    "deserts": len(sp.deserts),
-                    "prescription": sp.prescription,
+                    "dominant": sp_ch.get("dominant_modality", ""),
+                    "weakest": sp_ch.get("weakest_modality", ""),
+                    "balance": round(sp_ch.get("balance_ratio", 0), 3),
+                    "scores": {
+                        m: sp_ch.get(m, 0)
+                        for m in ["visual", "auditory", "haptic",
+                                  "olfactory", "gustatory", "interoceptive"]
+                    },
+                    "deserts": len(sp_raw.get("deserts", [])),
+                    "prescription": sp_raw.get("prescription", ""),
                 }
 
                 # Dialogue voice separation
-                from prose_doctor.ml.dialogue import analyze_dialogue
-
-                dl = analyze_dialogue(text, f.name, mm)
+                dl = runner.run_one("dialogue_voice", text, f.name)
+                dl_ch = dl.per_chapter or {}
+                dl_raw = dl.raw or {}
                 report.dialogue = {
-                    "dialogue_ratio": dl.dialogue_ratio,
-                    "speakers": dl.speakers,
-                    "speaker_separation": dl.speaker_separation,
-                    "speaker_similarities": dl.speaker_similarities,
-                    "longest_dialogue_run": dl.longest_dialogue_run,
-                    "longest_narration_run": dl.longest_narration_run,
-                    "all_same_voice": dl.all_same_voice,
-                    "talking_heads": dl.talking_heads,
-                    "prescription": dl.prescription,
+                    "dialogue_ratio": dl_ch.get("dialogue_ratio", 0),
+                    "speakers": dl_raw.get("speakers", {}),
+                    "speaker_separation": dl_ch.get("speaker_separation", 0),
+                    "speaker_similarities": dl_raw.get("speaker_similarities", {}),
+                    "longest_dialogue_run": dl_raw.get("longest_dialogue_run", 0),
+                    "longest_narration_run": dl_raw.get("longest_narration_run", 0),
+                    "all_same_voice": dl_raw.get("all_same_voice", False),
+                    "talking_heads": dl_raw.get("longest_dialogue_run", 0),
+                    "prescription": dl_raw.get("prescription", ""),
                 }
 
                 # Scene pacing
-                from prose_doctor.ml.pacing import analyze_pacing
-
-                pc = analyze_pacing(text, f.name)
-                report.pacing = {
-                    "mode_ratios": pc.mode_ratios,
-                    "longest_runs": pc.longest_runs,
-                    "dominant_mode": pc.dominant_mode,
-                    "talking_heads": len(pc.talking_heads),
-                    "action_deserts": len(pc.action_deserts),
-                    "interiority_gaps": len(pc.interiority_gaps),
-                    "prescription": pc.prescription,
+                pc = runner.run_one("pacing", text, f.name)
+                pc_ch = pc.per_chapter or {}
+                pc_raw = pc.raw or {}
+                mode_ratios = {
+                    k.replace("_ratio", ""): v
+                    for k, v in pc_ch.items()
+                    if k.endswith("_ratio")
                 }
+                report.pacing = {
+                    "mode_ratios": mode_ratios,
+                    "longest_runs": pc_raw.get("longest_runs", {}),
+                    "dominant_mode": max(mode_ratios, key=mode_ratios.get) if mode_ratios else "unknown",
+                    "talking_heads": len(pc_raw.get("talking_heads", [])),
+                    "action_deserts": len(pc_raw.get("action_deserts", [])),
+                    "interiority_gaps": len(pc_raw.get("interiority_gaps", [])),
+                    "prescription": "",  # computed inline below
+                }
+                # Build prescription for pacing
+                _pacing_issues = []
+                if pc_raw.get("talking_heads"):
+                    _pacing_issues.append(
+                        f"{len(pc_raw['talking_heads'])} talking-head runs — "
+                        f"break up with action or interiority."
+                    )
+                if pc_raw.get("action_deserts"):
+                    _pacing_issues.append(
+                        f"{len(pc_raw['action_deserts'])} action deserts — "
+                        f"add physical grounding."
+                    )
+                if pc_raw.get("interiority_gaps"):
+                    _pacing_issues.append(
+                        f"{len(pc_raw['interiority_gaps'])} interiority gaps — "
+                        f"add thought/feeling beats."
+                    )
+                report.pacing["prescription"] = " ".join(_pacing_issues)
 
             except ImportError as e:
                 print(f"ML features unavailable: {e}", file=sys.stderr)
@@ -233,29 +265,34 @@ def cmd_init(args: argparse.Namespace) -> None:
 def cmd_index(args: argparse.Namespace) -> None:
     """Run foregrounding index analysis."""
     try:
-        from prose_doctor.ml import require_ml
+        from prose_doctor.providers import require_ml
 
         require_ml()
     except ImportError as e:
         print(str(e), file=sys.stderr)
         sys.exit(1)
 
-    from prose_doctor.ml.foregrounding import score_chapter
-    from prose_doctor.ml.models import ModelManager
+    from prose_doctor.lenses.defaults import default_registry
+    from prose_doctor.lenses.runner import LensRunner
+    from prose_doctor.providers import ProviderPool
 
     files = _discover_files(args.files)
     if not files:
         print("No files found.", file=sys.stderr)
         sys.exit(1)
 
-    mm = ModelManager()
-    scores = []
+    providers = ProviderPool()
+    registry = default_registry()
+    runner = LensRunner(registry, providers)
+
+    results = []
     for f in files:
         text = f.read_text()
-        sc = score_chapter(text, f.name, mm)
-        scores.append(sc)
+        r = runner.run_one("foregrounding", text, f.name)
+        ch = r.per_chapter or {}
+        results.append((f.name, ch, r.raw))
 
-    scores.sort(key=lambda s: s.index)
+    results.sort(key=lambda x: x[1].get("index", 0))
 
     header = (
         f"{'Chapter':<42} {'Words':>5} {'Allit':>5} {'Inv%':>5} "
@@ -263,34 +300,34 @@ def cmd_index(args: argparse.Namespace) -> None:
     )
     print(header)
     print("-" * len(header))
-    for sc in scores:
+    for filename, ch, raw in results:
         print(
-            f"{sc.filename:<42} {sc.word_count:>5} {sc.alliteration:>5.1f} "
-            f"{sc.inversion_pct:>4.1f}% {sc.sl_cv:>5.2f} {sc.fragment_pct:>4.1f}% "
-            f"{sc.index:>6.2f}  {sc.weakest_axis}"
+            f"{filename:<42} {int(ch.get('word_count', 0)):>5} {ch.get('alliteration', 0):>5.1f} "
+            f"{ch.get('inversion_pct', 0):>4.1f}% {ch.get('sl_cv', 0):>5.2f} {ch.get('fragment_pct', 0):>4.1f}% "
+            f"{ch.get('index', 0):>6.2f}  {raw.get('weakest_axis', '')}"
         )
 
 
 def cmd_twins(args: argparse.Namespace) -> None:
     """Run twin-finder analysis."""
     try:
-        from prose_doctor.ml import require_ml
+        from prose_doctor.providers import require_ml
 
         require_ml()
     except ImportError as e:
         print(str(e), file=sys.stderr)
         sys.exit(1)
 
-    from prose_doctor.ml.models import ModelManager
-    from prose_doctor.ml.twins import find_twins
+    from prose_doctor.lenses.twins import find_twins
+    from prose_doctor.providers import ProviderPool
 
     files = _discover_files(args.files)
     if not files:
         print("No files found.", file=sys.stderr)
         sys.exit(1)
 
-    mm = ModelManager()
-    twins = find_twins(files, mm, max_results=getattr(args, "top", 20))
+    providers = ProviderPool()
+    twins = find_twins(files, providers, max_results=getattr(args, "top", 20))
 
     if not twins:
         print("No twins found (too few paragraphs or insufficient texture variation).")
@@ -311,28 +348,33 @@ def cmd_twins(args: argparse.Namespace) -> None:
 def cmd_distance(args: argparse.Namespace) -> None:
     """Run psychic distance analysis."""
     try:
-        from prose_doctor.ml import require_ml
+        from prose_doctor.providers import require_ml
 
         require_ml()
     except ImportError as e:
         print(str(e), file=sys.stderr)
         sys.exit(1)
 
-    from prose_doctor.ml.models import ModelManager
-    from prose_doctor.ml.psychic_distance import analyze_chapter
+    from prose_doctor.lenses.defaults import default_registry
+    from prose_doctor.lenses.runner import LensRunner
+    from prose_doctor.providers import ProviderPool
 
     files = _discover_files(args.files)
     if not files:
         print("No files found.", file=sys.stderr)
         sys.exit(1)
 
-    mm = ModelManager()
+    providers = ProviderPool()
+    registry = default_registry()
+    runner = LensRunner(registry, providers)
+
     for f in files:
         text = f.read_text()
-        result = analyze_chapter(text, f.name, mm)
+        lr = runner.run_one("psychic_distance", text, f.name)
+        result = lr.raw.get("result")  # PsychicDistanceResult object
 
         print(f"\n{'─' * 60}")
-        print(f" {result.filename}")
+        print(f" {f.name}")
         print(f" {len(result.sentence_scores)} sentences | "
               f"mean distance: {result.mean_distance:.3f} ({result.label}) | "
               f"std: {result.std_distance:.3f}")
@@ -362,46 +404,54 @@ def cmd_distance(args: argparse.Namespace) -> None:
 def cmd_contour(args: argparse.Namespace) -> None:
     """Run information contour analysis."""
     try:
-        from prose_doctor.ml import require_ml
+        from prose_doctor.providers import require_ml
 
         require_ml()
     except ImportError as e:
         print(str(e), file=sys.stderr)
         sys.exit(1)
 
-    from prose_doctor.ml.info_contour import analyze_chapter
-    from prose_doctor.ml.models import ModelManager
+    from prose_doctor.lenses.defaults import default_registry
+    from prose_doctor.lenses.runner import LensRunner
+    from prose_doctor.providers import ProviderPool
 
     files = _discover_files(args.files)
     if not files:
         print("No files found.", file=sys.stderr)
         sys.exit(1)
 
-    mm = ModelManager()
+    providers = ProviderPool()
+    registry = default_registry()
+    runner = LensRunner(registry, providers)
+
     for f in files:
         text = f.read_text()
-        result = analyze_chapter(text, f.name, mm)
+        lr = runner.run_one("info_contour", text, f.name)
+        ch = lr.per_chapter or {}
+        raw = lr.raw or {}
 
         print(f"\n{'─' * 60}")
-        print(f" {result.filename}")
-        print(f" {result.sentence_count} sentences | "
-              f"mean surprisal: {result.mean_surprisal:.3f} | "
-              f"CV: {result.cv_surprisal:.3f} | {result.label}")
-        print(f" Dominant cycle: ~{result.dominant_period} sentences "
-              f"(~{result.dominant_period_words} words) | "
-              f"rhythmicity: {result.rhythmicity:.3f} | "
-              f"spectral entropy: {result.spectral_entropy:.3f}")
+        print(f" {f.name}")
+        print(f" {raw.get('sentence_count', 0)} sentences | "
+              f"mean surprisal: {ch.get('mean_surprisal', 0):.3f} | "
+              f"CV: {ch.get('cv_surprisal', 0):.3f} | {raw.get('label', '')}")
+        print(f" Dominant cycle: ~{int(ch.get('dominant_period', 0))} sentences "
+              f"(~{raw.get('dominant_period_words', 0)} words) | "
+              f"rhythmicity: {ch.get('rhythmicity', 0):.3f} | "
+              f"spectral entropy: {ch.get('spectral_entropy', 0):.3f}")
         print(f"{'─' * 60}")
 
-        if result.flatlines:
-            print(f"\n  Information flatlines ({len(result.flatlines)}):")
-            for fl in result.flatlines:
+        flatlines = raw.get("flatline_details", [])
+        if flatlines:
+            print(f"\n  Information flatlines ({len(flatlines)}):")
+            for fl in flatlines:
                 print(f"    sentences {fl['start']}-{fl['end']} "
                       f"({fl['length']} sent, mean={fl['mean_surprisal']:.3f})")
 
-        if result.spikes:
-            print(f"\n  Surprisal spikes ({len(result.spikes)}):")
-            for sp in result.spikes[:5]:
+        spikes = raw.get("spike_details", [])
+        if spikes:
+            print(f"\n  Surprisal spikes ({len(spikes)}):")
+            for sp in spikes[:5]:
                 print(f"    [{sp['index']}] surprisal={sp['surprisal']:.3f} "
                       f"(z={sp['z_score']:.1f})")
                 print(f"      {sp['text']}")
@@ -410,54 +460,64 @@ def cmd_contour(args: argparse.Namespace) -> None:
 def cmd_sensory(args: argparse.Namespace) -> None:
     """Run sensory modality profiler."""
     try:
-        from prose_doctor.ml import require_ml
+        from prose_doctor.providers import require_ml
 
         require_ml()
     except ImportError as e:
         print(str(e), file=sys.stderr)
         sys.exit(1)
 
-    from prose_doctor.ml.models import ModelManager
-    from prose_doctor.ml.sensory import profile_chapter, MODALITIES
+    from prose_doctor.lenses.defaults import default_registry
+    from prose_doctor.lenses.runner import LensRunner
+    from prose_doctor.lenses.sensory import MODALITIES
+    from prose_doctor.providers import ProviderPool
 
     files = _discover_files(args.files)
     if not files:
         print("No files found.", file=sys.stderr)
         sys.exit(1)
 
-    mm = ModelManager()
+    providers = ProviderPool()
+    registry = default_registry()
+    runner = LensRunner(registry, providers)
+
     for f in files:
         text = f.read_text()
-        result = profile_chapter(text, f.name, mm)
+        lr = runner.run_one("sensory", text, f.name)
+        ch = lr.per_chapter or {}
+        raw = lr.raw or {}
 
         print(f"\n{'─' * 60}")
-        print(f" {result.filename} ({result.word_count} words)")
-        print(f" Dominant: {result.dominant_modality} | "
-              f"Weakest: {result.weakest_modality} | "
-              f"Balance: {result.balance_ratio:.2f}")
+        print(f" {f.name} ({raw.get('word_count', 0)} words)")
+        print(f" Dominant: {ch.get('dominant_modality', '')} | "
+              f"Weakest: {ch.get('weakest_modality', '')} | "
+              f"Balance: {ch.get('balance_ratio', 0):.2f}")
         print(f"{'─' * 60}")
 
         # Bar chart
-        max_score = max(result.scores.values()) or 1
-        for mod, score in result.scores.items():
+        scores = {m: ch.get(m, 0) for m in MODALITIES}
+        max_score = max(scores.values()) or 1
+        for mod, score in scores.items():
             bar_width = 30
             filled = int(score / max_score * bar_width)
             bar = "█" * filled + "░" * (bar_width - filled)
             print(f"  {mod:<15} [{bar}] {score:.3f}")
 
-        if result.deserts:
-            print(f"\n  Sensory deserts ({len(result.deserts)}):")
-            for d in result.deserts:
+        deserts = raw.get("deserts", [])
+        if deserts:
+            print(f"\n  Sensory deserts ({len(deserts)}):")
+            for d in deserts:
                 print(f"    paragraphs {d['start']}-{d['end']} ({d['length']} paragraphs)")
 
-        if result.prescription:
-            print(f"\n  Rx: {result.prescription}")
+        prescription = raw.get("prescription", "")
+        if prescription:
+            print(f"\n  Rx: {prescription}")
 
 
 def cmd_critique(args: argparse.Namespace) -> None:
     """Generate a structured revision prompt."""
     try:
-        from prose_doctor.ml import require_ml
+        from prose_doctor.providers import require_ml
 
         require_ml()
     except ImportError as e:
@@ -465,7 +525,9 @@ def cmd_critique(args: argparse.Namespace) -> None:
         sys.exit(1)
 
     from prose_doctor.critique import build_critique, format_critique_prompt
-    from prose_doctor.ml.models import ModelManager
+    from prose_doctor.lenses.defaults import default_registry
+    from prose_doctor.lenses.runner import LensRunner
+    from prose_doctor.providers import ProviderPool
 
     files = _discover_files(args.files)
     if not files:
@@ -473,87 +535,118 @@ def cmd_critique(args: argparse.Namespace) -> None:
         sys.exit(1)
 
     config = ProjectConfig.load(files[0].parent)
-    mm = ModelManager()
+    providers = ProviderPool()
+    registry = default_registry()
+    runner = LensRunner(registry, providers)
 
     for f in files:
         text = f.read_text()
         report = diagnose(text, filename=f.name, config=config)
 
-        # Run ML analyzers (same as scan --deep)
-        from prose_doctor.ml.psychic_distance import analyze_chapter as pd_analyze
-        pd = pd_analyze(text, f.name, mm)
+        # Run ML analyzers via lens framework
+        pd_r = runner.run_one("psychic_distance", text, f.name)
+        pd_ch = pd_r.per_chapter or {}
+        pd_raw = pd_r.raw or {}
+        pd_para = pd_r.per_paragraph or {}
         report.psychic_distance = {
-            "mean_distance": pd.mean_distance,
-            "std_distance": pd.std_distance,
-            "label": pd.label,
-            "zoom_jumps": len(pd.zoom_jumps),
-            "paragraph_means": [round(m, 3) for m in pd.paragraph_means],
+            "mean_distance": pd_ch.get("pd_mean", 0),
+            "std_distance": pd_ch.get("pd_std", 0),
+            "label": pd_raw.get("label", ""),
+            "zoom_jumps": len(pd_raw.get("zoom_jumps", [])),
+            "paragraph_means": pd_para.get("pd_mean", []),
         }
 
-        from prose_doctor.ml.info_contour import analyze_chapter as ic_analyze
-        ic = ic_analyze(text, f.name, mm)
+        ic = runner.run_one("info_contour", text, f.name)
+        ic_ch = ic.per_chapter or {}
+        ic_raw = ic.raw or {}
         report.info_contour = {
-            "mean_surprisal": ic.mean_surprisal,
-            "cv_surprisal": ic.cv_surprisal,
-            "label": ic.label,
-            "dominant_period": ic.dominant_period,
-            "dominant_period_words": ic.dominant_period_words,
-            "rhythmicity": ic.rhythmicity,
-            "flatlines": ic.flatlines,  # full detail for retexture
-            "spikes": len(ic.spikes),
+            "mean_surprisal": ic_ch.get("mean_surprisal", 0),
+            "cv_surprisal": ic_ch.get("cv_surprisal", 0),
+            "label": ic_raw.get("label", ""),
+            "dominant_period": ic_ch.get("dominant_period", 0),
+            "dominant_period_words": ic_raw.get("dominant_period_words", 0),
+            "rhythmicity": ic_ch.get("rhythmicity", 0),
+            "flatlines": ic_raw.get("flatline_details", []),  # full detail for retexture
+            "spikes": int(ic_ch.get("spikes", 0)),
         }
 
-        from prose_doctor.ml.foregrounding import score_chapter
-        fg = score_chapter(text, f.name, mm)
+        fg = runner.run_one("foregrounding", text, f.name)
+        fg_ch = fg.per_chapter or {}
         report.foregrounding = {
-            "index": round(fg.index, 2),
-            "alliteration_per_1k": round(fg.alliteration, 1),
-            "inversion_pct": round(fg.inversion_pct, 1),
-            "sentence_length_cv": round(fg.sl_cv, 2),
-            "fragment_pct": round(fg.fragment_pct, 1),
-            "weakest_axis": fg.weakest_axis,
-            "prescription": fg.prescription,
+            "index": round(fg_ch.get("index", 0), 2),
+            "alliteration_per_1k": round(fg_ch.get("alliteration", 0), 1),
+            "inversion_pct": round(fg_ch.get("inversion_pct", 0), 1),
+            "sentence_length_cv": round(fg_ch.get("sl_cv", 0), 2),
+            "fragment_pct": round(fg_ch.get("fragment_pct", 0), 1),
+            "weakest_axis": fg.raw.get("weakest_axis", ""),
+            "prescription": fg.raw.get("prescription", ""),
         }
 
-        from prose_doctor.ml.sensory import profile_chapter
-        sp = profile_chapter(text, f.name, mm)
+        sp = runner.run_one("sensory", text, f.name)
+        sp_ch = sp.per_chapter or {}
+        sp_raw = sp.raw or {}
         report.sensory = {
-            "dominant": sp.dominant_modality,
-            "weakest": sp.weakest_modality,
-            "balance": round(sp.balance_ratio, 3),
-            "scores": sp.scores,
-            "deserts": len(sp.deserts),
-            "prescription": sp.prescription,
+            "dominant": sp_ch.get("dominant_modality", ""),
+            "weakest": sp_ch.get("weakest_modality", ""),
+            "balance": round(sp_ch.get("balance_ratio", 0), 3),
+            "scores": {
+                m: sp_ch.get(m, 0)
+                for m in ["visual", "auditory", "haptic",
+                          "olfactory", "gustatory", "interoceptive"]
+            },
+            "deserts": len(sp_raw.get("deserts", [])),
+            "prescription": sp_raw.get("prescription", ""),
         }
 
         # Dialogue voice separation
-        from prose_doctor.ml.dialogue import analyze_dialogue
-        dl = analyze_dialogue(text, f.name, mm)
+        dl = runner.run_one("dialogue_voice", text, f.name)
+        dl_ch = dl.per_chapter or {}
+        dl_raw = dl.raw or {}
         report.dialogue = {
-            "dialogue_ratio": dl.dialogue_ratio,
-            "speakers": dl.speakers,
-            "speaker_separation": dl.speaker_separation,
-            "all_same_voice": dl.all_same_voice,
-            "talking_heads": dl.talking_heads,
-            "prescription": dl.prescription,
+            "dialogue_ratio": dl_ch.get("dialogue_ratio", 0),
+            "speakers": dl_raw.get("speakers", {}),
+            "speaker_separation": dl_ch.get("speaker_separation", 0),
+            "all_same_voice": dl_raw.get("all_same_voice", False),
+            "talking_heads": dl_raw.get("longest_dialogue_run", 0),
+            "prescription": dl_raw.get("prescription", ""),
         }
 
         # Scene pacing
-        from prose_doctor.ml.pacing import analyze_pacing
-        pc = analyze_pacing(text, f.name)
+        pc = runner.run_one("pacing", text, f.name)
+        pc_ch = pc.per_chapter or {}
+        pc_raw = pc.raw or {}
+        mode_ratios = {
+            k.replace("_ratio", ""): v
+            for k, v in pc_ch.items()
+            if k.endswith("_ratio")
+        }
+        _pacing_issues = []
+        if pc_raw.get("talking_heads"):
+            _pacing_issues.append(
+                f"{len(pc_raw['talking_heads'])} talking-head runs."
+            )
+        if pc_raw.get("action_deserts"):
+            _pacing_issues.append(
+                f"{len(pc_raw['action_deserts'])} action deserts."
+            )
+        if pc_raw.get("interiority_gaps"):
+            _pacing_issues.append(
+                f"{len(pc_raw['interiority_gaps'])} interiority gaps."
+            )
         report.pacing = {
-            "mode_ratios": pc.mode_ratios,
-            "talking_heads": len(pc.talking_heads),
-            "action_deserts": len(pc.action_deserts),
-            "interiority_gaps": len(pc.interiority_gaps),
-            "prescription": pc.prescription,
+            "mode_ratios": mode_ratios,
+            "talking_heads": len(pc_raw.get("talking_heads", [])),
+            "action_deserts": len(pc_raw.get("action_deserts", [])),
+            "interiority_gaps": len(pc_raw.get("interiority_gaps", [])),
+            "prescription": " ".join(_pacing_issues),
         }
 
         # Run twins across all files for self-referential feedback
         twins_data = None
         if len(files) > 1:
-            from prose_doctor.ml.twins import find_twins
-            twins = find_twins(files, mm, max_results=5)
+            from prose_doctor.lenses.twins import find_twins
+
+            twins = find_twins(files, providers, max_results=5)
             twins_data = [
                 {
                     "flat_idx": tw.flat_idx,
@@ -612,15 +705,14 @@ def cmd_critique(args: argparse.Namespace) -> None:
 def cmd_classify(args: argparse.Namespace) -> None:
     """Run ML classifier on files."""
     try:
-        from prose_doctor.ml import require_ml
+        from prose_doctor.providers import require_ml
 
         require_ml()
     except ImportError as e:
         print(str(e), file=sys.stderr)
         sys.exit(1)
 
-    from prose_doctor.ml.models import ModelManager
-    from prose_doctor.ml.slop_scorer import SlopScorer
+    from prose_doctor.lenses.slop_classifier import SlopScorer
 
     files = _discover_files(args.files)
     if not files:
@@ -631,26 +723,32 @@ def cmd_classify(args: argparse.Namespace) -> None:
     checkpoint = getattr(args, "checkpoint", None)
     if checkpoint:
         config.slop_classifier_model = checkpoint
-    mm = ModelManager()
-    scorer = SlopScorer(model_manager=mm, config=config)
+    scorer = SlopScorer(config=config)
 
     threshold = getattr(args, "threshold", 0.5)
     top_n = getattr(args, "top", 20)
 
     for path in files:
         text = path.read_text()
-        stats = scorer.chapter_stats(text, threshold=threshold)
+        scored = scorer.score_paragraphs(text)
+
+        # Compute summary stats (replaces chapter_stats)
+        total = len(scored)
+        flagged = [s for s in scored if s["slop_prob"] > threshold]
+        flagged_pct = len(flagged) / total * 100 if total else 0.0
+        mean_slop = sum(s["slop_prob"] for s in scored) / total if total else 0.0
+        max_slop = scored[0]["slop_prob"] if scored else 0.0
 
         print(f"\n{'─' * 60}")
         print(f" {path.name}")
         print(
-            f" {stats['total_paragraphs']} paragraphs | "
-            f"{stats['flagged_count']} flagged ({stats['flagged_pct']:.0f}%) | "
-            f"mean={stats['mean_slop']:.3f} | max={stats['max_slop']:.3f}"
+            f" {total} paragraphs | "
+            f"{len(flagged)} flagged ({flagged_pct:.0f}%) | "
+            f"mean={mean_slop:.3f} | max={max_slop:.3f}"
         )
         print(f"{'─' * 60}")
 
-        for s in stats["scored"][:top_n]:
+        for s in scored[:top_n]:
             if s["slop_prob"] < threshold:
                 break
             short = s["text"][:80].replace("\n", " ")
@@ -669,7 +767,7 @@ def cmd_classify(args: argparse.Namespace) -> None:
 def cmd_revise(args: argparse.Namespace) -> None:
     """Run the agentic revision loop."""
     try:
-        from prose_doctor.ml import require_ml
+        from prose_doctor.providers import require_ml
         require_ml()
     except ImportError as e:
         print(str(e), file=sys.stderr)
