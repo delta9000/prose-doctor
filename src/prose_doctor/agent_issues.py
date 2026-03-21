@@ -438,6 +438,197 @@ def find_spike_issues(text: str, report: dict) -> list[Issue]:
     return issues[:10]
 
 
+def find_generic_issues(text: str, report: dict) -> list[Issue]:
+    """Find structurally generic paragraphs with actionable decomposition.
+
+    Uses narrative attention feature decomposition to identify paragraphs
+    that are structurally indistinguishable from the chapter average, and
+    explains which specific features to change.
+
+    Lightweight version: reuses scan data from report, only adds cheap
+    Boyd function-word features and verb energy (no GPT-2, no emotion model).
+    """
+    import numpy as np
+    from prose_doctor.ml.models import ModelManager
+    mm = ModelManager()
+    nlp = mm.spacy
+
+    paragraphs = split_paragraphs(text)
+    n = len(paragraphs)
+    if n < 10:
+        return []
+
+    pd = report.get("psychic_distance") or {}
+    fg = report.get("foregrounding") or {}
+    ic = report.get("info_contour") or {}
+    para_means = pd.get("paragraph_means", [])
+
+    # Boyd function word sets
+    _STAGING = frozenset({
+        "in", "on", "at", "to", "from", "by", "with", "into", "through",
+        "across", "between", "among", "above", "below", "beneath", "behind",
+        "beside", "near", "toward", "towards", "along", "around", "against",
+        "over", "under", "within", "without", "upon", "during", "before",
+        "after", "until", "beyond", "past", "outside", "inside",
+        "the", "a", "an",
+    })
+    _PROGRESSION = frozenset({
+        "would", "could", "should", "might", "must", "shall", "will",
+        "can", "may", "do", "does", "did", "has", "have", "had",
+        "was", "were", "been", "being", "am", "is", "are",
+        "then", "now", "just", "still", "already", "again", "soon",
+        "quickly", "slowly", "suddenly", "finally", "immediately",
+    })
+    _TENSION = frozenset({
+        "think", "thought", "know", "knew", "believe", "believed",
+        "understand", "understood", "realize", "realized", "wonder",
+        "wondered", "consider", "considered", "imagine", "imagined",
+        "remember", "remembered", "decide", "decided",
+        "because", "reason", "why", "whether", "if", "unless",
+        "although", "though", "however", "but", "yet",
+        "maybe", "perhaps", "probably",
+        "right", "wrong", "true", "certain", "possible",
+    })
+    _DYNAMIC = frozenset({
+        "ran", "run", "walked", "grabbed", "pulled", "pushed", "threw",
+        "hit", "jumped", "climbed", "fell", "opened", "closed", "turned",
+        "moved", "reached", "picked", "dropped", "kicked", "slammed",
+        "ripped", "cut", "shot", "fired", "swung", "caught",
+        "lunged", "stumbled", "sprinted", "crawled", "lifted", "carried",
+    })
+    _STATIVE = frozenset({
+        "was", "were", "is", "seemed", "appeared", "felt", "looked",
+        "remained", "stayed", "stood", "sat", "lay", "had", "knew",
+        "thought", "believed", "wanted", "needed",
+    })
+
+    # Build per-paragraph features
+    features = []
+    feature_names = [
+        "pd_mean", "fragment_ratio", "inversion_ratio", "sl_cv",
+        "dialogue_ratio", "verb_energy",
+        "boyd_staging", "boyd_progression", "boyd_tension",
+    ]
+
+    for pi, para in enumerate(paragraphs):
+        words = para.lower().split()
+        wc = len(words) or 1
+        word_set = set(words)
+
+        doc = nlp(para)
+        sents = list(doc.sents)
+
+        # Psychic distance (from report)
+        pd_val = para_means[pi] if pi < len(para_means) else 0.3
+
+        # Fragment ratio
+        frag = sum(1 for s in sents if len(s) < 5) / max(len(sents), 1) if sents else 0
+
+        # Inversion
+        inv = 0
+        total_s = 0
+        for sent in sents:
+            total_s += 1
+            root = None
+            for t in sent:
+                if t.dep_ == "ROOT":
+                    root = t
+                if t.dep_ in ("nsubj", "nsubjpass") and root is not None and t.i > root.i:
+                    inv += 1
+                    break
+        inv_ratio = inv / max(total_s, 1)
+
+        # Sentence length CV
+        lengths = [len(s) for s in sents if len(s) > 2]
+        sl_cv = float(np.std(lengths) / np.mean(lengths)) if len(lengths) >= 2 else 0
+
+        # Dialogue ratio
+        dial_chars = sum(len(l) for l in para.split('\n') if '"' in l or '\u201c' in l)
+        dial_ratio = dial_chars / max(len(para), 1)
+
+        # Verb energy
+        verbs = [t.text.lower() for t in doc if t.pos_ == "VERB"]
+        if verbs:
+            dyn = sum(1 for v in verbs if v in _DYNAMIC)
+            sta = sum(1 for v in verbs if v in _STATIVE)
+            ve = dyn / max(dyn + sta, 1)
+        else:
+            ve = 0.5
+
+        # Boyd features
+        staging = len(word_set & _STAGING) / wc
+        progression = len(word_set & _PROGRESSION) / wc
+        tension = len(word_set & _TENSION) / wc
+
+        features.append([pd_val, frag, inv_ratio, sl_cv, dial_ratio, ve,
+                         staging, progression, tension])
+
+    features_arr = np.array(features)
+
+    # Normalize to [0,1]
+    mins = features_arr.min(axis=0, keepdims=True)
+    maxs = features_arr.max(axis=0, keepdims=True)
+    ranges = maxs - mins
+    ranges[ranges == 0] = 1.0
+    normed = (features_arr - mins) / ranges
+
+    # Chapter mean
+    chapter_mean = normed.mean(axis=0)
+
+    # Per-paragraph deviation from mean
+    deviations = np.abs(normed - chapter_mean)
+    generic_scores = deviations.mean(axis=1)
+
+    # Find the most generic paragraphs
+    ranking = np.argsort(generic_scores)
+    issues = []
+
+    for idx in ranking[:12]:
+        devs = deviations[idx]
+        feat_order = np.argsort(devs)
+
+        # Build prescription from the most average features
+        avg_features = []
+        for fi in feat_order[:3]:
+            avg_features.append(feature_names[fi])
+
+        distinct_features = []
+        for fi in feat_order[-2:]:
+            distinct_features.append(feature_names[fi])
+
+        # Human-readable prescriptions
+        prescriptions = {
+            "pd_mean": "shift psychic distance — go deeper into interiority or pull back to establishing shot",
+            "fragment_ratio": "change sentence structure — add fragments for tension or merge them for flow",
+            "inversion_ratio": "restructure sentences — invert word order to break SVO monotony",
+            "sl_cv": "vary sentence lengths — mix short punches with long flowing sentences",
+            "dialogue_ratio": "add or remove dialogue to shift the paragraph's mode",
+            "verb_energy": "change verb energy — use dynamic/action verbs or commit to stative/perceptive ones",
+            "boyd_staging": "adjust world-building language — add or remove spatial/temporal grounding",
+            "boyd_progression": "adjust plot-moving language — add or remove action modifiers and auxiliaries",
+            "boyd_tension": "adjust cognitive tension — add reasoning, doubt, evaluation, or remove it",
+        }
+
+        fix_suggestions = [prescriptions.get(f, f) for f in avg_features]
+        preserve_notes = [f"{f} (already distinctive)" for f in distinct_features]
+
+        reason = (
+            f"structurally generic — most average in: {', '.join(avg_features)}. "
+            f"Fix: {fix_suggestions[0]}"
+        )
+
+        issues.append(Issue(
+            paragraph_idx=int(idx),
+            sentence_text=paragraphs[idx][:150],
+            context_before="",
+            context_after=f"Preserve: {', '.join(preserve_notes)}",
+            reason=reason,
+            preserve=False,
+        ))
+
+    return issues
+
+
 METRIC_FINDERS = {
     "fg_fragment": find_fragment_issues,
     "fg_inversion": find_inversion_issues,
@@ -446,6 +637,7 @@ METRIC_FINDERS = {
     "ic_rhythmicity": find_flatline_issues,
     "ic_flatlines": find_flatline_issues,
     "ic_spikes": find_spike_issues,
+    "generic": find_generic_issues,
 }
 
 

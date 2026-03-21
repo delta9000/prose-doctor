@@ -54,6 +54,9 @@ dialogue intact. Do NOT touch passages marked as "preserve".
 6. Call `replace_passage` with the old and new text. It will tell you if the \
 edit was accepted (metric improved) or rejected (regression detected, auto-reverted).
 7. Repeat from step 1, targeting the next worst metric.
+8. After addressing metric-specific issues, call `find_issues("generic")` to find \
+structurally generic paragraphs — passages that are indistinguishable from the \
+chapter average. The tool tells you WHICH features to change and which to preserve.
 
 ## Rules
 
@@ -254,7 +257,8 @@ def create_agent(
 
         Args:
             metric: The metric to investigate. One of: fg_fragment, fg_inversion,
-                    pd_mean, pd_std, ic_rhythmicity, ic_flatlines, ic_spikes.
+                    pd_mean, pd_std, ic_rhythmicity, ic_flatlines, ic_spikes,
+                    generic (structurally indistinguishable paragraphs).
         """
         if ctx.deps.last_report is None:
             return "ERROR: Run scan_deep first."
