@@ -11,12 +11,19 @@ from __future__ import annotations
 
 import json
 import re
+import socket
 import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from urllib.request import urlopen, Request
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
+
+# Force IPv4 — Gutenberg load-balances to IPv6 which may be unreachable
+_orig_getaddrinfo = socket.getaddrinfo
+def _ipv4_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+    return _orig_getaddrinfo(host, port, socket.AF_INET, type, proto, flags)
+socket.getaddrinfo = _ipv4_getaddrinfo
 
 CORPUS_DIR = Path("corpus/human")
 
@@ -80,15 +87,18 @@ def fetch_gutenberg_text(book_id: int) -> str | None:
         f"https://www.gutenberg.org/files/{book_id}/{book_id}.txt",
     ]
     for url in urls:
-        try:
-            req = Request(url, headers={"User-Agent": "prose-doctor-corpus-builder/1.0"})
-            with urlopen(req) as resp:
-                text = resp.read().decode("utf-8", errors="replace")
-                if len(text) > 1000:
-                    return text
-        except HTTPError:
-            continue
-        time.sleep(2)  # be polite
+        for attempt in range(3):
+            try:
+                req = Request(url, headers={"User-Agent": "prose-doctor-corpus-builder/1.0"})
+                with urlopen(req, timeout=30) as resp:
+                    text = resp.read().decode("utf-8", errors="replace")
+                    if len(text) > 1000:
+                        return text
+            except (HTTPError, URLError, OSError) as e:
+                if attempt < 2:
+                    time.sleep(3)
+                    continue
+            time.sleep(2)  # be polite
     return None
 
 

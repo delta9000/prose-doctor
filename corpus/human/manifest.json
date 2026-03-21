@@ -1,0 +1,220 @@
+{
+  "doyle/hound_of_the_baskervilles": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "detective",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 2852
+  },
+  "christie/murder_on_the_links": {
+    "status": "ok",
+    "chapters": 1,
+    "genre": "mystery",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 58866
+  },
+  "buchan/thirty_nine_steps": {
+    "status": "ok",
+    "chapters": 10,
+    "genre": "thriller",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 558
+  },
+  "poe/works_of_poe_v2": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "gothic_horror",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 1155
+  },
+  "wells/war_of_the_worlds": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "sci-fi",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 36
+  },
+  "wells/time_machine": {
+    "status": "ok",
+    "chapters": 1,
+    "genre": "sci-fi",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 35
+  },
+  "london/call_of_the_wild": {
+    "status": "ok",
+    "chapters": 7,
+    "genre": "adventure",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 215
+  },
+  "grey/riders_of_the_purple_sage": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "western",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 1300
+  },
+  "stoker/dracula": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "gothic",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 345
+  },
+  "shelley/frankenstein": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "gothic_sf",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 84
+  },
+  "austen/pride_and_prejudice": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "romance",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 1342
+  },
+  "wharton/age_of_innocence": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "social",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 541
+  },
+  "dostoevsky/crime_and_punishment": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "psychological",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 2554
+  },
+  "conrad/heart_of_darkness": {
+    "status": "ok",
+    "chapters": 1,
+    "genre": "literary",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 219
+  },
+  "dickens/tale_of_two_cities": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "historical",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 98
+  },
+  "fitzgerald/great_gatsby": {
+    "status": "ok",
+    "chapters": 1,
+    "genre": "literary",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 64317
+  },
+  "twain/huckleberry_finn": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "satire",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 76
+  },
+  "tolstoy/anna_karenina": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "literary",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 1399
+  },
+  "verne/twenty_thousand_leagues": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "adventure_sf",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 164
+  },
+  "crane/red_badge_of_courage": {
+    "status": "ok",
+    "chapters": 15,
+    "genre": "war",
+    "source": "gutenberg",
+    "license": "public_domain",
+    "gutenberg_id": 1098
+  },
+  "doctorow/little_brother": {
+    "status": "ok",
+    "chapters": 1,
+    "genre": "ya_sf",
+    "source": "cc",
+    "license": "CC BY-NC-SA"
+  },
+  "doctorow/makers": {
+    "status": "ok",
+    "chapters": 1,
+    "genre": "near_future",
+    "source": "cc",
+    "license": "CC BY-NC-SA"
+  },
+  "doctorow/down_and_out": {
+    "status": "ok",
+    "chapters": 1,
+    "genre": "sci-fi",
+    "source": "cc",
+    "license": "CC BY-NC-SA-ND"
+  },
+  "doctorow/eastern_standard_tribe": {
+    "status": "ok",
+    "chapters": 1,
+    "genre": "sci-fi",
+    "source": "cc",
+    "license": "CC BY-NC-SA-ND"
+  },
+  "doctorow/for_the_win": {
+    "status": "ok",
+    "chapters": 1,
+    "genre": "ya_thriller",
+    "source": "cc",
+    "license": "CC BY-NC-SA"
+  },
+  "watts/blindsight": {
+    "status": "ok",
+    "chapters": 2,
+    "genre": "hard_sf",
+    "source": "cc",
+    "license": "CC BY-NC-SA"
+  },
+  "stross/accelerando": {
+    "status": "failed",
+    "reason": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>"
+  },
+  "sanderson/warbreaker": {
+    "status": "skipped",
+    "reason": "pdf"
+  },
+  "schroeder/ventus": {
+    "status": "failed",
+    "reason": "HTTP Error 404: Not Found"
+  },
+  "munroe/everyone_in_silico": {
+    "status": "skipped",
+    "reason": "pdf"
+  }
+}
