@@ -63,6 +63,8 @@ Patterns that are fine once but become tics through repetition: tricolons, over-
 - **Voice separation**: Measures whether POV characters sound distinct via sentence embeddings.
 - **Emotion arc**: Flags chapters with flat emotional arcs.
 
+See [docs/lenses.md](docs/lenses.md) for the full lens guide: what each lens measures, why it matters, how to use it, and the research or theory behind it.
+
 ## Configuration
 
 Create a `.prose-doctor.toml` in your project root (or run `prose-doctor init`):
