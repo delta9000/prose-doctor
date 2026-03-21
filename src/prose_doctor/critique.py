@@ -75,6 +75,60 @@ def _is_strength(value: float, baseline: float, direction: str) -> bool:
         return value < baseline * 0.95
 
 
+def lens_results_to_report(results: dict[str, "LensResult"]) -> dict:
+    """Convert LensResult dict from LensRunner into the report format build_critique expects.
+
+    Merges each lens's per_chapter and raw dicts, applies field-name mappings
+    where lens output keys differ from what build_critique looks up, and maps
+    lens names to the report keys build_critique expects.
+    """
+    report: dict = {}
+
+    for lens_name, result in results.items():
+        entry: dict = {}
+        if result.per_chapter:
+            entry.update(result.per_chapter)
+        if result.raw:
+            entry.update(result.raw)
+
+        # --- Lens-name → report-key mappings ---
+        key = lens_name
+        if lens_name == "dialogue_voice":
+            key = "dialogue"
+
+        # --- Field-name mappings per lens ---
+        if lens_name == "psychic_distance":
+            # build_critique expects mean_distance, std_distance, paragraph_means
+            if "pd_mean" in entry:
+                entry["mean_distance"] = entry["pd_mean"]
+            if "pd_std" in entry:
+                entry["std_distance"] = entry["pd_std"]
+            # paragraph_means comes from per_paragraph, not per_chapter
+            if result.per_paragraph and "pd_mean" in result.per_paragraph:
+                entry["paragraph_means"] = result.per_paragraph["pd_mean"]
+
+        elif lens_name == "foregrounding":
+            # build_critique expects sentence_length_cv; lens produces sl_cv
+            if "sl_cv" in entry:
+                entry["sentence_length_cv"] = entry["sl_cv"]
+
+        elif lens_name == "sensory":
+            # build_critique expects "weakest"; lens produces "weakest_modality"
+            if "weakest_modality" in entry:
+                entry["weakest"] = entry["weakest_modality"]
+
+        elif lens_name == "dialogue_voice":
+            # build_critique expects "talking_heads" (count or list);
+            # lens has talking_heads_count in per_chapter
+            if "talking_heads_count" in entry:
+                entry["talking_heads"] = int(entry["talking_heads_count"])
+            # all_same_voice already comes from raw
+
+        report[key] = entry
+
+    return report
+
+
 def build_critique(
     report: dict,
     twins: list | None = None,
