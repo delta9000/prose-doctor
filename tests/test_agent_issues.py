@@ -1,5 +1,5 @@
 """Tests for per-passage issue finder."""
-from prose_doctor.agent_issues import find_fragment_issues, find_discourse_issues, find_issues, format_issues
+from prose_doctor.agent_issues import find_fragment_issues, find_discourse_issues, find_concreteness_issues, find_issues, format_issues
 
 
 SAMPLE_TEXT = """\
@@ -79,6 +79,31 @@ def test_find_issues_unknown_metric():
     """Unknown metrics should return empty list."""
     result = find_issues("nonexistent_metric", "some text", {})
     assert result == []
+
+
+def test_find_concreteness_issues_flags_no_abstraction():
+    """Relentlessly concrete prose should get flagged."""
+    text = (
+        "He pressed his back against the brick wall. His fingers found "
+        "the crack in the mortar, cold and damp. The flashlight in his left "
+        "hand was dead weight now, batteries drained hours ago.\n\n"
+        "She set the coffee mug on the counter. The ceramic clinked against "
+        "the granite. Outside, rain hammered the tin roof.\n\n"
+        "He grabbed the door handle. The metal was cold. He twisted it. "
+        "The hinges squeaked. The hallway stretched out before him.\n\n"
+        "The knife lay on the table. Steel glinted in the lamplight. A bead "
+        "of water ran down the blade.\n\n"
+        "She pulled the rope taut. The knot held. The boat rocked against "
+        "the dock, wood scraping wood."
+    )
+    report = {"concreteness": {
+        "concreteness_mean": 3.4,
+        "abstractness_ratio": 0.05,
+        "vague_noun_density": 0.0,
+    }}
+    issues = find_concreteness_issues(text, report)
+    assert len(issues) > 0
+    assert any("abstract" in i.reason.lower() or "reflect" in i.reason.lower() for i in issues)
 
 
 def test_find_discourse_issues():

@@ -663,6 +663,93 @@ def find_discourse_issues(text: str, report: dict) -> list[Issue]:
     return issues[:15]
 
 
+def find_concreteness_issues(text: str, report: dict) -> list[Issue]:
+    """Find passages that are excessively concrete or use vague nouns.
+
+    Two complementary signals:
+    1. Chapters with very low abstractness_ratio (< 0.15) need moments of
+       reflection, interpretation, or generalization. AI prose tends to
+       stay relentlessly concrete.
+    2. Vague nouns ("thing", "stuff", "something") that could be replaced
+       with specific terms.
+    """
+    pool = ProviderPool()
+    nlp = pool.spacy
+
+    paragraphs = split_paragraphs(text)
+    cn = report.get("concreteness") or {}
+    abstract_ratio = cn.get("abstractness_ratio", 0.5)
+    vague_density = cn.get("vague_noun_density", 0)
+
+    issues = []
+
+    from prose_doctor.lenses.concreteness import VAGUE_NOUNS
+
+    # Issue type 1: Vague nouns
+    if vague_density > 0.5:
+        for pi, para in enumerate(paragraphs):
+            doc = nlp(para)
+            for sent in doc.sents:
+                for token in sent:
+                    if token.lemma_.lower() in VAGUE_NOUNS:
+                        sent_text = sent.text.strip()[:150]
+                        ctx_before = paragraphs[pi - 1][:100] if pi > 0 else ""
+                        ctx_after = paragraphs[pi + 1][:100] if pi < len(paragraphs) - 1 else ""
+                        issues.append(Issue(
+                            paragraph_idx=pi,
+                            sentence_text=sent_text,
+                            context_before=ctx_before,
+                            context_after=ctx_after,
+                            reason=(
+                                f"vague noun '{token.text}' — replace with a specific noun "
+                                f"(what thing? what kind? what exactly?)"
+                            ),
+                            preserve=False,
+                        ))
+                        break  # one per sentence
+
+    # Issue type 2: No abstraction — flag longest concrete-only stretches
+    if abstract_ratio < 0.15:
+        from prose_doctor.lenses.concreteness import _load_norms
+        norms = _load_norms()
+
+        concrete_run = 0
+        for pi, para in enumerate(paragraphs):
+            doc = nlp(para)
+            scores = []
+            for token in doc:
+                if not token.is_alpha or token.is_stop or len(token.text) <= 2:
+                    continue
+                word = token.lemma_.lower()
+                if word in norms:
+                    scores.append(norms[word])
+
+            para_mean = sum(scores) / len(scores) if scores else 3.0
+            if para_mean > 3.2:
+                concrete_run += 1
+            else:
+                concrete_run = 0
+
+            if concrete_run >= 4:
+                sent_text = paragraphs[pi][:150]
+                ctx_before = paragraphs[pi - 1][:100] if pi > 0 else ""
+                ctx_after = paragraphs[pi + 1][:100] if pi < len(paragraphs) - 1 else ""
+                issues.append(Issue(
+                    paragraph_idx=pi,
+                    sentence_text=sent_text,
+                    context_before=ctx_before,
+                    context_after=ctx_after,
+                    reason=(
+                        f"concrete run ({concrete_run} paragraphs with no abstraction) — "
+                        f"add a moment of reflection, interpretation, memory, or opinion "
+                        f"to break the sensory surface"
+                    ),
+                    preserve=False,
+                ))
+
+    return issues[:15]
+
+
 METRIC_FINDERS = {
     "fg_fragment": find_fragment_issues,
     "fg_inversion": find_inversion_issues,
@@ -674,6 +761,7 @@ METRIC_FINDERS = {
     "generic": find_generic_issues,
     "dr_entropy": find_discourse_issues,
     "dr_implicit": find_discourse_issues,
+    "cn_abstract": find_concreteness_issues,
 }
 
 
