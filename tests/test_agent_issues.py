@@ -1,5 +1,5 @@
 """Tests for per-passage issue finder."""
-from prose_doctor.agent_issues import find_fragment_issues, find_discourse_issues, find_concreteness_issues, find_issues, format_issues
+from prose_doctor.agent_issues import find_fragment_issues, find_discourse_issues, find_concreteness_issues, find_shift_issues, find_issues, format_issues
 
 
 SAMPLE_TEXT = """\
@@ -79,6 +79,23 @@ def test_find_issues_unknown_metric():
     """Unknown metrics should return empty list."""
     result = find_issues("nonexistent_metric", "some text", {})
     assert result == []
+
+
+def test_find_shift_issues_flags_static_scene():
+    """A long scene with no shifts should get flagged."""
+    # 6 paragraphs, same time/place/character
+    text = "\n\n".join([
+        "Marcus sat at the table. He stared at the map.",
+        "He traced the route with his finger. The line ran north.",
+        "He leaned back in the chair. The map was wrong.",
+        "He checked the coordinates again. Still wrong.",
+        "He pulled out a second map. This one was older.",
+        "He compared the two. The discrepancy was clear.",
+    ])
+    report = {"situation_shifts": {"total_shifts": 0, "time_shifts": 0, "space_shifts": 0, "actor_shifts": 0}}
+    issues = find_shift_issues(text, report)
+    assert len(issues) > 0
+    assert any("static" in i.reason.lower() or "shift" in i.reason.lower() for i in issues)
 
 
 def test_find_concreteness_issues_flags_no_abstraction():

@@ -750,6 +750,68 @@ def find_concreteness_issues(text: str, report: dict) -> list[Issue]:
     return issues[:15]
 
 
+def find_shift_issues(text: str, report: dict) -> list[Issue]:
+    """Find long static stretches that lack time, space, or character shifts.
+
+    Human prose averages ~1.5-2 shifts per paragraph. AI prose averages ~1.
+    Flag runs of 5+ paragraphs with no shifts — these are the most static
+    stretches where a cut, time skip, or new character would add dynamism.
+    """
+    paragraphs = split_paragraphs(text)
+    ss = report.get("situation_shifts") or {}
+    total = ss.get("total_shifts", 999)
+    n_paras = max(len(paragraphs), 1)
+    shift_rate = total / n_paras
+
+    # Only flag if shift rate is below human baseline
+    if shift_rate > 1.2:
+        return []
+
+    pool = ProviderPool()
+    nlp = pool.spacy
+
+    from prose_doctor.lenses.situation_shifts import (
+        _has_temporal_markers, _get_first_subject,
+    )
+
+    issues = []
+    no_shift_run = 0
+    prev_subject = None
+
+    for pi, para in enumerate(paragraphs):
+        doc = nlp(para)
+        cur_subject = _get_first_subject(doc)
+        has_time = _has_temporal_markers(para)
+
+        has_any_shift = has_time  # time marker = shift
+        if cur_subject and prev_subject and cur_subject != prev_subject:
+            if cur_subject not in ("he", "she", "they", "it") and prev_subject not in ("he", "she", "they", "it"):
+                has_any_shift = True
+
+        if has_any_shift:
+            no_shift_run = 0
+        else:
+            no_shift_run += 1
+
+        if no_shift_run >= 5:
+            issues.append(Issue(
+                paragraph_idx=pi,
+                sentence_text=paragraphs[pi][:150],
+                context_before=paragraphs[pi - 1][:100] if pi > 0 else "",
+                context_after=paragraphs[pi + 1][:100] if pi < len(paragraphs) - 1 else "",
+                reason=(
+                    f"static scene ({no_shift_run} paragraphs, same time/place/character) — "
+                    f"consider a time reference, location change, new character entering, "
+                    f"or a scene cut"
+                ),
+                preserve=False,
+            ))
+
+        prev_subject = cur_subject
+
+    return issues[:10]
+
+
 METRIC_FINDERS = {
     "fg_fragment": find_fragment_issues,
     "fg_inversion": find_inversion_issues,
@@ -762,6 +824,7 @@ METRIC_FINDERS = {
     "dr_entropy": find_discourse_issues,
     "dr_implicit": find_discourse_issues,
     "cn_abstract": find_concreteness_issues,
+    "ss_shift_rate": find_shift_issues,
 }
 
 
