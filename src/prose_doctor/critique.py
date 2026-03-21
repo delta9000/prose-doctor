@@ -16,21 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-
-# Human prose baselines (from 50-chapter analysis, March 2026)
-# Each is (mean, target_direction) where direction is "higher" or "lower"
-BASELINES = {
-    "pd_mean":       (0.336, "higher",  "Psychic distance"),
-    "pd_std":        (0.093, "higher",  "Distance variation"),
-    "fg_inversion":  (44.2,  "higher",  "Sentence inversion"),
-    "fg_sl_cv":      (0.706, "higher",  "Sentence length variation"),
-    "fg_fragment":   (6.7,   "lower",   "Fragment ratio"),
-    "ic_rhythmicity":(0.129, "lower",   "Information rhythmicity"),
-    "ic_spikes":     (7.7,   "higher",  "Surprisal spikes"),
-    # Flatlines: having fewer than baseline is fine, not a problem.
-    # Only flag if significantly MORE than baseline.
-    "ic_flatlines":  (3.1,   "lower",   "Information flatlines"),
-}
+from prose_doctor.critique_config import CritiqueConfig, METRIC_LABELS
 
 
 @dataclass
@@ -67,12 +53,12 @@ def _is_problem(value: float, baseline: float, direction: str, threshold: float 
         return value > baseline * (1 + threshold)
 
 
-def _is_strength(value: float, baseline: float, direction: str) -> bool:
+def _is_strength(value: float, baseline: float, direction: str, threshold: float = 0.05) -> bool:
     """Is this metric better than the human baseline?"""
     if direction == "higher":
-        return value > baseline * 1.05
+        return value > baseline * (1 + threshold)
     else:
-        return value < baseline * 0.95
+        return value < baseline * (1 - threshold)
 
 
 def lens_results_to_report(results: dict[str, "LensResult"]) -> dict:
@@ -132,14 +118,19 @@ def lens_results_to_report(results: dict[str, "LensResult"]) -> dict:
 def build_critique(
     report: dict,
     twins: list | None = None,
+    config: CritiqueConfig | None = None,
 ) -> list[CritiqueSection]:
     """Build critique sections from a scan --deep report."""
+    cfg = config or CritiqueConfig()
     sections: list[CritiqueSection] = []
 
     pd = report.get("psychic_distance") or {}
     ic = report.get("info_contour") or {}
     fg = report.get("foregrounding") or {}
     sensory = report.get("sensory") or {}
+    dr = report.get("discourse_relations") or {}
+    cn = report.get("concreteness") or {}
+    ss = report.get("situation_shifts") or {}
 
     # Map report fields to baseline keys
     values = {
@@ -151,72 +142,26 @@ def build_critique(
         "ic_rhythmicity":ic.get("rhythmicity", 0),
         "ic_spikes":     ic.get("spikes", 0) if isinstance(ic.get("spikes"), (int, float)) else len(ic.get("spikes", [])),
         "ic_flatlines":  ic.get("flatlines", 0) if isinstance(ic.get("flatlines"), (int, float)) else len(ic.get("flatlines", [])),
+        "dr_entropy":    dr.get("relation_entropy", 0),
+        "dr_implicit":   dr.get("implicit_ratio", 1.0),
+        "cn_abstract":   cn.get("abstractness_ratio", 0),
+        "ss_shift_rate": ss.get("total_shifts", 0) / max(1, report.get("word_count", 1000) // 150),
     }
 
-    # Prescriptions keyed by metric
-    prescriptions = {
-        "pd_mean": (
-            "You're narrating from outside the character. Pick the 3-5 most "
-            "emotionally charged moments and rewrite them from deep inside the "
-            "character's perception — what they feel in their body, what they "
-            "notice, what they're afraid of. Use perception verbs (saw, felt, "
-            "heard) and interior thought."
-        ),
-        "pd_std": (
-            "Your narrative distance is flat — you stay at the same zoom level "
-            "throughout. Pull back to establishing-shot distance for scene "
-            "transitions, then push in close for confrontations and revelations. "
-            "The contrast creates rhythm."
-        ),
-        "fg_inversion": (
-            "Too many sentences follow subject-verb-object order. Restructure "
-            "5-8 sentences to lead with a prepositional phrase, a verb, or a "
-            "subordinate clause. 'Down the corridor she ran' instead of "
-            "'She ran down the corridor.'"
-        ),
-        "fg_sl_cv": (
-            "Your sentences are too uniform in length. Break 3-4 long sentences "
-            "into staccato fragments at high-tension moments. Merge 3-4 short "
-            "sentences into complex, flowing ones during reflective passages. "
-            "The variation creates reading rhythm."
-        ),
-        "fg_fragment": (
-            "You're overusing short fragments for manufactured emphasis. "
-            "Each fragment should earn its weight — save them for genuine "
-            "moments of impact. Merge the weaker ones back into full sentences."
-        ),
-        "ic_rhythmicity": (
-            "Your information density is too metronomic — every paragraph "
-            "delivers roughly the same amount of new information. Vary the "
-            "density: follow a dense, information-packed paragraph with a "
-            "sparse, atmospheric one. Let the reader breathe."
-        ),
-        "ic_spikes": (
-            "Your prose is too predictable — not enough moments where the "
-            "language itself surprises. At 3-4 key moments, choose an "
-            "unexpected word, an unusual metaphor, or a syntactic structure "
-            "the reader doesn't see coming."
-        ),
-        "ic_flatlines": (
-            "Your prose has long stretches of uniform information density — "
-            "the reader zones out. Break these up by inserting a moment of "
-            "high tension, a surprising detail, or a shift in narrative mode."
-        ),
-    }
-
-    for key, (baseline, direction, label) in BASELINES.items():
+    for key, (baseline, direction) in cfg.baselines.items():
+        label = METRIC_LABELS.get(key, key)
         value = values.get(key, 0)
-        if _is_problem(value, baseline, direction):
-            severity = "major" if _is_problem(value, baseline, direction, 0.25) else "minor"
+        if _is_problem(value, baseline, direction, cfg.minor_threshold):
+            severity = "major" if _is_problem(value, baseline, direction, cfg.major_threshold) else "minor"
             sections.append(CritiqueSection(
                 dimension=label,
                 severity=severity,
                 value=value,
                 baseline=baseline,
                 direction=direction,
-                prescription=prescriptions.get(key, ""),
+                prescription=cfg.prescriptions.get(key, ""),
             ))
-        elif _is_strength(value, baseline, direction):
+        elif _is_strength(value, baseline, direction, cfg.strength_threshold):
             sections.append(CritiqueSection(
                 dimension=label,
                 severity="strength",
