@@ -193,7 +193,7 @@ class ReferentialCohesionLens(Lens):
                     para_ents |= sentence_entities[i]
             para_entity_sets.append(para_ents)
 
-        entity_continuity: list[float] = [1.0]  # first paragraph has full continuity
+        entity_continuity: list[float] = [float('nan')]  # undefined for first paragraph
         for i in range(1, len(para_entity_sets)):
             prev = para_entity_sets[i - 1]
             curr = para_entity_sets[i]
