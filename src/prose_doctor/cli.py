@@ -958,6 +958,26 @@ def cmd_revise(args: argparse.Namespace) -> None:
         print(f"Distance: {result.metrics_initial.total_distance:.4f} → {result.metrics_final.total_distance:.4f}", file=sys.stderr)
 
 
+def cmd_arena(args: argparse.Namespace) -> None:
+    """Run the critique tuning arena."""
+    if args.arena_command == "run":
+        from prose_doctor.arena.runner import run_arena
+        run_arena(
+            config_paths=[Path(p) for p in args.configs],
+            dataset_path=Path(args.dataset),
+            n_stories=args.stories,
+            endpoint=args.endpoint,
+            revision_model=args.revision_model,
+            judge_model=args.judge_model,
+            scan_workers=args.scan_workers,
+        )
+    elif args.arena_command == "ratings":
+        from prose_doctor.arena.runner import print_ratings
+        print_ratings()
+    else:
+        args._arena_parser.print_help()
+
+
 def main() -> None:
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -1040,6 +1060,21 @@ def main() -> None:
     revise_p.add_argument("--experimental", action="store_true", help="Include experimental lenses")
     revise_p.add_argument("--validated", action="store_true", help="Include validated + stable lenses")
 
+    # arena
+    p_arena = subparsers.add_parser("arena", help="Run critique tuning arena")
+    arena_sub = p_arena.add_subparsers(dest="arena_command")
+
+    p_arena_run = arena_sub.add_parser("run", help="Run a tournament round")
+    p_arena_run.add_argument("--configs", nargs="+", required=True, help="Config YAML files")
+    p_arena_run.add_argument("--stories", type=int, default=20, help="Stories per round")
+    p_arena_run.add_argument("--dataset", default="refs/novelist/data.jsonl", help="Dataset path")
+    p_arena_run.add_argument("--endpoint", default="http://localhost:8081/v1")
+    p_arena_run.add_argument("--revision-model", default="gpt-oss-120b")
+    p_arena_run.add_argument("--judge-model", default="minimax")
+    p_arena_run.add_argument("--scan-workers", type=int, default=2)
+
+    arena_sub.add_parser("ratings", help="Show current ratings")
+
     # validate
     validate_p = subparsers.add_parser("validate", help="Validate lenses against human/LLM corpus")
     validate_p.add_argument("lens", nargs="?", default=None, help="Lens to validate (or --all)")
@@ -1054,6 +1089,10 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
+    # Inject arena parser reference so cmd_arena can print help on unknown subcommand
+    if args.command == "arena":
+        args._arena_parser = p_arena
+
     handlers = {
         "scan": cmd_scan,
         "init": cmd_init,
@@ -1066,5 +1105,6 @@ def main() -> None:
         "critique": cmd_critique,
         "revise": cmd_revise,
         "validate": cmd_validate,
+        "arena": cmd_arena,
     }
     handlers[args.command](args)
