@@ -2480,6 +2480,7 @@ source = { editable = "." }
 [package.optional-dependencies]
 agent = [
     { name = "en-core-web-sm" },
+    { name = "networkx" },
     { name = "numpy" },
     { name = "pydantic-ai" },
     { name = "sentence-transformers" },
@@ -2489,6 +2490,7 @@ agent = [
 ]
 ml = [
     { name = "en-core-web-sm" },
+    { name = "networkx" },
     { name = "numpy" },
     { name = "sentence-transformers" },
     { name = "spacy" },
@@ -2504,6 +2506,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "en-core-web-sm", marker = "extra == 'ml'", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
+    { name = "networkx", marker = "extra == 'ml'", specifier = ">=3.0" },
     { name = "numpy", marker = "extra == 'ml'", specifier = ">=1.26" },
     { name = "prose-doctor", extras = ["ml"], marker = "extra == 'agent'" },
     { name = "pydantic-ai", marker = "extra == 'agent'", specifier = ">=1.60.0" },
