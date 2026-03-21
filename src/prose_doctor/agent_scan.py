@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from prose_doctor.agent_models import ProseMetrics
 from prose_doctor.config import ProjectConfig
+from prose_doctor.critique_config import CritiqueConfig
 
 
 # Lens names that feed into ProseMetrics — always run.
@@ -21,6 +22,7 @@ def scan_deep(
     config: ProjectConfig | None = None,
     metrics_only: bool = False,
     previous_report: dict | None = None,
+    critique_config: CritiqueConfig | None = None,
 ) -> tuple[ProseMetrics, dict]:
     """Run the ML analyzer suite and return structured metrics + raw report.
 
@@ -201,7 +203,10 @@ def scan_deep(
     n_paras = max(len(split_paragraphs(text)), 1)
     total_shifts = ss_dict.get("total_shifts", 0)
 
+    cfg = critique_config  # may be None
+    baselines = cfg.baselines if cfg else None
     metrics = ProseMetrics(
+        baselines=baselines,
         pd_mean=pd_dict.get("mean_distance", 0),
         pd_std=pd_dict.get("std_distance", 0),
         fg_inversion=fg_dict.get("inversion_pct", 0),

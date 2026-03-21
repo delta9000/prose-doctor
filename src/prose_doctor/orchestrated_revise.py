@@ -22,7 +22,8 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from prose_doctor.agent_models import BASELINES, ProseMetrics, RevisionResult
+from prose_doctor.agent_models import ProseMetrics, RevisionResult
+from prose_doctor.critique_config import CritiqueConfig
 from prose_doctor.agent_scan import scan_deep
 from prose_doctor.agent_issues import find_issues, Issue
 from prose_doctor.text import split_paragraphs
@@ -30,8 +31,6 @@ from prose_doctor.text import split_paragraphs
 
 DEFAULT_ENDPOINT = "http://localhost:8081/v1"
 DEFAULT_MODEL = "gpt-oss-120b"
-MAX_TURNS = 8
-METRIC_REGRESSION_LIMIT = 0.20
 
 
 REWRITE_SYSTEM = """\
@@ -55,6 +54,7 @@ def _call_llm(
     endpoint: str,
     model: str,
     api_key: str = "none",
+    temperature: float = 0.7,
 ) -> str | None:
     """Send one paragraph + prescription to LLM, get rewrite back."""
     from openai import OpenAI
@@ -85,7 +85,7 @@ Output ONLY the rewritten paragraph:"""
                 {"role": "user", "content": user_prompt},
             ],
             max_tokens=len(paragraph.split()) * 3 + 100,
-            temperature=0.7,
+            temperature=temperature,
         )
         content = resp.choices[0].message.content.strip()
         # Strip think tags
@@ -118,23 +118,27 @@ def _prescription_for_issue(issue: Issue) -> str:
 def run_orchestrated(
     text: str,
     filename: str = "chapter.md",
-    max_turns: int = MAX_TURNS,
+    max_turns: int | None = None,
     endpoint: str = DEFAULT_ENDPOINT,
     model_name: str = DEFAULT_MODEL,
     api_key: str = "none",
     verbose: bool = False,
+    critique_config: CritiqueConfig | None = None,
 ) -> RevisionResult:
     """Run the orchestrated revision loop."""
+    cfg = critique_config or CritiqueConfig()
+    effective_max_turns = max_turns if max_turns is not None else cfg.max_turns
+
     current_text = text
     turn = 0
     edits_accepted = 0
     edits_rejected = 0
 
     if verbose:
-        print(f"Orchestrated revision: {filename}, max {max_turns} turns", file=sys.stderr)
+        print(f"Orchestrated revision: {filename}, max {effective_max_turns} turns", file=sys.stderr)
 
     # Initial scan
-    metrics, report = scan_deep(current_text, filename=filename)
+    metrics, report = scan_deep(current_text, filename=filename, critique_config=cfg)
     initial_metrics = metrics
 
     if verbose:
@@ -149,14 +153,14 @@ def run_orchestrated(
     metric_queue.append("generic")
 
     for metric in metric_queue:
-        if turn >= max_turns:
+        if turn >= effective_max_turns:
             break
 
         if verbose:
             print(f"\n  --- Targeting: {metric} ---", file=sys.stderr)
 
         # Get issues for this metric
-        issues = find_issues(metric, current_text, report)
+        issues = find_issues(metric, current_text, report, config=cfg)
         fixable = [i for i in issues if not i.preserve]
 
         if not fixable:
@@ -168,7 +172,7 @@ def run_orchestrated(
             print(f"  Found {len(fixable)} fixable passages", file=sys.stderr)
 
         for issue in fixable:
-            if turn >= max_turns:
+            if turn >= effective_max_turns:
                 break
 
             paragraphs = split_paragraphs(current_text)
@@ -193,6 +197,7 @@ def run_orchestrated(
             revised_para = _call_llm(
                 target_para, prescription, ctx_before, ctx_after,
                 endpoint, model_name, api_key,
+                temperature=cfg.temperature,
             )
 
             if not revised_para or revised_para == target_para:
@@ -215,6 +220,7 @@ def run_orchestrated(
             new_metrics, new_report = scan_deep(
                 current_text, filename=filename,
                 metrics_only=True, previous_report=report,
+                critique_config=cfg,
             )
 
             # Check for improvement
@@ -228,12 +234,12 @@ def run_orchestrated(
             # Check per-metric regression
             old_d = metrics.distances()
             new_d = new_metrics.distances()
-            regressed = [k for k in BASELINES if new_d[k] - old_d[k] > METRIC_REGRESSION_LIMIT]
+            regressed = [k for k in cfg.baselines if new_d[k] - old_d[k] > cfg.regression_limit]
             if regressed:
                 current_text = previous_text
                 edits_rejected += 1
                 if verbose:
-                    print(f"    → REJECTED: {', '.join(regressed)} regressed > {METRIC_REGRESSION_LIMIT}", file=sys.stderr)
+                    print(f"    → REJECTED: {', '.join(regressed)} regressed > {cfg.regression_limit}", file=sys.stderr)
                 continue
 
             # Accept
@@ -241,7 +247,7 @@ def run_orchestrated(
             report = new_report
             edits_accepted += 1
 
-            improved = [k for k in BASELINES if new_d[k] < old_d[k]]
+            improved = [k for k in cfg.baselines if new_d[k] < old_d[k]]
             if verbose:
                 print(f"    → ACCEPTED: {metrics.total_distance:.4f} improved={improved}", file=sys.stderr)
 
@@ -249,8 +255,8 @@ def run_orchestrated(
     final_metrics = metrics
     init_d = initial_metrics.distances()
     final_d = final_metrics.distances()
-    improved = [k for k in BASELINES if final_d[k] < init_d[k]]
-    worsened = [k for k in BASELINES if final_d[k] > init_d[k]]
+    improved = [k for k in cfg.baselines if final_d[k] < init_d[k]]
+    worsened = [k for k in cfg.baselines if final_d[k] > init_d[k]]
 
     return RevisionResult(
         final_text=current_text,
