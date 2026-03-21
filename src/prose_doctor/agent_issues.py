@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from prose_doctor.lenses.fragment_classifier import _has_concrete_detail, _is_vague_fragment
+from prose_doctor.providers import ProviderPool
 from prose_doctor.text import split_paragraphs
 
 
@@ -21,60 +23,6 @@ class Issue:
     context_after: str   # following sentence or paragraph excerpt
     reason: str          # why this is a problem
     preserve: bool       # True = this is likely intentional craft, don't touch
-
-
-# --- Fragment classifier helpers ---
-
-# Vague/abstract content patterns — almost always crutches
-_VAGUE_FRAGMENTS = {
-    "the horizon shimmered", "the air changed", "the world shifted",
-    "the ground trembled", "the light faded", "the darkness deepened",
-    "the silence stretched", "the sound stopped", "the weight settled",
-    "the distance grew", "something changed", "everything changed",
-    "nothing moved", "time passed", "time stopped",
-}
-
-_BODY_PARTS = frozenset({
-    "teeth", "jaw", "throat", "chest", "ribs", "spine", "skull",
-    "fingers", "knuckles", "wrist", "palm", "hand", "hands",
-    "stomach", "gut", "lungs", "knees", "ankle", "bone", "bones",
-    "skin", "muscle", "nerve", "ear", "ears", "eye", "eyes",
-    "shoulder", "shoulders", "neck", "elbow", "hip", "tongue",
-})
-
-
-def _has_concrete_detail(text: str) -> bool:
-    """Does this fragment contain concrete sensory/physical detail?"""
-    words = set(text.lower().rstrip(".!?").split())
-
-    # Body parts = concrete
-    if words & _BODY_PARTS:
-        return True
-
-    # Named character (capitalized word that isn't sentence-start)
-    split = text.split()
-    if len(split) >= 2 and any(w[0].isupper() and w.isalpha() for w in split[1:]):
-        return True
-
-    # Possessive proper noun at start ("Fen's voice") = specific
-    if split and "'" in split[0] and split[0][0].isupper():
-        return True
-
-    return False
-
-
-def _is_vague_fragment(text: str) -> bool:
-    """Is this fragment generic/abstract with no concrete detail?"""
-    normalized = text.lower().rstrip(".!?").strip()
-    if normalized in _VAGUE_FRAGMENTS:
-        return True
-
-    # "The [abstract noun] [verb]ed." pattern
-    words = normalized.split()
-    if len(words) <= 3 and words[0] in ("the", "a", "an", "it"):
-        return True
-
-    return False
 
 
 def find_fragment_issues(text: str, report: dict) -> list[Issue]:
@@ -92,9 +40,8 @@ def find_fragment_issues(text: str, report: dict) -> list[Issue]:
     - Are isolated with no structural role
     - Are in a pair but both lack concrete detail
     """
-    from prose_doctor.ml.models import ModelManager
-    mm = ModelManager()
-    nlp = mm.spacy
+    pool = ProviderPool()
+    nlp = pool.spacy
 
     paragraphs = split_paragraphs(text)
     issues: list[Issue] = []
@@ -184,12 +131,11 @@ def find_psychic_distance_issues(text: str, report: dict) -> list[Issue]:
     and explains WHY they're too distant (no perception verbs, no pronouns,
     expository tone, etc).
     """
-    from prose_doctor.ml.models import ModelManager
-    from prose_doctor.ml.psychic_distance import (
+    from prose_doctor.lenses.psychic_distance import (
         PERCEPTION_VERBS, COGNITION_VERBS, PROXIMAL_DEICTICS,
     )
-    mm = ModelManager()
-    nlp = mm.spacy
+    pool = ProviderPool()
+    nlp = pool.spacy
 
     paragraphs = split_paragraphs(text)
     pd = report.get("psychic_distance") or {}
@@ -255,9 +201,8 @@ def find_psychic_distance_issues(text: str, report: dict) -> list[Issue]:
 
 def find_inversion_issues(text: str, report: dict) -> list[Issue]:
     """Find specific SVO sentences that could be inverted, with context."""
-    from prose_doctor.ml.models import ModelManager
-    mm = ModelManager()
-    nlp = mm.spacy
+    pool = ProviderPool()
+    nlp = pool.spacy
 
     paragraphs = split_paragraphs(text)
     issues = []
@@ -321,9 +266,8 @@ def find_inversion_issues(text: str, report: dict) -> list[Issue]:
 
 def find_flatline_issues(text: str, report: dict) -> list[Issue]:
     """Find information flatlines with proper sentence-to-paragraph mapping."""
-    from prose_doctor.ml.models import ModelManager
-    mm = ModelManager()
-    nlp = mm.spacy
+    pool = ProviderPool()
+    nlp = pool.spacy
 
     paragraphs = split_paragraphs(text)
     ic = report.get("info_contour") or {}
@@ -379,9 +323,8 @@ def find_spike_issues(text: str, report: dict) -> list[Issue]:
     When a chapter has too few spikes, this identifies the flattest passages
     where injecting surprise would help most.
     """
-    from prose_doctor.ml.models import ModelManager
-    mm = ModelManager()
-    nlp = mm.spacy
+    pool = ProviderPool()
+    nlp = pool.spacy
 
     paragraphs = split_paragraphs(text)
     ic = report.get("info_contour") or {}
@@ -449,9 +392,8 @@ def find_generic_issues(text: str, report: dict) -> list[Issue]:
     Boyd function-word features and verb energy (no GPT-2, no emotion model).
     """
     import numpy as np
-    from prose_doctor.ml.models import ModelManager
-    mm = ModelManager()
-    nlp = mm.spacy
+    pool = ProviderPool()
+    nlp = pool.spacy
 
     paragraphs = split_paragraphs(text)
     n = len(paragraphs)
