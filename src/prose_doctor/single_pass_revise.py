@@ -143,98 +143,100 @@ def run_single_pass(
             metrics_worsened=[],
         )
 
-    # 3. Build prompt and call LLM with tool
-    issue_list = _build_issue_list(all_issues)
-
-    user_message = f"""Here is the chapter to revise:
-
----
-{text}
----
-
-The following issues were found. Fix each one by calling replace_text:
-
-{issue_list}
-
-Make one replace_text call per issue. Start with the most important issues."""
-
-    if verbose:
-        print(f"  Calling LLM with {len(all_issues)} issues and replace_text tool...", file=sys.stderr)
-
-    try:
-        resp = client.chat.completions.create(
-            model=model_name,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_message},
-            ],
-            tools=[REPLACE_TOOL],
-            tool_choice="auto",
-            max_tokens=len(text.split()) * 4 + 2000,
-            temperature=cfg.temperature,
-        )
-    except Exception as e:
-        print(f"  LLM call failed: {e}", file=sys.stderr)
-        return RevisionResult(
-            final_text=text,
-            metrics_initial=initial_metrics,
-            metrics_final=initial_metrics,
-            turns_used=0,
-            edits_accepted=0,
-            edits_rejected=0,
-            metrics_improved=[],
-            metrics_worsened=[],
-        )
-
-    # 4. Process tool calls
+    # 3. Multi-turn tool-call loop: feed issues one at a time
     current_text = text
     edits_accepted = 0
     edits_rejected = 0
+    remaining_issues = list(all_issues)
 
-    message = resp.choices[0].message
-    tool_calls = message.tool_calls or []
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": (
+            f"Here is the chapter to revise:\n\n---\n{text}\n---\n\n"
+            f"I will give you issues to fix one at a time. "
+            f"For each issue, call replace_text with the exact passage to change "
+            f"and your revised version.\n\n"
+            f"There are {len(remaining_issues)} issues total."
+        )},
+    ]
 
-    if verbose:
-        print(f"  LLM made {len(tool_calls)} tool calls", file=sys.stderr)
+    for issue_num, (metric, issue) in enumerate(remaining_issues):
+        # Feed the next issue
+        issue_prompt = (
+            f"Issue {issue_num + 1}/{len(remaining_issues)}: "
+            f"[paragraph {issue.paragraph_idx}] ({metric}) {issue.reason}\n"
+            f"Text: \"{issue.sentence_text[:200]}\"\n\n"
+            f"Call replace_text to fix this. The old_text must be copied EXACTLY "
+            f"from the chapter."
+        )
+        messages.append({"role": "user", "content": issue_prompt})
 
-    for tc in tool_calls:
-        if tc.function.name != "replace_text":
+        if verbose:
+            print(f"  [{issue_num + 1}/{len(remaining_issues)}] para {issue.paragraph_idx} ({metric}): {issue.reason[:60]}", file=sys.stderr)
+
+        try:
+            resp = client.chat.completions.create(
+                model=model_name,
+                messages=messages,
+                tools=[REPLACE_TOOL],
+                tool_choice={"type": "function", "function": {"name": "replace_text"}},
+                max_tokens=2000,
+                temperature=cfg.temperature,
+            )
+        except Exception as e:
+            if verbose:
+                print(f"    → LLM call failed: {e}", file=sys.stderr)
+            edits_rejected += 1
             continue
 
+        message = resp.choices[0].message
+        messages.append(message)  # add assistant response to history
+
+        tool_calls = message.tool_calls or []
+        if not tool_calls:
+            edits_rejected += 1
+            if verbose:
+                print(f"    → skipped (no tool call)", file=sys.stderr)
+            messages.append({"role": "user", "content": "No tool call received. Moving to next issue."})
+            continue
+
+        tc = tool_calls[0]
         try:
             args = json.loads(tc.function.arguments)
         except json.JSONDecodeError:
             edits_rejected += 1
+            messages.append({
+                "role": "tool", "tool_call_id": tc.id,
+                "content": "Error: invalid JSON in tool call arguments."
+            })
             continue
 
         old_text = args.get("old_text", "")
         new_text = args.get("new_text", "")
 
+        # Validate
         if not old_text or not new_text or old_text == new_text:
             edits_rejected += 1
-            if verbose:
-                print(f"    → skipped (empty or no change)", file=sys.stderr)
-            continue
-
-        if old_text not in current_text:
+            result_msg = "Skipped: empty or no change."
+        elif old_text not in current_text:
             edits_rejected += 1
-            if verbose:
-                print(f"    → skipped (old_text not found: \"{old_text[:60]}...\")", file=sys.stderr)
-            continue
-
-        # Truncation check
-        old_words = len(old_text.split())
-        new_words = len(new_text.split())
-        if new_words < old_words * 0.5:
+            result_msg = f"Error: old_text not found in chapter. Must be an EXACT copy."
+        elif len(new_text.split()) < len(old_text.split()) * 0.5:
             edits_rejected += 1
-            if verbose:
-                print(f"    → skipped (truncated: {new_words}/{old_words} words)", file=sys.stderr)
-            continue
+            result_msg = f"Rejected: replacement too short ({len(new_text.split())}/{len(old_text.split())} words). Do not truncate."
+        else:
+            current_text = current_text.replace(old_text, new_text, 1)
+            edits_accepted += 1
+            result_msg = f"Edit applied. ({len(old_text.split())}→{len(new_text.split())} words)"
 
-        current_text = current_text.replace(old_text, new_text, 1)
-        edits_accepted += 1
         if verbose:
-            print(f"    → applied ({old_words}→{new_words} words): \"{old_text[:40]}...\"", file=sys.stderr)
+            print(f"    → {result_msg}", file=sys.stderr)
+
+        # Feed result back to LLM
+        messages.append({
+            "role": "tool", "tool_call_id": tc.id,
+            "content": result_msg,
+        })
 
     if verbose:
         print(f"  Applied {edits_accepted} edits, rejected {edits_rejected}", file=sys.stderr)
