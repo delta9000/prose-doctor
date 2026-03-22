@@ -84,7 +84,7 @@ Output ONLY the rewritten paragraph:"""
                 {"role": "system", "content": REWRITE_SYSTEM},
                 {"role": "user", "content": user_prompt},
             ],
-            max_tokens=len(paragraph.split()) * 3 + 100,
+            max_tokens=len(paragraph.split()) * 8 + 500,  # reasoning models need headroom for <think>
             temperature=temperature,
         )
         content = resp.choices[0].message.content.strip()
