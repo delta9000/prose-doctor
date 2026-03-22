@@ -13,19 +13,18 @@ def revise_story_sync(
     endpoint: str,
     model: str,
 ) -> tuple[str, dict]:
-    """Run orchestrated revision synchronously.
+    """Run single-pass revision synchronously.
 
-    Not threaded — ProviderPool's lazy-loaded models (GPT-2, spaCy)
-    are not thread-safe, so concurrent threads cause meta tensor errors.
-    Revisions run sequentially; the LLM network calls are the real bottleneck.
+    Uses the multi-turn tool-call flow: scan once → feed issues one at a time
+    → LLM calls replace_text per issue → validate → rescan once.
     """
-    from prose_doctor.orchestrated_revise import run_orchestrated
-    result = run_orchestrated(
+    from prose_doctor.single_pass_revise import run_single_pass
+    result = run_single_pass(
         text,
-        max_turns=config.max_turns,
         endpoint=endpoint,
         model_name=model,
         critique_config=config,
+        verbose=True,
     )
     return result.final_text, result.metrics_final.model_dump()
 
