@@ -11,3 +11,7 @@ wheels/
 
 # Large external datasets (download separately)
 refs/novelist/data.jsonl
+arena/results/
+arena/scanned/
+arena/holdout/
+arena/revision_samples/
