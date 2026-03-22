@@ -23,12 +23,22 @@ def test_build_judge_prompt_contains_original():
     assert "the original text" in prompt
 
 
-def test_build_judge_prompt_truncates_long_text():
-    long_text = "x" * 10000
-    prompt, _ = build_judge_prompt(long_text, long_text, long_text)
-    # Each section should be at most 8000 chars; check original slice appears
-    assert "x" * 8000 in prompt
-    assert "x" * 8001 not in prompt
+def test_build_judge_prompt_identical_texts_no_diffs():
+    """Identical revisions produce a no-differences prompt."""
+    prompt, _ = build_judge_prompt("same text", "same text", "same text")
+    assert "No differences found" in prompt
+
+
+def test_build_judge_prompt_shows_diffs():
+    """Changed paragraphs appear in the prompt with context."""
+    orig = "First paragraph.\n\nSecond paragraph.\n\nThird paragraph."
+    rev_a = "First paragraph.\n\nRevised A second.\n\nThird paragraph."
+    rev_b = "First paragraph.\n\nRevised B second.\n\nThird paragraph."
+    prompt, _ = build_judge_prompt(orig, rev_a, rev_b)
+    assert "Change 1" in prompt
+    assert "Second paragraph" in prompt  # original shown
+    assert "VERSION X:" in prompt
+    assert "VERSION Y:" in prompt
 
 
 def test_build_judge_prompt_both_assignments_reachable():

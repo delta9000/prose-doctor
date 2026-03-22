@@ -1,6 +1,7 @@
 """Blind pairwise judge for Prose Arena head-to-head revision comparisons."""
 from __future__ import annotations
 
+import difflib
 import json
 import random
 import re
@@ -8,62 +9,72 @@ from typing import Optional
 
 import httpx
 
-_MAX_CHARS = 8000
-
 _SYSTEM_MESSAGE = """\
 You are a senior literary editor specializing in fiction prose craft. You are \
-comparing two revised versions of the same AI-generated chapter. Both versions \
-were revised by the same LLM under different editorial guidance. Your job is to \
-determine which editorial guidance produced a better revision.
-
-The differences may be subtle. Read closely. Compare sentence by sentence if needed."""
+comparing how two different editorial strategies revised the same passages. \
+Each pair shows the original passage and two alternative revisions. Your job: \
+determine which set of revisions produces better prose overall."""
 
 _PROMPT_TEMPLATE = """\
-Below is an AI-generated fiction chapter (the original), followed by two \
-revised versions. Both revisions aimed to improve the prose craft. Your task: \
-determine which revision is the stronger piece of fiction writing.
+Below are the passages that differ between two revisions of the same chapter. \
+For each changed passage, you see the ORIGINAL, then how VERSION X and \
+VERSION Y each revised it. Everything not shown is identical between versions.
 
-Pay attention to these craft dimensions, in priority order:
-1. SENTENCE STRUCTURE — Does the revision vary sentence openings, lengths, \
-and rhythms? Are there inversions, fragments used for impact, and varied \
-clause structures? Or is it monotonous subject-verb-object?
-2. INTERIORITY — Does the revision give access to the character's inner \
-life? Thoughts, sensations, doubts, memories? Or does it stay on the surface?
-3. DISCOURSE FLOW — Are sentences connected with varied logical relations \
-(causal, contrastive, temporal)? Or is everything joined by "and" or left \
-implicit?
-4. CONCRETENESS BALANCE — Does the revision mix concrete sensory detail \
-with moments of abstraction, reflection, or interpretation? Or is it \
-relentlessly one mode?
-5. SCENE DYNAMISM — Are there shifts in time, space, or focus? Or does the \
-scene feel static?
+Your task: which revision strategy produced better prose overall?
 
-Do NOT penalize revisions for being similar to the original — focus on which \
-revision, as a standalone piece, reads better.
+Evaluate each change on:
+1. SENTENCE STRUCTURE — varied openings, lengths, rhythms? Or mechanical?
+2. INTERIORITY — access to character's inner life? Or surface-level?
+3. DISCOURSE FLOW — logical connectives (causal, contrastive, temporal)? Or flat?
+4. COMPLETENESS — is the revision a full, grammatical passage? Any truncation or corruption?
 
-If the differences are genuinely negligible (fewer than 3 changed sentences \
-total), call it a tie. Otherwise, pick a winner.
+{diff_blocks}
 
 ---
 
-ORIGINAL:
-{original}
+Considering ALL the changes above, which version's revisions are stronger \
+overall? If genuinely equal, say tie.
 
----
+Respond with ONLY this JSON (no other text):
+{{"winner": "X" or "Y" or "tie", "reason": "2-3 sentences citing specific passages"}}"""
 
-VERSION X:
-{version_x}
 
----
+def _extract_diff_blocks(
+    original: str,
+    revised_a: str,
+    revised_b: str,
+    context_paragraphs: int = 1,
+) -> list[dict]:
+    """Extract passages that differ, with surrounding context.
 
-VERSION Y:
-{version_y}
+    Returns list of {original, revised_a, revised_b, context_before, context_after}.
+    """
+    orig_paras = original.split("\n\n")
+    rev_a_paras = revised_a.split("\n\n")
+    rev_b_paras = revised_b.split("\n\n")
 
----
+    # Find paragraphs that changed in either revision
+    changed_indices = set()
+    for i, orig_p in enumerate(orig_paras):
+        a_p = rev_a_paras[i] if i < len(rev_a_paras) else ""
+        b_p = rev_b_paras[i] if i < len(rev_b_paras) else ""
+        if orig_p != a_p or orig_p != b_p:
+            changed_indices.add(i)
 
-Compare the two revisions on the dimensions above. Then respond with ONLY \
-this JSON (no other text):
-{{"winner": "X" or "Y" or "tie", "reason": "2-3 sentences explaining your choice, citing specific passages"}}"""
+    blocks = []
+    for i in sorted(changed_indices):
+        ctx_before = orig_paras[i - 1][:200] if i > 0 else ""
+        ctx_after = orig_paras[i + 1][:200] if i + 1 < len(orig_paras) else ""
+        blocks.append({
+            "index": i,
+            "original": orig_paras[i],
+            "revised_a": rev_a_paras[i] if i < len(rev_a_paras) else "(missing)",
+            "revised_b": rev_b_paras[i] if i < len(rev_b_paras) else "(missing)",
+            "context_before": ctx_before,
+            "context_after": ctx_after,
+        })
+
+    return blocks
 
 
 def build_judge_prompt(
@@ -72,52 +83,56 @@ def build_judge_prompt(
     revised_b: str,
     rng: Optional[random.Random] = None,
 ) -> tuple[str, dict[str, str]]:
-    """Build a blinded judge prompt with randomised position assignment.
+    """Build a diff-focused judge prompt with randomised position assignment.
 
-    Returns
-    -------
-    prompt:
-        The formatted prompt string.
-    mapping:
-        Dict mapping position labels to internal names, e.g. ``{"X": "a", "Y": "b"}``.
+    Instead of sending full chapters, extracts only the passages that differ
+    between the two revisions, with ±1 paragraph of context.
     """
     if rng is None:
         rng = random.Random()
 
-    original = original[:_MAX_CHARS]
-    revised_a = revised_a[:_MAX_CHARS]
-    revised_b = revised_b[:_MAX_CHARS]
-
+    # Randomize position assignment
     if rng.random() < 0.5:
-        version_x, version_y = revised_a, revised_b
+        a_label, b_label = "X", "Y"
         mapping: dict[str, str] = {"X": "a", "Y": "b"}
     else:
-        version_x, version_y = revised_b, revised_a
+        a_label, b_label = "Y", "X"
         mapping = {"X": "b", "Y": "a"}
 
-    prompt = _PROMPT_TEMPLATE.format(
-        original=original,
-        version_x=version_x,
-        version_y=version_y,
-    )
+    blocks = _extract_diff_blocks(original, revised_a, revised_b)
+
+    if not blocks:
+        # No differences found — will be a tie
+        diff_text = "(No differences found between the two versions.)"
+    else:
+        parts = []
+        for n, block in enumerate(blocks[:10], 1):  # cap at 10 diffs
+            part = f"### Change {n}"
+            if block["context_before"]:
+                part += f"\n[context]: {block['context_before'][:150]}..."
+            part += f"\n\nORIGINAL:\n{block['original'][:500]}"
+            # Map a/b to X/Y based on randomization
+            rev_x = block[f"revised_{'a' if a_label == 'X' else 'b'}"]
+            rev_y = block[f"revised_{'a' if a_label == 'Y' else 'b'}"]
+            part += f"\n\nVERSION X:\n{rev_x[:500]}"
+            part += f"\n\nVERSION Y:\n{rev_y[:500]}"
+            if block["context_after"]:
+                part += f"\n\n[context]: ...{block['context_after'][:150]}"
+            parts.append(part)
+
+        diff_text = "\n\n---\n\n".join(parts)
+        diff_text += f"\n\n({len(blocks)} total changes, {len(blocks) - min(len(blocks), 10)} not shown)" if len(blocks) > 10 else ""
+
+    prompt = _PROMPT_TEMPLATE.format(diff_blocks=diff_text)
     return prompt, mapping
 
 
 def parse_judge_response(response: str, mapping: dict[str, str]) -> dict:
-    """Parse the raw LLM response into a normalised result dict.
-
-    Strips ``<think>`` tags and markdown fences, then locates the JSON blob.
-    Maps the position-based winner (X/Y) back to the caller-supplied names via
-    *mapping*.  Falls back to ``{"winner": "tie", ...}`` on any parse failure.
-    """
-    # Strip <think>...</think> blocks (including multi-line)
+    """Parse the raw LLM response into a normalised result dict."""
     cleaned = re.sub(r"<think>.*?</think>", "", response, flags=re.DOTALL)
-
-    # Strip markdown code fences
     cleaned = re.sub(r"```[^\n]*\n?", "", cleaned)
     cleaned = cleaned.strip()
 
-    # Find the first JSON-like object
     match = re.search(r"\{[^}]+\}", cleaned, re.DOTALL)
     if not match:
         return {"winner": "tie", "reason": "parse failure: no JSON found"}
@@ -150,31 +165,8 @@ async def judge_pair(
     model: str,
     rng: Optional[random.Random] = None,
 ) -> dict:
-    """Call the LLM judge asynchronously and return a normalised verdict.
-
-    Parameters
-    ----------
-    original:
-        The source passage before revision.
-    revised_a, revised_b:
-        The two candidate revisions to compare.
-    config_a_name, config_b_name:
-        Human-readable names for each revision config (returned in results).
-    endpoint:
-        OpenAI-compatible chat completions URL.
-    model:
-        Model identifier to pass to the endpoint.
-    rng:
-        Optional seeded ``random.Random`` for deterministic position assignment.
-
-    Returns
-    -------
-    dict with keys ``winner`` (config name or ``"tie"``), ``reason``, and
-    ``position_map`` (the X/Y -> a/b assignment used).
-    """
+    """Call the LLM judge asynchronously and return a normalised verdict."""
     prompt, position_map = build_judge_prompt(original, revised_a, revised_b, rng)
-
-    # Build the name lookup so we can resolve internal a/b to config names
     name_map = {"a": config_a_name, "b": config_b_name}
 
     payload = {
@@ -194,12 +186,11 @@ async def judge_pair(
     raw_content = body["choices"][0]["message"]["content"]
     result = parse_judge_response(raw_content, position_map)
 
-    # Resolve internal a/b winner to config names
     internal_winner = result["winner"]
     if internal_winner in name_map:
         resolved_winner = name_map[internal_winner]
     else:
-        resolved_winner = internal_winner  # "tie" or unexpected value
+        resolved_winner = internal_winner
 
     return {
         "winner": resolved_winner,
