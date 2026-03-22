@@ -239,6 +239,12 @@ def run_single_pass(
         elif len(old_text.split()) < 4:
             result_msg = "Rejected: old_text too small. Replace at least a full sentence."
             edits_rejected += 1
+        elif "\n\n" in old_text or "\n---\n" in old_text or "---" in old_text:
+            result_msg = "Rejected: old_text spans multiple paragraphs or sections. Edit one paragraph at a time."
+            edits_rejected += 1
+        elif len(old_text) > 1500:
+            result_msg = "Rejected: old_text too long. Target one paragraph at a time (max ~300 words)."
+            edits_rejected += 1
         else:
             current_text = current_text.replace(old_text, new_text, 1)
             edits_accepted += 1

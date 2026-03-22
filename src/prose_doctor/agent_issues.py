@@ -110,14 +110,25 @@ def find_fragment_issues(text: str, report: dict, config: CritiqueConfig | None 
                 reason = "fragment pair with concrete detail"
                 preserve = True
             elif is_vague:
-                reason = "vague/generic fragment — merge into surrounding sentence"
+                reason = (
+                    "weak fragment — vague/generic content that adds nothing. "
+                    "Either replace with a concrete sensory detail or fold "
+                    "naturally into the adjacent sentence"
+                )
                 preserve = False
             elif is_concrete:
-                # Isolated but concrete — flag but note it might be intentional
-                reason = "fragment with concrete detail — check if rhythmically earned"
-                preserve = False  # still flag it, agent decides
+                reason = (
+                    "fragment with concrete detail — may be intentional rhythm. "
+                    "Leave it if it follows a long sentence or lands at an "
+                    "emotional beat. Only merge if it feels random"
+                )
+                preserve = False
             else:
-                reason = "isolated fragment — merge into surrounding sentence"
+                reason = (
+                    "isolated fragment — no concrete detail, no rhythmic purpose. "
+                    "Fold into the adjacent sentence or strengthen with a specific "
+                    "sensory/physical detail"
+                )
                 preserve = False
 
             issues.append(Issue(pi, sent_text, ctx_before, ctx_after, reason, preserve))

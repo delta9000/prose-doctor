@@ -67,11 +67,12 @@ _DEFAULT_PRESCRIPTIONS: dict[str, str] = {
         "calls for it. Aim for peaks and valleys rather than a plateau."
     ),
     "fg_fragment": (
-        "You're overusing short fragments for manufactured emphasis — the technique has "
-        "lost its impact. Each fragment should earn its weight by capturing a beat too "
-        "sharp or too fast for a full sentence. Merge weaker fragments into surrounding "
-        "sentences, and reserve the form for moments where the syntax itself should feel "
-        "interrupted."
+        "Some short fragments here don't earn their weight. NOT EVERY FRAGMENT IS BAD — "
+        "fragments that land a punch (visceral detail, tonal shift, rhythmic break after "
+        "a long sentence) should stay. Only merge fragments that are vague, generic, or "
+        "add nothing the surrounding sentences don't already convey. When merging, fold "
+        "the fragment's content into the adjacent sentence naturally — don't just glue "
+        "them with a comma. Leave strong fragments alone."
     ),
     "ic_rhythmicity": (
         "The information density is too regular — every sentence carries roughly the "
