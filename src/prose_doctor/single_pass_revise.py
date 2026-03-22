@@ -1,14 +1,12 @@
-"""Single-pass revision: scan once, send all issues, LLM calls replace_text tool per edit.
+"""Single-pass revision: scan once, feed issues as a todo list, LLM makes targeted edits.
 
-Flow:
-1. Scan chapter → find all issues
-2. Send chapter + all prescriptions to LLM with a replace_text tool
-3. LLM calls replace_text(old_text, new_text) for each fix — one tool call per edit
-4. Validate each edit (exact match, truncation check), collect results
-5. One final rescan to measure improvement
+The LLM receives:
+- The full chapter as context
+- One issue at a time, with the FULL paragraph, surrounding context, and a craft-aware prescription
+- A replace_text tool to make exact find/replace edits
 
-Uses OpenAI function calling — the LLM produces structured tool calls,
-not free-text JSON we have to parse.
+Each edit targets a paragraph or sentence within a paragraph. The LLM sees
+enough context to make a craft decision, not just a mechanical patch.
 """
 from __future__ import annotations
 
@@ -31,20 +29,19 @@ REPLACE_TOOL = {
         "name": "replace_text",
         "description": (
             "Replace a passage in the chapter. The old_text must be an EXACT "
-            "substring copied from the chapter. The new_text is your revised "
-            "version. Keep the replacement roughly the same length — do not "
-            "delete large sections or add new scenes."
+            "substring copied from the chapter — at least one full sentence, "
+            "ideally the whole paragraph. The new_text is your revised version."
         ),
         "parameters": {
             "type": "object",
             "properties": {
                 "old_text": {
                     "type": "string",
-                    "description": "Exact text to find and replace (copy from chapter verbatim)",
+                    "description": "Exact text to find (copy verbatim — at least one full sentence)",
                 },
                 "new_text": {
                     "type": "string",
-                    "description": "Revised text to substitute in",
+                    "description": "Revised text to substitute in (same content, better craft)",
                 },
             },
             "required": ["old_text", "new_text"],
@@ -53,30 +50,51 @@ REPLACE_TOOL = {
 }
 
 SYSTEM_PROMPT = """\
-You are a prose revision specialist. You will be given a fiction chapter and \
-a list of specific issues found by automated analysis. Fix each issue by \
-calling the replace_text tool with the exact passage to change and your \
-revised version.
+You are a prose editor working on a fiction chapter. You'll receive specific \
+craft issues found by analysis, one at a time. For each issue, you see the \
+full paragraph with context and a diagnosis explaining what's wrong and why.
 
-Rules:
-- Call replace_text once per issue. One edit per tool call.
-- The old_text must be EXACTLY copied from the chapter — even one wrong character will fail.
-- Keep the replacement roughly the same length as the original.
-- Preserve all plot content, character names, and dialogue.
-- Do not add commentary or explanations — just make the tool calls.
-- Match the surrounding voice and tense.
-- If an issue doesn't need fixing or you can't improve it, skip it."""
+Your job: call replace_text to fix each issue. Replace at least a full \
+sentence — ideally the whole paragraph when multiple sentences in it need work.
+
+Craft principles:
+- Varied sentence structure creates rhythm. Monotonous SVO order is flat.
+- Interiority (what the character feels, thinks, fears) makes prose live.
+- Logical connectives (because, but, although, then) show how ideas relate.
+- Concrete detail and abstract reflection should alternate, not flatline.
+- Every fragment should earn its place through impact. Weak fragments are clutter.
+
+Preserve plot, characters, and dialogue content. Change technique, not story."""
 
 
-def _build_issue_list(issues: list[tuple[str, object]]) -> str:
-    """Format issues into a numbered list for the LLM."""
-    lines = []
-    for i, (metric, issue) in enumerate(issues, 1):
-        lines.append(
-            f"{i}. [paragraph {issue.paragraph_idx}] ({metric}) {issue.reason}\n"
-            f"   Text: \"{issue.sentence_text[:150]}\""
-        )
-    return "\n\n".join(lines)
+def _build_issue_prompt(
+    metric: str,
+    issue: object,
+    paragraphs: list[str],
+    cfg: CritiqueConfig,
+) -> str:
+    """Build a rich prompt for one issue with full paragraph context."""
+    pi = issue.paragraph_idx
+    paragraph = paragraphs[pi] if pi < len(paragraphs) else ""
+    ctx_before = paragraphs[pi - 1][:300] if pi > 0 else "(start of chapter)"
+    ctx_after = paragraphs[pi + 1][:300] if pi + 1 < len(paragraphs) else "(end of chapter)"
+
+    # Get the config's prescription for this metric (the "why")
+    prescription = cfg.prescriptions.get(metric, "")
+
+    # Build a craft-aware diagnosis
+    diagnosis = issue.reason
+
+    return (
+        f"CONTEXT BEFORE:\n{ctx_before}\n\n"
+        f"PARAGRAPH TO REVISE:\n{paragraph}\n\n"
+        f"CONTEXT AFTER:\n{ctx_after}\n\n"
+        f"DIAGNOSIS: {diagnosis}\n\n"
+        f"CRAFT GUIDANCE: {prescription}\n\n"
+        f"Call replace_text. Copy the passage you want to change EXACTLY from "
+        f"the paragraph above (at least one full sentence), then provide your "
+        f"revised version."
+    )
 
 
 def run_single_pass(
@@ -89,7 +107,7 @@ def run_single_pass(
     critique_config: CritiqueConfig | None = None,
     max_edits: int = 10,
 ) -> RevisionResult:
-    """Single-pass revision with tool-call edits."""
+    """Single-pass revision with multi-turn tool-call edits."""
     from openai import OpenAI
     from prose_doctor.agent_scan import scan_deep
     from prose_doctor.agent_issues import find_issues
@@ -97,7 +115,7 @@ def run_single_pass(
     cfg = critique_config or CritiqueConfig()
     client = OpenAI(base_url=endpoint, api_key=api_key or "none")
 
-    # 1. Initial scan
+    # 1. Scan
     if verbose:
         print(f"Single-pass revision: {filename}", file=sys.stderr)
 
@@ -108,7 +126,7 @@ def run_single_pass(
     if verbose:
         print(f"  Initial: distance={metrics.total_distance:.4f} worst={metrics.worst_metric}", file=sys.stderr)
 
-    # 2. Collect all issues
+    # 2. Collect issues (one per paragraph, across worst metrics)
     distances = metrics.distances()
     fixable = [(k, d) for k, d in distances.items() if d > 0.10]
     fixable.sort(key=lambda x: -x[1])
@@ -143,36 +161,30 @@ def run_single_pass(
             metrics_worsened=[],
         )
 
-    # 3. Multi-turn tool-call loop: feed issues one at a time
+    # 3. Multi-turn: feed one issue at a time, get tool call, validate, feed result back
     current_text = text
+    paragraphs = split_paragraphs(text)
     edits_accepted = 0
     edits_rejected = 0
-    remaining_issues = list(all_issues)
 
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": (
-            f"Here is the chapter to revise:\n\n---\n{text}\n---\n\n"
-            f"I will give you issues to fix one at a time. "
-            f"For each issue, call replace_text with the exact passage to change "
-            f"and your revised version.\n\n"
-            f"There are {len(remaining_issues)} issues total."
+            f"Here is the chapter ({len(text.split())} words). "
+            f"I'll give you {len(all_issues)} issues to fix, one at a time.\n\n"
+            f"---\n{text}\n---"
         )},
     ]
 
-    for issue_num, (metric, issue) in enumerate(remaining_issues):
-        # Feed the next issue
-        issue_prompt = (
-            f"Issue {issue_num + 1}/{len(remaining_issues)}: "
-            f"[paragraph {issue.paragraph_idx}] ({metric}) {issue.reason}\n"
-            f"Text: \"{issue.sentence_text[:200]}\"\n\n"
-            f"Call replace_text to fix this. The old_text must be copied EXACTLY "
-            f"from the chapter."
-        )
-        messages.append({"role": "user", "content": issue_prompt})
+    for issue_num, (metric, issue) in enumerate(all_issues):
+        issue_prompt = _build_issue_prompt(metric, issue, paragraphs, cfg)
+        messages.append({
+            "role": "user",
+            "content": f"Issue {issue_num + 1}/{len(all_issues)}:\n\n{issue_prompt}",
+        })
 
         if verbose:
-            print(f"  [{issue_num + 1}/{len(remaining_issues)}] para {issue.paragraph_idx} ({metric}): {issue.reason[:60]}", file=sys.stderr)
+            print(f"  [{issue_num + 1}/{len(all_issues)}] para {issue.paragraph_idx} ({metric})", file=sys.stderr)
 
         try:
             resp = client.chat.completions.create(
@@ -185,19 +197,19 @@ def run_single_pass(
             )
         except Exception as e:
             if verbose:
-                print(f"    → LLM call failed: {e}", file=sys.stderr)
+                print(f"    → LLM error: {e}", file=sys.stderr)
             edits_rejected += 1
             continue
 
         message = resp.choices[0].message
-        messages.append(message)  # add assistant response to history
+        messages.append(message)
 
         tool_calls = message.tool_calls or []
         if not tool_calls:
             edits_rejected += 1
             if verbose:
-                print(f"    → skipped (no tool call)", file=sys.stderr)
-            messages.append({"role": "user", "content": "No tool call received. Moving to next issue."})
+                print(f"    → no tool call", file=sys.stderr)
+            messages.append({"role": "user", "content": "No edit made. Moving on."})
             continue
 
         tc = tool_calls[0]
@@ -207,7 +219,7 @@ def run_single_pass(
             edits_rejected += 1
             messages.append({
                 "role": "tool", "tool_call_id": tc.id,
-                "content": "Error: invalid JSON in tool call arguments."
+                "content": "Error: could not parse arguments.",
             })
             continue
 
@@ -216,32 +228,34 @@ def run_single_pass(
 
         # Validate
         if not old_text or not new_text or old_text == new_text:
+            result_msg = "Skipped: no change."
             edits_rejected += 1
-            result_msg = "Skipped: empty or no change."
         elif old_text not in current_text:
+            result_msg = "Error: old_text not found. Copy it EXACTLY from the chapter."
             edits_rejected += 1
-            result_msg = f"Error: old_text not found in chapter. Must be an EXACT copy."
         elif len(new_text.split()) < len(old_text.split()) * 0.5:
+            result_msg = f"Rejected: too short ({len(new_text.split())}/{len(old_text.split())} words)."
             edits_rejected += 1
-            result_msg = f"Rejected: replacement too short ({len(new_text.split())}/{len(old_text.split())} words). Do not truncate."
+        elif len(old_text.split()) < 4:
+            result_msg = "Rejected: old_text too small. Replace at least a full sentence."
+            edits_rejected += 1
         else:
             current_text = current_text.replace(old_text, new_text, 1)
             edits_accepted += 1
-            result_msg = f"Edit applied. ({len(old_text.split())}→{len(new_text.split())} words)"
+            result_msg = f"Applied. ({len(old_text.split())}→{len(new_text.split())} words)"
 
         if verbose:
             print(f"    → {result_msg}", file=sys.stderr)
 
-        # Feed result back to LLM
         messages.append({
             "role": "tool", "tool_call_id": tc.id,
             "content": result_msg,
         })
 
+    # 4. Final validation scan
     if verbose:
-        print(f"  Applied {edits_accepted} edits, rejected {edits_rejected}", file=sys.stderr)
+        print(f"\n  {edits_accepted} applied, {edits_rejected} rejected", file=sys.stderr)
 
-    # 5. Final validation scan
     if edits_accepted > 0:
         final_metrics, _ = scan_deep(
             current_text, filename=filename,
@@ -252,9 +266,8 @@ def run_single_pass(
         final_metrics = initial_metrics
 
     if verbose:
-        print(f"  Final: distance={final_metrics.total_distance:.4f}", file=sys.stderr)
         delta = initial_metrics.total_distance - final_metrics.total_distance
-        print(f"  Delta: {delta:+.4f}", file=sys.stderr)
+        print(f"  Distance: {initial_metrics.total_distance:.4f} → {final_metrics.total_distance:.4f} ({delta:+.4f})", file=sys.stderr)
 
     init_d = initial_metrics.distances()
     final_d = final_metrics.distances()
