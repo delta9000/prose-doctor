@@ -205,6 +205,14 @@ def run_orchestrated(
                     print(f"    → skipped (no change)", file=sys.stderr)
                 continue
 
+            # Reject truncated rewrites (< 60% of original length)
+            orig_words = len(target_para.split())
+            revised_words = len(revised_para.split())
+            if revised_words < orig_words * 0.6:
+                if verbose:
+                    print(f"    → skipped (truncated: {revised_words}/{orig_words} words)", file=sys.stderr)
+                continue
+
             # Substitute and validate
             previous_text = current_text
             current_text = current_text.replace(target_para, revised_para, 1)
